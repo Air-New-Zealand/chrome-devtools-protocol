@@ -16,6 +16,8 @@ use ChromeDevtoolsProtocol\Model\Runtime\ExceptionThrownEvent;
 use ChromeDevtoolsProtocol\Model\Runtime\ExecutionContextCreatedEvent;
 use ChromeDevtoolsProtocol\Model\Runtime\ExecutionContextDestroyedEvent;
 use ChromeDevtoolsProtocol\Model\Runtime\ExecutionContextsClearedEvent;
+use ChromeDevtoolsProtocol\Model\Runtime\GetHeapUsageResponse;
+use ChromeDevtoolsProtocol\Model\Runtime\GetIsolateIdResponse;
 use ChromeDevtoolsProtocol\Model\Runtime\GetPropertiesRequest;
 use ChromeDevtoolsProtocol\Model\Runtime\GetPropertiesResponse;
 use ChromeDevtoolsProtocol\Model\Runtime\GlobalLexicalScopeNamesRequest;
@@ -114,6 +116,26 @@ interface RuntimeDomainInterface
 
 
 	/**
+	 * Returns the JavaScript heap usage. It is the total usage of the corresponding isolate not scoped to a particular Runtime.
+	 *
+	 * @param ContextInterface $ctx
+	 *
+	 * @return GetHeapUsageResponse
+	 */
+	public function getHeapUsage(ContextInterface $ctx): GetHeapUsageResponse;
+
+
+	/**
+	 * Returns the isolate id.
+	 *
+	 * @param ContextInterface $ctx
+	 *
+	 * @return GetIsolateIdResponse
+	 */
+	public function getIsolateId(ContextInterface $ctx): GetIsolateIdResponse;
+
+
+	/**
 	 * Returns properties of a given object. Object group of the result is inherited from the target object.
 	 *
 	 * @param ContextInterface $ctx
@@ -198,6 +220,16 @@ interface RuntimeDomainInterface
 	 * @return void
 	 */
 	public function setCustomObjectFormatterEnabled(ContextInterface $ctx, SetCustomObjectFormatterEnabledRequest $request): void;
+
+
+	/**
+	 * Terminate current or next JavaScript execution. Will cancel the termination when the outer-most script execution ends.
+	 *
+	 * @param ContextInterface $ctx
+	 *
+	 * @return void
+	 */
+	public function terminateExecution(ContextInterface $ctx): void;
 
 
 	/**

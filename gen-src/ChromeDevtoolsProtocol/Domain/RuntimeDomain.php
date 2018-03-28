@@ -17,6 +17,8 @@ use ChromeDevtoolsProtocol\Model\Runtime\ExceptionThrownEvent;
 use ChromeDevtoolsProtocol\Model\Runtime\ExecutionContextCreatedEvent;
 use ChromeDevtoolsProtocol\Model\Runtime\ExecutionContextDestroyedEvent;
 use ChromeDevtoolsProtocol\Model\Runtime\ExecutionContextsClearedEvent;
+use ChromeDevtoolsProtocol\Model\Runtime\GetHeapUsageResponse;
+use ChromeDevtoolsProtocol\Model\Runtime\GetIsolateIdResponse;
 use ChromeDevtoolsProtocol\Model\Runtime\GetPropertiesRequest;
 use ChromeDevtoolsProtocol\Model\Runtime\GetPropertiesResponse;
 use ChromeDevtoolsProtocol\Model\Runtime\GlobalLexicalScopeNamesRequest;
@@ -92,6 +94,22 @@ class RuntimeDomain implements RuntimeDomainInterface
 	}
 
 
+	public function getHeapUsage(ContextInterface $ctx): GetHeapUsageResponse
+	{
+		$request = new \stdClass();
+		$response = $this->internalClient->executeCommand($ctx, 'Runtime.getHeapUsage', $request);
+		return GetHeapUsageResponse::fromJson($response);
+	}
+
+
+	public function getIsolateId(ContextInterface $ctx): GetIsolateIdResponse
+	{
+		$request = new \stdClass();
+		$response = $this->internalClient->executeCommand($ctx, 'Runtime.getIsolateId', $request);
+		return GetIsolateIdResponse::fromJson($response);
+	}
+
+
 	public function getProperties(ContextInterface $ctx, GetPropertiesRequest $request): GetPropertiesResponse
 	{
 		$response = $this->internalClient->executeCommand($ctx, 'Runtime.getProperties', $request);
@@ -142,6 +160,13 @@ class RuntimeDomain implements RuntimeDomainInterface
 	public function setCustomObjectFormatterEnabled(ContextInterface $ctx, SetCustomObjectFormatterEnabledRequest $request): void
 	{
 		$this->internalClient->executeCommand($ctx, 'Runtime.setCustomObjectFormatterEnabled', $request);
+	}
+
+
+	public function terminateExecution(ContextInterface $ctx): void
+	{
+		$request = new \stdClass();
+		$this->internalClient->executeCommand($ctx, 'Runtime.terminateExecution', $request);
 	}
 
 

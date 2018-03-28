@@ -5,7 +5,7 @@ use ChromeDevtoolsProtocol\ContextInterface;
 use ChromeDevtoolsProtocol\InternalClientInterface;
 use ChromeDevtoolsProtocol\Model\HeadlessExperimental\BeginFrameRequest;
 use ChromeDevtoolsProtocol\Model\HeadlessExperimental\BeginFrameResponse;
-use ChromeDevtoolsProtocol\Model\HeadlessExperimental\MainFrameReadyForScreenshotsEvent;
+use ChromeDevtoolsProtocol\Model\HeadlessExperimental\EnterDeterministicModeRequest;
 use ChromeDevtoolsProtocol\Model\HeadlessExperimental\NeedsBeginFramesChangedEvent;
 use ChromeDevtoolsProtocol\SubscriptionInterface;
 
@@ -42,17 +42,9 @@ class HeadlessExperimentalDomain implements HeadlessExperimentalDomainInterface
 	}
 
 
-	public function addMainFrameReadyForScreenshotsListener(callable $listener): SubscriptionInterface
+	public function enterDeterministicMode(ContextInterface $ctx, EnterDeterministicModeRequest $request): void
 	{
-		return $this->internalClient->addListener('HeadlessExperimental.mainFrameReadyForScreenshots', function ($event) use ($listener) {
-			return $listener(MainFrameReadyForScreenshotsEvent::fromJson($event));
-		});
-	}
-
-
-	public function awaitMainFrameReadyForScreenshots(ContextInterface $ctx): MainFrameReadyForScreenshotsEvent
-	{
-		return MainFrameReadyForScreenshotsEvent::fromJson($this->internalClient->awaitEvent($ctx, 'HeadlessExperimental.mainFrameReadyForScreenshots'));
+		$this->internalClient->executeCommand($ctx, 'HeadlessExperimental.enterDeterministicMode', $request);
 	}
 
 

@@ -3,6 +3,7 @@ namespace ChromeDevtoolsProtocol\Domain;
 
 use ChromeDevtoolsProtocol\ContextInterface;
 use ChromeDevtoolsProtocol\InternalClientInterface;
+use ChromeDevtoolsProtocol\Model\Browser\GetBrowserCommandLineResponse;
 use ChromeDevtoolsProtocol\Model\Browser\GetHistogramRequest;
 use ChromeDevtoolsProtocol\Model\Browser\GetHistogramResponse;
 use ChromeDevtoolsProtocol\Model\Browser\GetHistogramsRequest;
@@ -30,6 +31,14 @@ class BrowserDomain implements BrowserDomainInterface
 	{
 		$request = new \stdClass();
 		$this->internalClient->executeCommand($ctx, 'Browser.close', $request);
+	}
+
+
+	public function getBrowserCommandLine(ContextInterface $ctx): GetBrowserCommandLineResponse
+	{
+		$request = new \stdClass();
+		$response = $this->internalClient->executeCommand($ctx, 'Browser.getBrowserCommandLine', $request);
+		return GetBrowserCommandLineResponse::fromJson($response);
 	}
 
 

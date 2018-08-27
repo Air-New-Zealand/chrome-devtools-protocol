@@ -1,6 +1,8 @@
 <?php
 namespace ChromeDevtoolsProtocol;
 
+use ChromeDevtoolsProtocol\Exception\RuntimeException;
+
 /**
  * Basic context implementation.
  *
@@ -35,11 +37,15 @@ class Context implements ContextInterface
         return $ctx;
     }
 
-    public static function withTimeout(ContextInterface $parent, int $seconds, int $microseconds = 0): ContextInterface
-    {
-        $deadlineTimestamp = number_format(microtime(true) + $seconds + ($microseconds / 1000000), 6, '.', '');
-        return static::withDeadline($parent, \DateTimeImmutable::createFromFormat("U.u", $deadlineTimestamp));
-    }
+	public static function withTimeout(ContextInterface $parent, int $seconds, int $microseconds = 0): ContextInterface
+	{
+		$deadlineTimestamp = number_format(microtime(true) + $seconds + ($microseconds / 1000000), 6, '.', '');
+		$deadline = \DateTimeImmutable::createFromFormat("U.u", $deadlineTimestamp);
+		if ($deadline === false) {
+			throw new RuntimeException(sprintf("Could not create %s.", \DateTimeImmutable::class));
+		}
+		return static::withDeadline($parent, $deadline);
+	}
 
     public function getDeadline(): ?\DateTimeImmutable
     {

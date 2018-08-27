@@ -220,7 +220,7 @@
                         "relevant",
                         "root",
                         "autocomplete",
-                        "haspopup",
+                        "hasPopup",
                         "level",
                         "multiselectable",
                         "orientation",
@@ -328,8 +328,21 @@
                     "parameters": [
                         {
                             "name": "nodeId",
-                            "description": "ID of node to get the partial accessibility tree for.",
+                            "description": "Identifier of the node to get the partial accessibility tree for.",
+                            "optional": true,
                             "$ref": "DOM.NodeId"
+                        },
+                        {
+                            "name": "backendNodeId",
+                            "description": "Identifier of the backend node to get the partial accessibility tree for.",
+                            "optional": true,
+                            "$ref": "DOM.BackendNodeId"
+                        },
+                        {
+                            "name": "objectId",
+                            "description": "JavaScript object id of the node wrapper to get the partial accessibility tree for.",
+                            "optional": true,
+                            "$ref": "Runtime.RemoteObjectId"
                         },
                         {
                             "name": "fetchRelatives",
@@ -993,6 +1006,28 @@
                     ]
                 },
                 {
+                    "id": "PermissionType",
+                    "experimental": true,
+                    "type": "string",
+                    "enum": [
+                        "accessibilityEvents",
+                        "audioCapture",
+                        "backgroundSync",
+                        "clipboardRead",
+                        "clipboardWrite",
+                        "durableStorage",
+                        "flash",
+                        "geolocation",
+                        "midi",
+                        "midiSysex",
+                        "notifications",
+                        "paymentHandler",
+                        "protectedMediaIdentifier",
+                        "sensors",
+                        "videoCapture"
+                    ]
+                },
+                {
                     "id": "Bucket",
                     "description": "Chrome histogram bucket.",
                     "experimental": true,
@@ -1076,6 +1111,12 @@
                             "name": "name",
                             "description": "Requested histogram name.",
                             "type": "string"
+                        },
+                        {
+                            "name": "delta",
+                            "description": "If true, retrieve delta since last call.",
+                            "optional": true,
+                            "type": "boolean"
                         }
                     ],
                     "returns": [
@@ -1096,6 +1137,12 @@
                             "description": "Requested substring in name. Only histograms which have query as a substring in their name are extracted. An empty or absent query returns all histograms.",
                             "optional": true,
                             "type": "string"
+                        },
+                        {
+                            "name": "delta",
+                            "description": "If true, retrieve delta since last call.",
+                            "optional": true,
+                            "type": "boolean"
                         }
                     ],
                     "returns": [
@@ -1180,6 +1227,43 @@
                             "name": "bounds",
                             "description": "Bounds information of the window. When window state is 'minimized', the restored window position and size are returned.",
                             "$ref": "Bounds"
+                        }
+                    ]
+                },
+                {
+                    "name": "grantPermissions",
+                    "description": "Grant specific permissions to the given origin and reject all others.",
+                    "experimental": true,
+                    "parameters": [
+                        {
+                            "name": "origin",
+                            "type": "string"
+                        },
+                        {
+                            "name": "permissions",
+                            "type": "array",
+                            "items": {
+                                "$ref": "PermissionType"
+                            }
+                        },
+                        {
+                            "name": "browserContextId",
+                            "description": "BrowserContext to override permissions. When omitted, default browser context is used.",
+                            "optional": true,
+                            "$ref": "Target.BrowserContextID"
+                        }
+                    ]
+                },
+                {
+                    "name": "resetPermissions",
+                    "description": "Reset all permission management for all origins.",
+                    "experimental": true,
+                    "parameters": [
+                        {
+                            "name": "browserContextId",
+                            "description": "BrowserContext to reset permissions. When omitted, default browser context is used.",
+                            "optional": true,
+                            "$ref": "Target.BrowserContextID"
                         }
                     ]
                 },
@@ -2453,7 +2537,7 @@
                 },
                 {
                     "name": "getStyleSheetText",
-                    "description": "Returns the current textual content and the URL for a stylesheet.",
+                    "description": "Returns the current textual content for a stylesheet.",
                     "parameters": [
                         {
                             "name": "styleSheetId",
@@ -3109,6 +3193,13 @@
                             "description": "Whether to throw an exception if side effect cannot be ruled out during evaluation.",
                             "optional": true,
                             "type": "boolean"
+                        },
+                        {
+                            "name": "timeout",
+                            "description": "Terminate execution after timing out (number of milliseconds).",
+                            "experimental": true,
+                            "optional": true,
+                            "$ref": "Runtime.TimeDelta"
                         }
                     ],
                     "returns": [
@@ -3426,6 +3517,31 @@
                             "items": {
                                 "$ref": "Location"
                             }
+                        }
+                    ]
+                },
+                {
+                    "name": "setBreakpointOnFunctionCall",
+                    "description": "Sets JavaScript breakpoint before each call to the given function. If another function was created from the same source as a given one, calling it will also trigger the breakpoint.",
+                    "experimental": true,
+                    "parameters": [
+                        {
+                            "name": "objectId",
+                            "description": "Function object id.",
+                            "$ref": "Runtime.RemoteObjectId"
+                        },
+                        {
+                            "name": "condition",
+                            "description": "Expression to use as a breakpoint condition. When specified, debugger will stop on the breakpoint if this expression evaluates to true.",
+                            "optional": true,
+                            "type": "string"
+                        }
+                    ],
+                    "returns": [
+                        {
+                            "name": "breakpointId",
+                            "description": "Id of the created breakpoint for further reference.",
+                            "$ref": "BreakpointId"
                         }
                     ]
                 },
@@ -4457,6 +4573,41 @@
                             "name": "model",
                             "description": "Box model for the node.",
                             "$ref": "BoxModel"
+                        }
+                    ]
+                },
+                {
+                    "name": "getContentQuads",
+                    "description": "Returns quads that describe node position on the page. This method might return multiple quads for inline nodes.",
+                    "experimental": true,
+                    "parameters": [
+                        {
+                            "name": "nodeId",
+                            "description": "Identifier of the node.",
+                            "optional": true,
+                            "$ref": "NodeId"
+                        },
+                        {
+                            "name": "backendNodeId",
+                            "description": "Identifier of the backend node.",
+                            "optional": true,
+                            "$ref": "BackendNodeId"
+                        },
+                        {
+                            "name": "objectId",
+                            "description": "JavaScript object id of the node wrapper.",
+                            "optional": true,
+                            "$ref": "Runtime.RemoteObjectId"
+                        }
+                    ],
+                    "returns": [
+                        {
+                            "name": "quads",
+                            "description": "Quads that describe node layout relative to viewport.",
+                            "type": "array",
+                            "items": {
+                                "$ref": "Quad"
+                            }
                         }
                     ]
                 },
@@ -5673,18 +5824,6 @@
                             "type": "integer"
                         },
                         {
-                            "name": "importedDocumentIndex",
-                            "description": "Index of the imported document's node of a link element in the `domNodes` array returned by `getSnapshot`, if any.",
-                            "optional": true,
-                            "type": "integer"
-                        },
-                        {
-                            "name": "templateContentIndex",
-                            "description": "Index of the content node of a template element in the `domNodes` array returned by `getSnapshot`.",
-                            "optional": true,
-                            "type": "integer"
-                        },
-                        {
                             "name": "pseudoType",
                             "description": "Type of a pseudo element node.",
                             "optional": true,
@@ -5714,6 +5853,12 @@
                         {
                             "name": "currentSourceURL",
                             "description": "The selected url for nodes with a srcset attribute.",
+                            "optional": true,
+                            "type": "string"
+                        },
+                        {
+                            "name": "originURL",
+                            "description": "The url of the script (if any) that generates this node.",
                             "optional": true,
                             "type": "string"
                         }
@@ -5782,6 +5927,12 @@
                             "description": "Global paint order index, which is determined by the stacking order of the nodes. Nodes that are painted together will have the same index. Only provided if includePaintOrder in getSnapshot was true.",
                             "optional": true,
                             "type": "integer"
+                        },
+                        {
+                            "name": "isStackingContext",
+                            "description": "Set to true to indicate the element begins a new stacking context.",
+                            "optional": true,
+                            "type": "boolean"
                         }
                     ]
                 },
@@ -5816,12 +5967,382 @@
                             "type": "string"
                         }
                     ]
+                },
+                {
+                    "id": "StringIndex",
+                    "description": "Index of the string in the strings table.",
+                    "type": "integer"
+                },
+                {
+                    "id": "ArrayOfStrings",
+                    "description": "Index of the string in the strings table.",
+                    "type": "array",
+                    "items": {
+                        "$ref": "StringIndex"
+                    }
+                },
+                {
+                    "id": "RareStringData",
+                    "description": "Data that is only present on rare nodes.",
+                    "type": "object",
+                    "properties": [
+                        {
+                            "name": "index",
+                            "type": "array",
+                            "items": {
+                                "type": "integer"
+                            }
+                        },
+                        {
+                            "name": "value",
+                            "type": "array",
+                            "items": {
+                                "$ref": "StringIndex"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "id": "RareBooleanData",
+                    "type": "object",
+                    "properties": [
+                        {
+                            "name": "index",
+                            "type": "array",
+                            "items": {
+                                "type": "integer"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "id": "RareIntegerData",
+                    "type": "object",
+                    "properties": [
+                        {
+                            "name": "index",
+                            "type": "array",
+                            "items": {
+                                "type": "integer"
+                            }
+                        },
+                        {
+                            "name": "value",
+                            "type": "array",
+                            "items": {
+                                "type": "integer"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "id": "Rectangle",
+                    "type": "array",
+                    "items": {
+                        "type": "number"
+                    }
+                },
+                {
+                    "id": "DocumentSnapshot",
+                    "description": "Document snapshot.",
+                    "type": "object",
+                    "properties": [
+                        {
+                            "name": "documentURL",
+                            "description": "Document URL that `Document` or `FrameOwner` node points to.",
+                            "$ref": "StringIndex"
+                        },
+                        {
+                            "name": "baseURL",
+                            "description": "Base URL that `Document` or `FrameOwner` node uses for URL completion.",
+                            "$ref": "StringIndex"
+                        },
+                        {
+                            "name": "contentLanguage",
+                            "description": "Contains the document's content language.",
+                            "$ref": "StringIndex"
+                        },
+                        {
+                            "name": "encodingName",
+                            "description": "Contains the document's character set encoding.",
+                            "$ref": "StringIndex"
+                        },
+                        {
+                            "name": "publicId",
+                            "description": "`DocumentType` node's publicId.",
+                            "$ref": "StringIndex"
+                        },
+                        {
+                            "name": "systemId",
+                            "description": "`DocumentType` node's systemId.",
+                            "$ref": "StringIndex"
+                        },
+                        {
+                            "name": "frameId",
+                            "description": "Frame ID for frame owner elements and also for the document node.",
+                            "$ref": "StringIndex"
+                        },
+                        {
+                            "name": "nodes",
+                            "description": "A table with dom nodes.",
+                            "$ref": "NodeTreeSnapshot"
+                        },
+                        {
+                            "name": "layout",
+                            "description": "The nodes in the layout tree.",
+                            "$ref": "LayoutTreeSnapshot"
+                        },
+                        {
+                            "name": "textBoxes",
+                            "description": "The post-layout inline text nodes.",
+                            "$ref": "TextBoxSnapshot"
+                        }
+                    ]
+                },
+                {
+                    "id": "NodeTreeSnapshot",
+                    "description": "Table containing nodes.",
+                    "type": "object",
+                    "properties": [
+                        {
+                            "name": "parentIndex",
+                            "description": "Parent node index.",
+                            "optional": true,
+                            "type": "array",
+                            "items": {
+                                "type": "integer"
+                            }
+                        },
+                        {
+                            "name": "nodeType",
+                            "description": "`Node`'s nodeType.",
+                            "optional": true,
+                            "type": "array",
+                            "items": {
+                                "type": "integer"
+                            }
+                        },
+                        {
+                            "name": "nodeName",
+                            "description": "`Node`'s nodeName.",
+                            "optional": true,
+                            "type": "array",
+                            "items": {
+                                "$ref": "StringIndex"
+                            }
+                        },
+                        {
+                            "name": "nodeValue",
+                            "description": "`Node`'s nodeValue.",
+                            "optional": true,
+                            "type": "array",
+                            "items": {
+                                "$ref": "StringIndex"
+                            }
+                        },
+                        {
+                            "name": "backendNodeId",
+                            "description": "`Node`'s id, corresponds to DOM.Node.backendNodeId.",
+                            "optional": true,
+                            "type": "array",
+                            "items": {
+                                "$ref": "DOM.BackendNodeId"
+                            }
+                        },
+                        {
+                            "name": "attributes",
+                            "description": "Attributes of an `Element` node. Flatten name, value pairs.",
+                            "optional": true,
+                            "type": "array",
+                            "items": {
+                                "$ref": "ArrayOfStrings"
+                            }
+                        },
+                        {
+                            "name": "textValue",
+                            "description": "Only set for textarea elements, contains the text value.",
+                            "optional": true,
+                            "$ref": "RareStringData"
+                        },
+                        {
+                            "name": "inputValue",
+                            "description": "Only set for input elements, contains the input's associated text value.",
+                            "optional": true,
+                            "$ref": "RareStringData"
+                        },
+                        {
+                            "name": "inputChecked",
+                            "description": "Only set for radio and checkbox input elements, indicates if the element has been checked",
+                            "optional": true,
+                            "$ref": "RareBooleanData"
+                        },
+                        {
+                            "name": "optionSelected",
+                            "description": "Only set for option elements, indicates if the element has been selected",
+                            "optional": true,
+                            "$ref": "RareBooleanData"
+                        },
+                        {
+                            "name": "contentDocumentIndex",
+                            "description": "The index of the document in the list of the snapshot documents.",
+                            "optional": true,
+                            "$ref": "RareIntegerData"
+                        },
+                        {
+                            "name": "pseudoType",
+                            "description": "Type of a pseudo element node.",
+                            "optional": true,
+                            "$ref": "RareStringData"
+                        },
+                        {
+                            "name": "isClickable",
+                            "description": "Whether this DOM node responds to mouse clicks. This includes nodes that have had click event listeners attached via JavaScript as well as anchor tags that naturally navigate when clicked.",
+                            "optional": true,
+                            "$ref": "RareBooleanData"
+                        },
+                        {
+                            "name": "currentSourceURL",
+                            "description": "The selected url for nodes with a srcset attribute.",
+                            "optional": true,
+                            "$ref": "RareStringData"
+                        },
+                        {
+                            "name": "originURL",
+                            "description": "The url of the script (if any) that generates this node.",
+                            "optional": true,
+                            "$ref": "RareStringData"
+                        }
+                    ]
+                },
+                {
+                    "id": "LayoutTreeSnapshot",
+                    "description": "Details of an element in the DOM tree with a LayoutObject.",
+                    "type": "object",
+                    "properties": [
+                        {
+                            "name": "nodeIndex",
+                            "description": "The index of the related DOM node in the `domNodes` array returned by `getSnapshot`.",
+                            "type": "array",
+                            "items": {
+                                "type": "integer"
+                            }
+                        },
+                        {
+                            "name": "styles",
+                            "description": "Index into the `computedStyles` array returned by `captureSnapshot`.",
+                            "type": "array",
+                            "items": {
+                                "$ref": "ArrayOfStrings"
+                            }
+                        },
+                        {
+                            "name": "bounds",
+                            "description": "The absolute position bounding box.",
+                            "type": "array",
+                            "items": {
+                                "$ref": "Rectangle"
+                            }
+                        },
+                        {
+                            "name": "text",
+                            "description": "Contents of the LayoutText, if any.",
+                            "type": "array",
+                            "items": {
+                                "$ref": "StringIndex"
+                            }
+                        },
+                        {
+                            "name": "stackingContexts",
+                            "description": "Stacking context information.",
+                            "$ref": "RareBooleanData"
+                        }
+                    ]
+                },
+                {
+                    "id": "TextBoxSnapshot",
+                    "description": "Details of post layout rendered text positions. The exact layout should not be regarded as stable and may change between versions.",
+                    "type": "object",
+                    "properties": [
+                        {
+                            "name": "layoutIndex",
+                            "description": "Intex of th elayout tree node that owns this box collection.",
+                            "type": "array",
+                            "items": {
+                                "type": "integer"
+                            }
+                        },
+                        {
+                            "name": "bounds",
+                            "description": "The absolute position bounding box.",
+                            "type": "array",
+                            "items": {
+                                "$ref": "Rectangle"
+                            }
+                        },
+                        {
+                            "name": "start",
+                            "description": "The starting index in characters, for this post layout textbox substring. Characters that would be represented as a surrogate pair in UTF-16 have length 2.",
+                            "type": "array",
+                            "items": {
+                                "type": "integer"
+                            }
+                        },
+                        {
+                            "name": "length",
+                            "description": "The number of characters in this post layout textbox substring. Characters that would be represented as a surrogate pair in UTF-16 have length 2.",
+                            "type": "array",
+                            "items": {
+                                "type": "integer"
+                            }
+                        }
+                    ]
                 }
             ],
             "commands": [
                 {
+                    "name": "captureSnapshot",
+                    "description": "Returns a document snapshot, including the full DOM tree of the root node (including iframes, template contents, and imported documents) in a flattened array, as well as layout and white-listed computed style information for the nodes. Shadow DOM in the returned DOM tree is flattened.",
+                    "parameters": [
+                        {
+                            "name": "computedStyles",
+                            "description": "Whitelist of computed styles to return.",
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        }
+                    ],
+                    "returns": [
+                        {
+                            "name": "documents",
+                            "description": "The nodes in the DOM tree. The DOMNode at index 0 corresponds to the root document.",
+                            "type": "array",
+                            "items": {
+                                "$ref": "DocumentSnapshot"
+                            }
+                        },
+                        {
+                            "name": "strings",
+                            "description": "Shared string table that all string properties refer to with indexes.",
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "disable",
+                    "description": "Disables DOM snapshot agent for the given page."
+                },
+                {
+                    "name": "enable",
+                    "description": "Enables DOM snapshot agent for the given page."
+                },
+                {
                     "name": "getSnapshot",
                     "description": "Returns a document snapshot, including the full DOM tree of the root node (including iframes, template contents, and imported documents) in a flattened array, as well as layout and white-listed computed style information for the nodes. Shadow DOM in the returned DOM tree is flattened.",
+                    "deprecated": true,
                     "parameters": [
                         {
                             "name": "computedStyleWhitelist",
@@ -5840,6 +6361,12 @@
                         {
                             "name": "includePaintOrder",
                             "description": "Whether to determine and include the paint order index of LayoutTreeNodes (default false).",
+                            "optional": true,
+                            "type": "boolean"
+                        },
+                        {
+                            "name": "includeUserAgentShadowTree",
+                            "description": "Whether to include UA shadow tree in the snapshot (default false).",
                             "optional": true,
                             "type": "boolean"
                         }
@@ -6210,6 +6737,17 @@
                     ]
                 },
                 {
+                    "name": "setDocumentCookieDisabled",
+                    "experimental": true,
+                    "parameters": [
+                        {
+                            "name": "disabled",
+                            "description": "Whether document.coookie API should be disabled.",
+                            "type": "boolean"
+                        }
+                    ]
+                },
+                {
                     "name": "setEmitTouchEventsForMouse",
                     "experimental": true,
                     "parameters": [
@@ -6269,6 +6807,7 @@
                     "name": "setNavigatorOverrides",
                     "description": "Overrides value returned by the javascript navigator object.",
                     "experimental": true,
+                    "deprecated": true,
                     "parameters": [
                         {
                             "name": "platform",
@@ -6301,6 +6840,17 @@
                     ]
                 },
                 {
+                    "name": "setScrollbarsHidden",
+                    "experimental": true,
+                    "parameters": [
+                        {
+                            "name": "hidden",
+                            "description": "Whether scrollbars should be always hidden.",
+                            "type": "boolean"
+                        }
+                    ]
+                },
+                {
                     "name": "setTouchEmulationEnabled",
                     "description": "Enables touch on platforms which do not support them.",
                     "parameters": [
@@ -6314,6 +6864,29 @@
                             "description": "Maximum touch points supported. Defaults to one.",
                             "optional": true,
                             "type": "integer"
+                        }
+                    ]
+                },
+                {
+                    "name": "setUserAgentOverride",
+                    "description": "Allows overriding user agent with the given string.",
+                    "parameters": [
+                        {
+                            "name": "userAgent",
+                            "description": "User agent to use.",
+                            "type": "string"
+                        },
+                        {
+                            "name": "acceptLanguage",
+                            "description": "Browser langugage to emulate.",
+                            "optional": true,
+                            "type": "string"
+                        },
+                        {
+                            "name": "platform",
+                            "description": "The platform navigator.platform should return.",
+                            "optional": true,
+                            "type": "string"
                         }
                     ]
                 },
@@ -6343,13 +6916,19 @@
                             "description": "If set the virtual time policy change should be deferred until any frame starts navigating. Note any previous deferred policy change is superseded.",
                             "optional": true,
                             "type": "boolean"
+                        },
+                        {
+                            "name": "initialVirtualTime",
+                            "description": "If set, base::Time::Now will be overriden to initially return this value.",
+                            "optional": true,
+                            "$ref": "Network.TimeSinceEpoch"
                         }
                     ],
                     "returns": [
                         {
-                            "name": "virtualTimeBase",
-                            "description": "Absolute timestamp at which virtual time was first enabled (milliseconds since epoch).",
-                            "$ref": "Runtime.Timestamp"
+                            "name": "virtualTimeTicksBase",
+                            "description": "Absolute timestamp at which virtual time was first enabled (up time in milliseconds).",
+                            "type": "number"
                         }
                     ]
                 },
@@ -6443,16 +7022,10 @@
                     "description": "Sends a BeginFrame to the target and returns when the frame was completed. Optionally captures a screenshot from the resulting frame. Requires that the target was created with enabled BeginFrameControl. Designed for use with --run-all-compositor-stages-before-draw, see also https://goo.gl/3zHXhB for more background.",
                     "parameters": [
                         {
-                            "name": "frameTime",
-                            "description": "Timestamp of this BeginFrame (milliseconds since epoch). If not set, the current time will be used.",
+                            "name": "frameTimeTicks",
+                            "description": "Timestamp of this BeginFrame in Renderer TimeTicks (milliseconds of uptime). If not set, the current time will be used.",
                             "optional": true,
-                            "$ref": "Runtime.Timestamp"
-                        },
-                        {
-                            "name": "deadline",
-                            "description": "Deadline of this BeginFrame (milliseconds since epoch). If not set, the deadline will be calculated from the frameTime and interval.",
-                            "optional": true,
-                            "$ref": "Runtime.Timestamp"
+                            "type": "number"
                         },
                         {
                             "name": "interval",
@@ -6494,18 +7067,6 @@
                 {
                     "name": "enable",
                     "description": "Enables headless events for the target."
-                },
-                {
-                    "name": "enterDeterministicMode",
-                    "description": "Puts the browser into deterministic mode. Only effective for subsequently created web contents. Only supported in headless mode. Once set there's no way of leaving deterministic mode.",
-                    "parameters": [
-                        {
-                            "name": "initialDate",
-                            "description": "Number of seconds since the Epoch",
-                            "optional": true,
-                            "type": "number"
-                        }
-                    ]
                 }
             ],
             "events": [
@@ -7484,6 +8045,18 @@
                     ]
                 },
                 {
+                    "name": "insertText",
+                    "description": "This method emulates inserting text that doesn't come from a key press, for example an emoji keyboard or an IME.",
+                    "experimental": true,
+                    "parameters": [
+                        {
+                            "name": "text",
+                            "description": "The text to insert.",
+                            "type": "string"
+                        }
+                    ]
+                },
+                {
                     "name": "setIgnoreInputEvents",
                     "description": "Ignores input events (useful while auditing page).",
                     "parameters": [
@@ -7711,7 +8284,7 @@
                         },
                         {
                             "name": "offset",
-                            "description": "Seek to the specified offset before reading (if not specificed, proceed with offset following the last read).",
+                            "description": "Seek to the specified offset before reading (if not specificed, proceed with offset following the last read). Some types of streams may only support sequential reads.",
                             "optional": true,
                             "type": "integer"
                         },
@@ -8388,6 +8961,40 @@
                             "items": {
                                 "$ref": "SamplingProfileNode"
                             }
+                        },
+                        {
+                            "name": "modules",
+                            "type": "array",
+                            "items": {
+                                "$ref": "Module"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "id": "Module",
+                    "description": "Executable module information",
+                    "type": "object",
+                    "properties": [
+                        {
+                            "name": "name",
+                            "description": "Name of the module.",
+                            "type": "string"
+                        },
+                        {
+                            "name": "uuid",
+                            "description": "UUID of the module.",
+                            "type": "string"
+                        },
+                        {
+                            "name": "baseAddress",
+                            "description": "Base address where the module is loaded into memory. Encoded as a decimal or hexadecimal (0x prefixed) string.",
+                            "type": "string"
+                        },
+                        {
+                            "name": "size",
+                            "description": "Size of the module in bytes.",
+                            "type": "number"
                         }
                     ]
                 }
@@ -8530,7 +9137,9 @@
                         "ConnectionFailed",
                         "NameNotResolved",
                         "InternetDisconnected",
-                        "AddressUnreachable"
+                        "AddressUnreachable",
+                        "BlockedByClient",
+                        "BlockedByResponse"
                     ]
                 },
                 {
@@ -8683,7 +9292,13 @@
                     "properties": [
                         {
                             "name": "url",
-                            "description": "Request URL.",
+                            "description": "Request URL (without fragment).",
+                            "type": "string"
+                        },
+                        {
+                            "name": "urlFragment",
+                            "description": "Fragment of the requested URL starting with hash, if present.",
+                            "optional": true,
                             "type": "string"
                         },
                         {
@@ -8861,7 +9476,22 @@
                             "items": {
                                 "$ref": "SignedCertificateTimestamp"
                             }
+                        },
+                        {
+                            "name": "certificateTransparencyCompliance",
+                            "description": "Whether the request complied with Certificate Transparency policy",
+                            "$ref": "CertificateTransparencyCompliance"
                         }
+                    ]
+                },
+                {
+                    "id": "CertificateTransparencyCompliance",
+                    "description": "Whether the request complied with Certificate Transparency policy.",
+                    "type": "string",
+                    "enum": [
+                        "unknown",
+                        "not-compliant",
+                        "compliant"
                     ]
                 },
                 {
@@ -8869,12 +9499,14 @@
                     "description": "The reason why request was blocked.",
                     "type": "string",
                     "enum": [
+                        "other",
                         "csp",
                         "mixed-content",
                         "origin",
                         "inspector",
                         "subresource-filter",
-                        "other"
+                        "content-type",
+                        "collapsed-by-client"
                     ]
                 },
                 {
@@ -9104,6 +9736,7 @@
                                 "parser",
                                 "script",
                                 "preload",
+                                "SignedExchange",
                                 "other"
                             ]
                         },
@@ -9115,7 +9748,7 @@
                         },
                         {
                             "name": "url",
-                            "description": "Initiator URL, set for Parser type or for Script type (when script is importing module).",
+                            "description": "Initiator URL, set for Parser type or for Script type (when script is importing module) or for SignedExchange type.",
                             "optional": true,
                             "type": "string"
                         },
@@ -9340,6 +9973,174 @@
                             "description": "Stage at wich to begin intercepting requests. Default is Request.",
                             "optional": true,
                             "$ref": "InterceptionStage"
+                        }
+                    ]
+                },
+                {
+                    "id": "SignedExchangeSignature",
+                    "description": "Information about a signed exchange signature. https://wicg.github.io/webpackage/draft-yasskin-httpbis-origin-signed-exchanges-impl.html#rfc.section.3.1",
+                    "experimental": true,
+                    "type": "object",
+                    "properties": [
+                        {
+                            "name": "label",
+                            "description": "Signed exchange signature label.",
+                            "type": "string"
+                        },
+                        {
+                            "name": "signature",
+                            "description": "The hex string of signed exchange signature.",
+                            "type": "string"
+                        },
+                        {
+                            "name": "integrity",
+                            "description": "Signed exchange signature integrity.",
+                            "type": "string"
+                        },
+                        {
+                            "name": "certUrl",
+                            "description": "Signed exchange signature cert Url.",
+                            "optional": true,
+                            "type": "string"
+                        },
+                        {
+                            "name": "certSha256",
+                            "description": "The hex string of signed exchange signature cert sha256.",
+                            "optional": true,
+                            "type": "string"
+                        },
+                        {
+                            "name": "validityUrl",
+                            "description": "Signed exchange signature validity Url.",
+                            "type": "string"
+                        },
+                        {
+                            "name": "date",
+                            "description": "Signed exchange signature date.",
+                            "type": "integer"
+                        },
+                        {
+                            "name": "expires",
+                            "description": "Signed exchange signature expires.",
+                            "type": "integer"
+                        },
+                        {
+                            "name": "certificates",
+                            "description": "The encoded certificates.",
+                            "optional": true,
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "id": "SignedExchangeHeader",
+                    "description": "Information about a signed exchange header. https://wicg.github.io/webpackage/draft-yasskin-httpbis-origin-signed-exchanges-impl.html#cbor-representation",
+                    "experimental": true,
+                    "type": "object",
+                    "properties": [
+                        {
+                            "name": "requestUrl",
+                            "description": "Signed exchange request URL.",
+                            "type": "string"
+                        },
+                        {
+                            "name": "requestMethod",
+                            "description": "Signed exchange request method.",
+                            "type": "string"
+                        },
+                        {
+                            "name": "responseCode",
+                            "description": "Signed exchange response code.",
+                            "type": "integer"
+                        },
+                        {
+                            "name": "responseHeaders",
+                            "description": "Signed exchange response headers.",
+                            "$ref": "Headers"
+                        },
+                        {
+                            "name": "signatures",
+                            "description": "Signed exchange response signature.",
+                            "type": "array",
+                            "items": {
+                                "$ref": "SignedExchangeSignature"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "id": "SignedExchangeErrorField",
+                    "description": "Field type for a signed exchange related error.",
+                    "experimental": true,
+                    "type": "string",
+                    "enum": [
+                        "signatureSig",
+                        "signatureIntegrity",
+                        "signatureCertUrl",
+                        "signatureCertSha256",
+                        "signatureValidityUrl",
+                        "signatureTimestamps"
+                    ]
+                },
+                {
+                    "id": "SignedExchangeError",
+                    "description": "Information about a signed exchange response.",
+                    "experimental": true,
+                    "type": "object",
+                    "properties": [
+                        {
+                            "name": "message",
+                            "description": "Error message.",
+                            "type": "string"
+                        },
+                        {
+                            "name": "signatureIndex",
+                            "description": "The index of the signature which caused the error.",
+                            "optional": true,
+                            "type": "integer"
+                        },
+                        {
+                            "name": "errorField",
+                            "description": "The field which caused the error.",
+                            "optional": true,
+                            "$ref": "SignedExchangeErrorField"
+                        }
+                    ]
+                },
+                {
+                    "id": "SignedExchangeInfo",
+                    "description": "Information about a signed exchange response.",
+                    "experimental": true,
+                    "type": "object",
+                    "properties": [
+                        {
+                            "name": "outerResponse",
+                            "description": "The outer response of signed HTTP exchange which was received from network.",
+                            "$ref": "Response"
+                        },
+                        {
+                            "name": "header",
+                            "description": "Information about the signed exchange header.",
+                            "optional": true,
+                            "$ref": "SignedExchangeHeader"
+                        },
+                        {
+                            "name": "securityDetails",
+                            "description": "Security details for the signed exchange header.",
+                            "optional": true,
+                            "$ref": "SecurityDetails"
+                        },
+                        {
+                            "name": "errors",
+                            "description": "Errors occurred while handling the signed exchagne.",
+                            "optional": true,
+                            "type": "array",
+                            "items": {
+                                "$ref": "SignedExchangeError"
+                            }
                         }
                     ]
                 }
@@ -9872,11 +10673,41 @@
                 {
                     "name": "setUserAgentOverride",
                     "description": "Allows overriding user agent with the given string.",
+                    "redirect": "Emulation",
                     "parameters": [
                         {
                             "name": "userAgent",
                             "description": "User agent to use.",
                             "type": "string"
+                        },
+                        {
+                            "name": "acceptLanguage",
+                            "description": "Browser langugage to emulate.",
+                            "optional": true,
+                            "type": "string"
+                        },
+                        {
+                            "name": "platform",
+                            "description": "The platform navigator.platform should return.",
+                            "optional": true,
+                            "type": "string"
+                        }
+                    ]
+                },
+                {
+                    "name": "takeResponseBodyForInterceptionAsStream",
+                    "description": "Returns a handle to the stream representing the response body. Note that after this command, the intercepted request can't be continued as is -- you either need to cancel it or to provide the response body. The stream only supports sequential read, IO.read will fail if the position is specified.",
+                    "experimental": true,
+                    "parameters": [
+                        {
+                            "name": "interceptionId",
+                            "$ref": "InterceptionId"
+                        }
+                    ],
+                    "returns": [
+                        {
+                            "name": "stream",
+                            "$ref": "IO.StreamHandle"
                         }
                     ]
                 }
@@ -9997,8 +10828,8 @@
                             "type": "number"
                         },
                         {
-                            "name": "blockedCrossSiteDocument",
-                            "description": "Set when response was blocked due to being cross-site document response.",
+                            "name": "shouldReportCorbBlocking",
+                            "description": "Set when 1) response was blocked by Cross-Origin Read Blocking and also 2) this needs to be reported to the DevTools console.",
                             "optional": true,
                             "type": "boolean"
                         }
@@ -10031,6 +10862,12 @@
                         {
                             "name": "isNavigationRequest",
                             "description": "Whether this is a navigation request, which can abort the navigation completely.",
+                            "type": "boolean"
+                        },
+                        {
+                            "name": "isDownload",
+                            "description": "Set if the request is a navigation that will result in a download. Only present after response is received from the server (i.e. HeadersReceived stage).",
+                            "optional": true,
                             "type": "boolean"
                         },
                         {
@@ -10197,6 +11034,23 @@
                             "description": "Frame identifier.",
                             "optional": true,
                             "$ref": "Page.FrameId"
+                        }
+                    ]
+                },
+                {
+                    "name": "signedExchangeReceived",
+                    "description": "Fired when a signed exchange was received over the network",
+                    "experimental": true,
+                    "parameters": [
+                        {
+                            "name": "requestId",
+                            "description": "Request identifier.",
+                            "$ref": "RequestId"
+                        },
+                        {
+                            "name": "info",
+                            "description": "Information about the signed exchange response.",
+                            "$ref": "SignedExchangeInfo"
                         }
                     ]
                 },
@@ -10753,6 +11607,9 @@
                         "EventSource",
                         "WebSocket",
                         "Manifest",
+                        "SignedExchange",
+                        "Ping",
+                        "CSPViolationReport",
                         "Other"
                     ]
                 },
@@ -11148,9 +12005,95 @@
                             "type": "number"
                         }
                     ]
+                },
+                {
+                    "id": "FontFamilies",
+                    "description": "Generic font families collection.",
+                    "experimental": true,
+                    "type": "object",
+                    "properties": [
+                        {
+                            "name": "standard",
+                            "description": "The standard font-family.",
+                            "optional": true,
+                            "type": "string"
+                        },
+                        {
+                            "name": "fixed",
+                            "description": "The fixed font-family.",
+                            "optional": true,
+                            "type": "string"
+                        },
+                        {
+                            "name": "serif",
+                            "description": "The serif font-family.",
+                            "optional": true,
+                            "type": "string"
+                        },
+                        {
+                            "name": "sansSerif",
+                            "description": "The sansSerif font-family.",
+                            "optional": true,
+                            "type": "string"
+                        },
+                        {
+                            "name": "cursive",
+                            "description": "The cursive font-family.",
+                            "optional": true,
+                            "type": "string"
+                        },
+                        {
+                            "name": "fantasy",
+                            "description": "The fantasy font-family.",
+                            "optional": true,
+                            "type": "string"
+                        },
+                        {
+                            "name": "pictograph",
+                            "description": "The pictograph font-family.",
+                            "optional": true,
+                            "type": "string"
+                        }
+                    ]
+                },
+                {
+                    "id": "FontSizes",
+                    "description": "Default font sizes.",
+                    "experimental": true,
+                    "type": "object",
+                    "properties": [
+                        {
+                            "name": "standard",
+                            "description": "Default standard font size.",
+                            "optional": true,
+                            "type": "integer"
+                        },
+                        {
+                            "name": "fixed",
+                            "description": "Default fixed font size.",
+                            "optional": true,
+                            "type": "integer"
+                        }
+                    ]
                 }
             ],
             "commands": [
+                {
+                    "name": "addCompilationCache",
+                    "description": "Seeds compilation cache for given url. Compilation cache does not survive cross-process navigation.",
+                    "experimental": true,
+                    "parameters": [
+                        {
+                            "name": "url",
+                            "type": "string"
+                        },
+                        {
+                            "name": "data",
+                            "description": "Base64-encoded data",
+                            "type": "string"
+                        }
+                    ]
+                },
                 {
                     "name": "addScriptToEvaluateOnLoad",
                     "description": "Deprecated, please use addScriptToEvaluateOnNewDocument instead.",
@@ -11234,6 +12177,11 @@
                     ]
                 },
                 {
+                    "name": "clearCompilationCache",
+                    "description": "Clears seeded compilation cache.",
+                    "experimental": true
+                },
+                {
                     "name": "clearDeviceMetricsOverride",
                     "description": "Clears the overriden device metrics.",
                     "experimental": true,
@@ -11252,6 +12200,11 @@
                     "description": "Clears the overriden Geolocation Position and Error.",
                     "deprecated": true,
                     "redirect": "Emulation"
+                },
+                {
+                    "name": "close",
+                    "description": "Tries to close page, running its beforeunload hooks, if any.",
+                    "experimental": true
                 },
                 {
                     "name": "crash",
@@ -11601,7 +12554,7 @@
                         },
                         {
                             "name": "headerTemplate",
-                            "description": "HTML template for the print header. Should be valid HTML markup with following classes used to inject printing values into them: - date - formatted print date - title - document title - url - document location - pageNumber - current page number - totalPages - total pages in the document For example, <span class=title></span> would generate span containing the title.",
+                            "description": "HTML template for the print header. Should be valid HTML markup with following classes used to inject printing values into them: - `date`: formatted print date - `title`: document title - `url`: document location - `pageNumber`: current page number - `totalPages`: total pages in the document For example, `<span class=title></span>` would generate span containing the title.",
                             "optional": true,
                             "type": "string"
                         },
@@ -11734,6 +12687,18 @@
                         {
                             "name": "enabled",
                             "description": "Whether to block ads.",
+                            "type": "boolean"
+                        }
+                    ]
+                },
+                {
+                    "name": "setBypassCSP",
+                    "description": "Enable page Content Security Policy by-passing.",
+                    "experimental": true,
+                    "parameters": [
+                        {
+                            "name": "enabled",
+                            "description": "Whether to bypass page CSP.",
                             "type": "boolean"
                         }
                     ]
@@ -11879,6 +12844,30 @@
                     ]
                 },
                 {
+                    "name": "setFontFamilies",
+                    "description": "Set generic font families.",
+                    "experimental": true,
+                    "parameters": [
+                        {
+                            "name": "fontFamilies",
+                            "description": "Specifies font families to set. If a font family is not specified, it won't be changed.",
+                            "$ref": "FontFamilies"
+                        }
+                    ]
+                },
+                {
+                    "name": "setFontSizes",
+                    "description": "Set default font sizes.",
+                    "experimental": true,
+                    "parameters": [
+                        {
+                            "name": "fontSizes",
+                            "description": "Specifies font sizes to set. If a font size is not specified, it won't be changed.",
+                            "$ref": "FontSizes"
+                        }
+                    ]
+                },
+                {
                     "name": "setGeolocationOverride",
                     "description": "Overrides the Geolocation Position or Error. Omitting any of the parameters emulates position unavailable.",
                     "deprecated": true,
@@ -11917,6 +12906,17 @@
                     ]
                 },
                 {
+                    "name": "setProduceCompilationCache",
+                    "description": "Forces compilation cache to be generated for every subresource script.",
+                    "experimental": true,
+                    "parameters": [
+                        {
+                            "name": "enabled",
+                            "type": "boolean"
+                        }
+                    ]
+                },
+                {
                     "name": "setTouchEmulationEnabled",
                     "description": "Toggles mouse event-based touch event emulation.",
                     "experimental": true,
@@ -11936,6 +12936,22 @@
                             "enum": [
                                 "mobile",
                                 "desktop"
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "name": "setWebLifecycleState",
+                    "description": "Tries to update the web lifecycle state of the page. It will transition the page to the given state according to: https://github.com/WICG/web-lifecycle/",
+                    "experimental": true,
+                    "parameters": [
+                        {
+                            "name": "state",
+                            "description": "Target lifecycle state",
+                            "type": "string",
+                            "enum": [
+                                "frozen",
+                                "active"
                             ]
                         }
                     ]
@@ -11992,6 +13008,22 @@
                 }
             ],
             "events": [
+                {
+                    "name": "compilationCacheProduced",
+                    "description": "Issued for every compilation cache generated. Is only available if Page.setGenerateCompilationCache is enabled.",
+                    "experimental": true,
+                    "parameters": [
+                        {
+                            "name": "url",
+                            "type": "string"
+                        },
+                        {
+                            "name": "data",
+                            "description": "Base64-encoded data",
+                            "type": "string"
+                        }
+                    ]
+                },
                 {
                     "name": "domContentEventFired",
                     "parameters": [
@@ -12165,6 +13197,11 @@
                             "$ref": "DialogType"
                         },
                         {
+                            "name": "hasBrowserHandler",
+                            "description": "True iff browser is capable showing or acting on the given dialog. When browser has no dialog handler for given target, calling alert while Page domain is engaged will stall the page execution. Execution can be resumed via calling Page.handleJavaScriptDialog.",
+                            "type": "boolean"
+                        },
+                        {
                             "name": "defaultPrompt",
                             "description": "Default dialog prompt.",
                             "optional": true,
@@ -12202,6 +13239,23 @@
                         {
                             "name": "timestamp",
                             "$ref": "Network.MonotonicTime"
+                        }
+                    ]
+                },
+                {
+                    "name": "navigatedWithinDocument",
+                    "description": "Fired when same-document navigation happens, e.g. due to history API usage or anchor navigation.",
+                    "experimental": true,
+                    "parameters": [
+                        {
+                            "name": "frameId",
+                            "description": "Id of the frame.",
+                            "$ref": "FrameId"
+                        },
+                        {
+                            "name": "url",
+                            "description": "Frame's new url.",
+                            "type": "string"
                         }
                     ]
                 },
@@ -13226,6 +14280,11 @@
                     "type": "number"
                 },
                 {
+                    "id": "TimeDelta",
+                    "description": "Number of milliseconds.",
+                    "type": "number"
+                },
+                {
                     "id": "CallFrame",
                     "description": "Stack entry for runtime errors and assertions.",
                     "type": "object",
@@ -13316,6 +14375,22 @@
                 }
             ],
             "commands": [
+                {
+                    "name": "addBinding",
+                    "description": "If executionContextId is empty, adds binding with the given name on the global objects of all inspected contexts, including those created later, bindings survive reloads. If executionContextId is specified, adds binding only on global object of given execution context. Binding function takes exactly one argument, this argument should be string, in case of any other input, function throws an exception. Each binding function call produces Runtime.bindingCalled notification.",
+                    "experimental": true,
+                    "parameters": [
+                        {
+                            "name": "name",
+                            "type": "string"
+                        },
+                        {
+                            "name": "executionContextId",
+                            "optional": true,
+                            "$ref": "ExecutionContextId"
+                        }
+                    ]
+                },
                 {
                     "name": "awaitPromise",
                     "description": "Add handler to promise with given promise object id.",
@@ -13551,6 +14626,13 @@
                             "experimental": true,
                             "optional": true,
                             "type": "boolean"
+                        },
+                        {
+                            "name": "timeout",
+                            "description": "Terminate execution after timing out (number of milliseconds).",
+                            "experimental": true,
+                            "optional": true,
+                            "$ref": "TimeDelta"
                         }
                     ],
                     "returns": [
@@ -13719,6 +14801,17 @@
                     ]
                 },
                 {
+                    "name": "removeBinding",
+                    "description": "This method does not remove binding function from global object but unsubscribes current runtime agent from Runtime.bindingCalled notifications.",
+                    "experimental": true,
+                    "parameters": [
+                        {
+                            "name": "name",
+                            "type": "string"
+                        }
+                    ]
+                },
+                {
                     "name": "runIfWaitingForDebugger",
                     "description": "Tells inspected instance to run if it was waiting for debugger to attach."
                 },
@@ -13789,6 +14882,18 @@
                     ]
                 },
                 {
+                    "name": "setAsyncCallStackDepth",
+                    "description": "Enables or disables async call stacks tracking.",
+                    "redirect": "Debugger",
+                    "parameters": [
+                        {
+                            "name": "maxDepth",
+                            "description": "Maximum depth of async call stacks. Setting to `0` will effectively disable collecting async call stacks (default).",
+                            "type": "integer"
+                        }
+                    ]
+                },
+                {
                     "name": "setCustomObjectFormatterEnabled",
                     "experimental": true,
                     "parameters": [
@@ -13799,12 +14904,42 @@
                     ]
                 },
                 {
+                    "name": "setMaxCallStackSizeToCapture",
+                    "experimental": true,
+                    "parameters": [
+                        {
+                            "name": "size",
+                            "type": "integer"
+                        }
+                    ]
+                },
+                {
                     "name": "terminateExecution",
                     "description": "Terminate current or next JavaScript execution. Will cancel the termination when the outer-most script execution ends.",
                     "experimental": true
                 }
             ],
             "events": [
+                {
+                    "name": "bindingCalled",
+                    "description": "Notification is issued every time when binding is called.",
+                    "experimental": true,
+                    "parameters": [
+                        {
+                            "name": "name",
+                            "type": "string"
+                        },
+                        {
+                            "name": "payload",
+                            "type": "string"
+                        },
+                        {
+                            "name": "executionContextId",
+                            "description": "Identifier of the context where the call was made.",
+                            "$ref": "ExecutionContextId"
+                        }
+                    ]
+                },
                 {
                     "name": "consoleAPICalled",
                     "description": "Issued when console API was called.",
@@ -14144,7 +15279,7 @@
                 },
                 {
                     "name": "setOverrideCertificateErrors",
-                    "description": "Enable/disable overriding certificate errors. If enabled, all certificate error events need to be handled by the DevTools client and should be answered with handleCertificateError commands.",
+                    "description": "Enable/disable overriding certificate errors. If enabled, all certificate error events need to be handled by the DevTools client and should be answered with `handleCertificateError` commands.",
                     "deprecated": true,
                     "parameters": [
                         {
@@ -14158,7 +15293,7 @@
             "events": [
                 {
                     "name": "certificateError",
-                    "description": "There is a certificate error. If overriding certificate errors is enabled, then it should be handled with the handleCertificateError command. Note: this event does not fire if the certificate error has been allowed internally. Only one client per target should override certificate errors at the same time.",
+                    "description": "There is a certificate error. If overriding certificate errors is enabled, then it should be handled with the `handleCertificateError` command. Note: this event does not fire if the certificate error has been allowed internally. Only one client per target should override certificate errors at the same time.",
                     "deprecated": true,
                     "parameters": [
                         {
@@ -14833,6 +15968,12 @@
                             "description": "Opener target Id",
                             "optional": true,
                             "$ref": "TargetID"
+                        },
+                        {
+                            "name": "browserContextId",
+                            "experimental": true,
+                            "optional": true,
+                            "$ref": "BrowserContextID"
                         }
                     ]
                 },
@@ -14864,12 +16005,31 @@
                     ]
                 },
                 {
+                    "name": "attachToBrowserTarget",
+                    "description": "Attaches to the browser target, only uses flat sessionId mode.",
+                    "experimental": true,
+                    "returns": [
+                        {
+                            "name": "sessionId",
+                            "description": "Id assigned to the session.",
+                            "$ref": "SessionID"
+                        }
+                    ]
+                },
+                {
                     "name": "attachToTarget",
                     "description": "Attaches to the target with given id.",
                     "parameters": [
                         {
                             "name": "targetId",
                             "$ref": "TargetID"
+                        },
+                        {
+                            "name": "flatten",
+                            "description": "Enables \"flat\" access to the session via specifying sessionId attribute in the commands.",
+                            "experimental": true,
+                            "optional": true,
+                            "type": "boolean"
                         }
                     ],
                     "returns": [
@@ -14931,7 +16091,7 @@
                         },
                         {
                             "name": "browserContextId",
-                            "description": "The browser context to create the page in (headless chrome only).",
+                            "description": "The browser context to create the page in.",
                             "optional": true,
                             "$ref": "BrowserContextID"
                         },
@@ -14972,18 +16132,44 @@
                 },
                 {
                     "name": "disposeBrowserContext",
-                    "description": "Deletes a BrowserContext, will fail of any open page uses it.",
+                    "description": "Deletes a BrowserContext. All the belonging pages will be closed without calling their beforeunload hooks.",
                     "experimental": true,
                     "parameters": [
                         {
                             "name": "browserContextId",
                             "$ref": "BrowserContextID"
                         }
-                    ],
+                    ]
+                },
+                {
+                    "name": "exposeDevToolsProtocol",
+                    "description": "Inject object to the target's main frame that provides a communication channel with browser target. Injected object will be available as `window[bindingName]`. The object has the follwing API: - `binding.send(json)` - a method to send messages over the remote debugging protocol - `binding.onmessage = json => handleMessage(json)` - a callback that will be called for the protocol notifications and command responses.",
+                    "experimental": true,
+                    "parameters": [
+                        {
+                            "name": "targetId",
+                            "$ref": "TargetID"
+                        },
+                        {
+                            "name": "bindingName",
+                            "description": "Binding name, 'cdp' if not specified.",
+                            "optional": true,
+                            "type": "string"
+                        }
+                    ]
+                },
+                {
+                    "name": "getBrowserContexts",
+                    "description": "Returns all browser contexts created with `Target.createBrowserContext` method.",
+                    "experimental": true,
                     "returns": [
                         {
-                            "name": "success",
-                            "type": "boolean"
+                            "name": "browserContextIds",
+                            "description": "An array of browser context ids.",
+                            "type": "array",
+                            "items": {
+                                "$ref": "BrowserContextID"
+                            }
                         }
                     ]
                 },
@@ -14994,6 +16180,7 @@
                     "parameters": [
                         {
                             "name": "targetId",
+                            "optional": true,
                             "$ref": "TargetID"
                         }
                     ],
@@ -15054,6 +16241,13 @@
                         {
                             "name": "waitForDebuggerOnStart",
                             "description": "Whether to pause new targets when attaching to them. Use `Runtime.runIfWaitingForDebugger` to run paused targets.",
+                            "type": "boolean"
+                        },
+                        {
+                            "name": "flatten",
+                            "description": "Enables \"flat\" access to the session via specifying sessionId attribute in the commands.",
+                            "experimental": true,
+                            "optional": true,
                             "type": "boolean"
                         }
                     ]
@@ -15144,6 +16338,26 @@
                             "deprecated": true,
                             "optional": true,
                             "$ref": "TargetID"
+                        }
+                    ]
+                },
+                {
+                    "name": "targetCrashed",
+                    "description": "Issued when a target has crashed.",
+                    "parameters": [
+                        {
+                            "name": "targetId",
+                            "$ref": "TargetID"
+                        },
+                        {
+                            "name": "status",
+                            "description": "Termination status type.",
+                            "type": "string"
+                        },
+                        {
+                            "name": "errorCode",
+                            "description": "Termination error code.",
+                            "type": "integer"
                         }
                     ]
                 },

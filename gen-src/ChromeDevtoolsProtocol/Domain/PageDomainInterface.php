@@ -2,12 +2,14 @@
 namespace ChromeDevtoolsProtocol\Domain;
 
 use ChromeDevtoolsProtocol\ContextInterface;
+use ChromeDevtoolsProtocol\Model\Page\AddCompilationCacheRequest;
 use ChromeDevtoolsProtocol\Model\Page\AddScriptToEvaluateOnLoadRequest;
 use ChromeDevtoolsProtocol\Model\Page\AddScriptToEvaluateOnLoadResponse;
 use ChromeDevtoolsProtocol\Model\Page\AddScriptToEvaluateOnNewDocumentRequest;
 use ChromeDevtoolsProtocol\Model\Page\AddScriptToEvaluateOnNewDocumentResponse;
 use ChromeDevtoolsProtocol\Model\Page\CaptureScreenshotRequest;
 use ChromeDevtoolsProtocol\Model\Page\CaptureScreenshotResponse;
+use ChromeDevtoolsProtocol\Model\Page\CompilationCacheProducedEvent;
 use ChromeDevtoolsProtocol\Model\Page\CreateIsolatedWorldRequest;
 use ChromeDevtoolsProtocol\Model\Page\CreateIsolatedWorldResponse;
 use ChromeDevtoolsProtocol\Model\Page\DeleteCookieRequest;
@@ -38,6 +40,7 @@ use ChromeDevtoolsProtocol\Model\Page\LoadEventFiredEvent;
 use ChromeDevtoolsProtocol\Model\Page\NavigateRequest;
 use ChromeDevtoolsProtocol\Model\Page\NavigateResponse;
 use ChromeDevtoolsProtocol\Model\Page\NavigateToHistoryEntryRequest;
+use ChromeDevtoolsProtocol\Model\Page\NavigatedWithinDocumentEvent;
 use ChromeDevtoolsProtocol\Model\Page\PrintToPDFRequest;
 use ChromeDevtoolsProtocol\Model\Page\PrintToPDFResponse;
 use ChromeDevtoolsProtocol\Model\Page\ReloadRequest;
@@ -49,13 +52,18 @@ use ChromeDevtoolsProtocol\Model\Page\ScreencastVisibilityChangedEvent;
 use ChromeDevtoolsProtocol\Model\Page\SearchInResourceRequest;
 use ChromeDevtoolsProtocol\Model\Page\SearchInResourceResponse;
 use ChromeDevtoolsProtocol\Model\Page\SetAdBlockingEnabledRequest;
+use ChromeDevtoolsProtocol\Model\Page\SetBypassCSPRequest;
 use ChromeDevtoolsProtocol\Model\Page\SetDeviceMetricsOverrideRequest;
 use ChromeDevtoolsProtocol\Model\Page\SetDeviceOrientationOverrideRequest;
 use ChromeDevtoolsProtocol\Model\Page\SetDocumentContentRequest;
 use ChromeDevtoolsProtocol\Model\Page\SetDownloadBehaviorRequest;
+use ChromeDevtoolsProtocol\Model\Page\SetFontFamiliesRequest;
+use ChromeDevtoolsProtocol\Model\Page\SetFontSizesRequest;
 use ChromeDevtoolsProtocol\Model\Page\SetGeolocationOverrideRequest;
 use ChromeDevtoolsProtocol\Model\Page\SetLifecycleEventsEnabledRequest;
+use ChromeDevtoolsProtocol\Model\Page\SetProduceCompilationCacheRequest;
 use ChromeDevtoolsProtocol\Model\Page\SetTouchEmulationEnabledRequest;
+use ChromeDevtoolsProtocol\Model\Page\SetWebLifecycleStateRequest;
 use ChromeDevtoolsProtocol\Model\Page\StartScreencastRequest;
 use ChromeDevtoolsProtocol\Model\Page\WindowOpenEvent;
 use ChromeDevtoolsProtocol\SubscriptionInterface;
@@ -69,6 +77,17 @@ use ChromeDevtoolsProtocol\SubscriptionInterface;
  */
 interface PageDomainInterface
 {
+	/**
+	 * Seeds compilation cache for given url. Compilation cache does not survive cross-process navigation.
+	 *
+	 * @param ContextInterface $ctx
+	 * @param AddCompilationCacheRequest $request
+	 *
+	 * @return void
+	 */
+	public function addCompilationCache(ContextInterface $ctx, AddCompilationCacheRequest $request): void;
+
+
 	/**
 	 * Deprecated, please use addScriptToEvaluateOnNewDocument instead.
 	 *
@@ -113,6 +132,16 @@ interface PageDomainInterface
 
 
 	/**
+	 * Clears seeded compilation cache.
+	 *
+	 * @param ContextInterface $ctx
+	 *
+	 * @return void
+	 */
+	public function clearCompilationCache(ContextInterface $ctx): void;
+
+
+	/**
 	 * Clears the overriden device metrics.
 	 *
 	 * @param ContextInterface $ctx
@@ -140,6 +169,16 @@ interface PageDomainInterface
 	 * @return void
 	 */
 	public function clearGeolocationOverride(ContextInterface $ctx): void;
+
+
+	/**
+	 * Tries to close page, running its beforeunload hooks, if any.
+	 *
+	 * @param ContextInterface $ctx
+	 *
+	 * @return void
+	 */
+	public function close(ContextInterface $ctx): void;
 
 
 	/**
@@ -386,6 +425,17 @@ interface PageDomainInterface
 
 
 	/**
+	 * Enable page Content Security Policy by-passing.
+	 *
+	 * @param ContextInterface $ctx
+	 * @param SetBypassCSPRequest $request
+	 *
+	 * @return void
+	 */
+	public function setBypassCSP(ContextInterface $ctx, SetBypassCSPRequest $request): void;
+
+
+	/**
 	 * Overrides the values of device screen dimensions (window.screen.width, window.screen.height, window.innerWidth, window.innerHeight, and "device-width"/"device-height"-related CSS media query results).
 	 *
 	 * @param ContextInterface $ctx
@@ -430,6 +480,28 @@ interface PageDomainInterface
 
 
 	/**
+	 * Set generic font families.
+	 *
+	 * @param ContextInterface $ctx
+	 * @param SetFontFamiliesRequest $request
+	 *
+	 * @return void
+	 */
+	public function setFontFamilies(ContextInterface $ctx, SetFontFamiliesRequest $request): void;
+
+
+	/**
+	 * Set default font sizes.
+	 *
+	 * @param ContextInterface $ctx
+	 * @param SetFontSizesRequest $request
+	 *
+	 * @return void
+	 */
+	public function setFontSizes(ContextInterface $ctx, SetFontSizesRequest $request): void;
+
+
+	/**
 	 * Overrides the Geolocation Position or Error. Omitting any of the parameters emulates position unavailable.
 	 *
 	 * @param ContextInterface $ctx
@@ -452,6 +524,17 @@ interface PageDomainInterface
 
 
 	/**
+	 * Forces compilation cache to be generated for every subresource script.
+	 *
+	 * @param ContextInterface $ctx
+	 * @param SetProduceCompilationCacheRequest $request
+	 *
+	 * @return void
+	 */
+	public function setProduceCompilationCache(ContextInterface $ctx, SetProduceCompilationCacheRequest $request): void;
+
+
+	/**
 	 * Toggles mouse event-based touch event emulation.
 	 *
 	 * @param ContextInterface $ctx
@@ -460,6 +543,17 @@ interface PageDomainInterface
 	 * @return void
 	 */
 	public function setTouchEmulationEnabled(ContextInterface $ctx, SetTouchEmulationEnabledRequest $request): void;
+
+
+	/**
+	 * Tries to update the web lifecycle state of the page. It will transition the page to the given state according to: https://github.com/WICG/web-lifecycle/
+	 *
+	 * @param ContextInterface $ctx
+	 * @param SetWebLifecycleStateRequest $request
+	 *
+	 * @return void
+	 */
+	public function setWebLifecycleState(ContextInterface $ctx, SetWebLifecycleStateRequest $request): void;
 
 
 	/**
@@ -491,6 +585,30 @@ interface PageDomainInterface
 	 * @return void
 	 */
 	public function stopScreencast(ContextInterface $ctx): void;
+
+
+	/**
+	 * Issued for every compilation cache generated. Is only available if Page.setGenerateCompilationCache is enabled.
+	 *
+	 * Listener will be called whenever event Page.compilationCacheProduced is fired.
+	 *
+	 * @param callable $listener
+	 *
+	 * @return SubscriptionInterface
+	 */
+	public function addCompilationCacheProducedListener(callable $listener): SubscriptionInterface;
+
+
+	/**
+	 * Issued for every compilation cache generated. Is only available if Page.setGenerateCompilationCache is enabled.
+	 *
+	 * Method will block until first Page.compilationCacheProduced event is fired.
+	 *
+	 * @param ContextInterface $ctx
+	 *
+	 * @return CompilationCacheProducedEvent
+	 */
+	public function awaitCompilationCacheProduced(ContextInterface $ctx): CompilationCacheProducedEvent;
 
 
 	/**
@@ -851,6 +969,30 @@ interface PageDomainInterface
 	 * @return LoadEventFiredEvent
 	 */
 	public function awaitLoadEventFired(ContextInterface $ctx): LoadEventFiredEvent;
+
+
+	/**
+	 * Fired when same-document navigation happens, e.g. due to history API usage or anchor navigation.
+	 *
+	 * Listener will be called whenever event Page.navigatedWithinDocument is fired.
+	 *
+	 * @param callable $listener
+	 *
+	 * @return SubscriptionInterface
+	 */
+	public function addNavigatedWithinDocumentListener(callable $listener): SubscriptionInterface;
+
+
+	/**
+	 * Fired when same-document navigation happens, e.g. due to history API usage or anchor navigation.
+	 *
+	 * Method will block until first Page.navigatedWithinDocument event is fired.
+	 *
+	 * @param ContextInterface $ctx
+	 *
+	 * @return NavigatedWithinDocumentEvent
+	 */
+	public function awaitNavigatedWithinDocument(ContextInterface $ctx): NavigatedWithinDocumentEvent;
 
 
 	/**

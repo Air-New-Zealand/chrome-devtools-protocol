@@ -3,12 +3,14 @@ namespace ChromeDevtoolsProtocol\Domain;
 
 use ChromeDevtoolsProtocol\ContextInterface;
 use ChromeDevtoolsProtocol\InternalClientInterface;
+use ChromeDevtoolsProtocol\Model\Page\AddCompilationCacheRequest;
 use ChromeDevtoolsProtocol\Model\Page\AddScriptToEvaluateOnLoadRequest;
 use ChromeDevtoolsProtocol\Model\Page\AddScriptToEvaluateOnLoadResponse;
 use ChromeDevtoolsProtocol\Model\Page\AddScriptToEvaluateOnNewDocumentRequest;
 use ChromeDevtoolsProtocol\Model\Page\AddScriptToEvaluateOnNewDocumentResponse;
 use ChromeDevtoolsProtocol\Model\Page\CaptureScreenshotRequest;
 use ChromeDevtoolsProtocol\Model\Page\CaptureScreenshotResponse;
+use ChromeDevtoolsProtocol\Model\Page\CompilationCacheProducedEvent;
 use ChromeDevtoolsProtocol\Model\Page\CreateIsolatedWorldRequest;
 use ChromeDevtoolsProtocol\Model\Page\CreateIsolatedWorldResponse;
 use ChromeDevtoolsProtocol\Model\Page\DeleteCookieRequest;
@@ -39,6 +41,7 @@ use ChromeDevtoolsProtocol\Model\Page\LoadEventFiredEvent;
 use ChromeDevtoolsProtocol\Model\Page\NavigateRequest;
 use ChromeDevtoolsProtocol\Model\Page\NavigateResponse;
 use ChromeDevtoolsProtocol\Model\Page\NavigateToHistoryEntryRequest;
+use ChromeDevtoolsProtocol\Model\Page\NavigatedWithinDocumentEvent;
 use ChromeDevtoolsProtocol\Model\Page\PrintToPDFRequest;
 use ChromeDevtoolsProtocol\Model\Page\PrintToPDFResponse;
 use ChromeDevtoolsProtocol\Model\Page\ReloadRequest;
@@ -50,13 +53,18 @@ use ChromeDevtoolsProtocol\Model\Page\ScreencastVisibilityChangedEvent;
 use ChromeDevtoolsProtocol\Model\Page\SearchInResourceRequest;
 use ChromeDevtoolsProtocol\Model\Page\SearchInResourceResponse;
 use ChromeDevtoolsProtocol\Model\Page\SetAdBlockingEnabledRequest;
+use ChromeDevtoolsProtocol\Model\Page\SetBypassCSPRequest;
 use ChromeDevtoolsProtocol\Model\Page\SetDeviceMetricsOverrideRequest;
 use ChromeDevtoolsProtocol\Model\Page\SetDeviceOrientationOverrideRequest;
 use ChromeDevtoolsProtocol\Model\Page\SetDocumentContentRequest;
 use ChromeDevtoolsProtocol\Model\Page\SetDownloadBehaviorRequest;
+use ChromeDevtoolsProtocol\Model\Page\SetFontFamiliesRequest;
+use ChromeDevtoolsProtocol\Model\Page\SetFontSizesRequest;
 use ChromeDevtoolsProtocol\Model\Page\SetGeolocationOverrideRequest;
 use ChromeDevtoolsProtocol\Model\Page\SetLifecycleEventsEnabledRequest;
+use ChromeDevtoolsProtocol\Model\Page\SetProduceCompilationCacheRequest;
 use ChromeDevtoolsProtocol\Model\Page\SetTouchEmulationEnabledRequest;
+use ChromeDevtoolsProtocol\Model\Page\SetWebLifecycleStateRequest;
 use ChromeDevtoolsProtocol\Model\Page\StartScreencastRequest;
 use ChromeDevtoolsProtocol\Model\Page\WindowOpenEvent;
 use ChromeDevtoolsProtocol\SubscriptionInterface;
@@ -70,6 +78,12 @@ class PageDomain implements PageDomainInterface
 	public function __construct(InternalClientInterface $internalClient)
 	{
 		$this->internalClient = $internalClient;
+	}
+
+
+	public function addCompilationCache(ContextInterface $ctx, AddCompilationCacheRequest $request): void
+	{
+		$this->internalClient->executeCommand($ctx, 'Page.addCompilationCache', $request);
 	}
 
 
@@ -101,6 +115,13 @@ class PageDomain implements PageDomainInterface
 	}
 
 
+	public function clearCompilationCache(ContextInterface $ctx): void
+	{
+		$request = new \stdClass();
+		$this->internalClient->executeCommand($ctx, 'Page.clearCompilationCache', $request);
+	}
+
+
 	public function clearDeviceMetricsOverride(ContextInterface $ctx): void
 	{
 		$request = new \stdClass();
@@ -119,6 +140,13 @@ class PageDomain implements PageDomainInterface
 	{
 		$request = new \stdClass();
 		$this->internalClient->executeCommand($ctx, 'Page.clearGeolocationOverride', $request);
+	}
+
+
+	public function close(ContextInterface $ctx): void
+	{
+		$request = new \stdClass();
+		$this->internalClient->executeCommand($ctx, 'Page.close', $request);
 	}
 
 
@@ -281,6 +309,12 @@ class PageDomain implements PageDomainInterface
 	}
 
 
+	public function setBypassCSP(ContextInterface $ctx, SetBypassCSPRequest $request): void
+	{
+		$this->internalClient->executeCommand($ctx, 'Page.setBypassCSP', $request);
+	}
+
+
 	public function setDeviceMetricsOverride(ContextInterface $ctx, SetDeviceMetricsOverrideRequest $request): void
 	{
 		$this->internalClient->executeCommand($ctx, 'Page.setDeviceMetricsOverride', $request);
@@ -305,6 +339,18 @@ class PageDomain implements PageDomainInterface
 	}
 
 
+	public function setFontFamilies(ContextInterface $ctx, SetFontFamiliesRequest $request): void
+	{
+		$this->internalClient->executeCommand($ctx, 'Page.setFontFamilies', $request);
+	}
+
+
+	public function setFontSizes(ContextInterface $ctx, SetFontSizesRequest $request): void
+	{
+		$this->internalClient->executeCommand($ctx, 'Page.setFontSizes', $request);
+	}
+
+
 	public function setGeolocationOverride(ContextInterface $ctx, SetGeolocationOverrideRequest $request): void
 	{
 		$this->internalClient->executeCommand($ctx, 'Page.setGeolocationOverride', $request);
@@ -317,9 +363,21 @@ class PageDomain implements PageDomainInterface
 	}
 
 
+	public function setProduceCompilationCache(ContextInterface $ctx, SetProduceCompilationCacheRequest $request): void
+	{
+		$this->internalClient->executeCommand($ctx, 'Page.setProduceCompilationCache', $request);
+	}
+
+
 	public function setTouchEmulationEnabled(ContextInterface $ctx, SetTouchEmulationEnabledRequest $request): void
 	{
 		$this->internalClient->executeCommand($ctx, 'Page.setTouchEmulationEnabled', $request);
+	}
+
+
+	public function setWebLifecycleState(ContextInterface $ctx, SetWebLifecycleStateRequest $request): void
+	{
+		$this->internalClient->executeCommand($ctx, 'Page.setWebLifecycleState', $request);
 	}
 
 
@@ -340,6 +398,20 @@ class PageDomain implements PageDomainInterface
 	{
 		$request = new \stdClass();
 		$this->internalClient->executeCommand($ctx, 'Page.stopScreencast', $request);
+	}
+
+
+	public function addCompilationCacheProducedListener(callable $listener): SubscriptionInterface
+	{
+		return $this->internalClient->addListener('Page.compilationCacheProduced', function ($event) use ($listener) {
+			return $listener(CompilationCacheProducedEvent::fromJson($event));
+		});
+	}
+
+
+	public function awaitCompilationCacheProduced(ContextInterface $ctx): CompilationCacheProducedEvent
+	{
+		return CompilationCacheProducedEvent::fromJson($this->internalClient->awaitEvent($ctx, 'Page.compilationCacheProduced'));
 	}
 
 
@@ -550,6 +622,20 @@ class PageDomain implements PageDomainInterface
 	public function awaitLoadEventFired(ContextInterface $ctx): LoadEventFiredEvent
 	{
 		return LoadEventFiredEvent::fromJson($this->internalClient->awaitEvent($ctx, 'Page.loadEventFired'));
+	}
+
+
+	public function addNavigatedWithinDocumentListener(callable $listener): SubscriptionInterface
+	{
+		return $this->internalClient->addListener('Page.navigatedWithinDocument', function ($event) use ($listener) {
+			return $listener(NavigatedWithinDocumentEvent::fromJson($event));
+		});
+	}
+
+
+	public function awaitNavigatedWithinDocument(ContextInterface $ctx): NavigatedWithinDocumentEvent
+	{
+		return NavigatedWithinDocumentEvent::fromJson($this->internalClient->awaitEvent($ctx, 'Page.navigatedWithinDocument'));
 	}
 
 

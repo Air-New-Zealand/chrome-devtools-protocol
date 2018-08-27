@@ -3,6 +3,7 @@ namespace ChromeDevtoolsProtocol\Domain;
 
 use ChromeDevtoolsProtocol\ContextInterface;
 use ChromeDevtoolsProtocol\Model\Target\ActivateTargetRequest;
+use ChromeDevtoolsProtocol\Model\Target\AttachToBrowserTargetResponse;
 use ChromeDevtoolsProtocol\Model\Target\AttachToTargetRequest;
 use ChromeDevtoolsProtocol\Model\Target\AttachToTargetResponse;
 use ChromeDevtoolsProtocol\Model\Target\AttachedToTargetEvent;
@@ -14,7 +15,8 @@ use ChromeDevtoolsProtocol\Model\Target\CreateTargetResponse;
 use ChromeDevtoolsProtocol\Model\Target\DetachFromTargetRequest;
 use ChromeDevtoolsProtocol\Model\Target\DetachedFromTargetEvent;
 use ChromeDevtoolsProtocol\Model\Target\DisposeBrowserContextRequest;
-use ChromeDevtoolsProtocol\Model\Target\DisposeBrowserContextResponse;
+use ChromeDevtoolsProtocol\Model\Target\ExposeDevToolsProtocolRequest;
+use ChromeDevtoolsProtocol\Model\Target\GetBrowserContextsResponse;
 use ChromeDevtoolsProtocol\Model\Target\GetTargetInfoRequest;
 use ChromeDevtoolsProtocol\Model\Target\GetTargetInfoResponse;
 use ChromeDevtoolsProtocol\Model\Target\GetTargetsResponse;
@@ -23,6 +25,7 @@ use ChromeDevtoolsProtocol\Model\Target\SendMessageToTargetRequest;
 use ChromeDevtoolsProtocol\Model\Target\SetAutoAttachRequest;
 use ChromeDevtoolsProtocol\Model\Target\SetDiscoverTargetsRequest;
 use ChromeDevtoolsProtocol\Model\Target\SetRemoteLocationsRequest;
+use ChromeDevtoolsProtocol\Model\Target\TargetCrashedEvent;
 use ChromeDevtoolsProtocol\Model\Target\TargetCreatedEvent;
 use ChromeDevtoolsProtocol\Model\Target\TargetDestroyedEvent;
 use ChromeDevtoolsProtocol\Model\Target\TargetInfoChangedEvent;
@@ -46,6 +49,16 @@ interface TargetDomainInterface
 	 * @return void
 	 */
 	public function activateTarget(ContextInterface $ctx, ActivateTargetRequest $request): void;
+
+
+	/**
+	 * Attaches to the browser target, only uses flat sessionId mode.
+	 *
+	 * @param ContextInterface $ctx
+	 *
+	 * @return AttachToBrowserTargetResponse
+	 */
+	public function attachToBrowserTarget(ContextInterface $ctx): AttachToBrowserTargetResponse;
 
 
 	/**
@@ -103,14 +116,35 @@ interface TargetDomainInterface
 
 
 	/**
-	 * Deletes a BrowserContext, will fail of any open page uses it.
+	 * Deletes a BrowserContext. All the belonging pages will be closed without calling their beforeunload hooks.
 	 *
 	 * @param ContextInterface $ctx
 	 * @param DisposeBrowserContextRequest $request
 	 *
-	 * @return DisposeBrowserContextResponse
+	 * @return void
 	 */
-	public function disposeBrowserContext(ContextInterface $ctx, DisposeBrowserContextRequest $request): DisposeBrowserContextResponse;
+	public function disposeBrowserContext(ContextInterface $ctx, DisposeBrowserContextRequest $request): void;
+
+
+	/**
+	 * Inject object to the target's main frame that provides a communication channel with browser target. Injected object will be available as `window[bindingName]`. The object has the follwing API: - `binding.send(json)` - a method to send messages over the remote debugging protocol - `binding.onmessage = json => handleMessage(json)` - a callback that will be called for the protocol notifications and command responses.
+	 *
+	 * @param ContextInterface $ctx
+	 * @param ExposeDevToolsProtocolRequest $request
+	 *
+	 * @return void
+	 */
+	public function exposeDevToolsProtocol(ContextInterface $ctx, ExposeDevToolsProtocolRequest $request): void;
+
+
+	/**
+	 * Returns all browser contexts created with `Target.createBrowserContext` method.
+	 *
+	 * @param ContextInterface $ctx
+	 *
+	 * @return GetBrowserContextsResponse
+	 */
+	public function getBrowserContexts(ContextInterface $ctx): GetBrowserContextsResponse;
 
 
 	/**
@@ -248,6 +282,30 @@ interface TargetDomainInterface
 	 * @return ReceivedMessageFromTargetEvent
 	 */
 	public function awaitReceivedMessageFromTarget(ContextInterface $ctx): ReceivedMessageFromTargetEvent;
+
+
+	/**
+	 * Issued when a target has crashed.
+	 *
+	 * Listener will be called whenever event Target.targetCrashed is fired.
+	 *
+	 * @param callable $listener
+	 *
+	 * @return SubscriptionInterface
+	 */
+	public function addTargetCrashedListener(callable $listener): SubscriptionInterface;
+
+
+	/**
+	 * Issued when a target has crashed.
+	 *
+	 * Method will block until first Target.targetCrashed event is fired.
+	 *
+	 * @param ContextInterface $ctx
+	 *
+	 * @return TargetCrashedEvent
+	 */
+	public function awaitTargetCrashed(ContextInterface $ctx): TargetCrashedEvent;
 
 
 	/**

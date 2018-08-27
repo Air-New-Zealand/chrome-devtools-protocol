@@ -2,23 +2,27 @@
 namespace ChromeDevtoolsProtocol\Model\Target;
 
 /**
- * Response to Target.disposeBrowserContext command.
+ * Response to Target.attachToBrowserTarget command.
  *
  * @generated This file has been auto-generated, do not edit.
  *
  * @author Jakub Kulhan <jakub.kulhan@gmail.com>
  */
-final class DisposeBrowserContextResponse implements \JsonSerializable
+final class AttachToBrowserTargetResponse implements \JsonSerializable
 {
-	/** @var bool */
-	public $success;
+	/**
+	 * Id assigned to the session.
+	 *
+	 * @var string
+	 */
+	public $sessionId;
 
 
 	public static function fromJson($data)
 	{
 		$instance = new static();
-		if (isset($data->success)) {
-			$instance->success = (bool)$data->success;
+		if (isset($data->sessionId)) {
+			$instance->sessionId = (string)$data->sessionId;
 		}
 		return $instance;
 	}
@@ -27,8 +31,8 @@ final class DisposeBrowserContextResponse implements \JsonSerializable
 	public function jsonSerialize()
 	{
 		$data = new \stdClass();
-		if ($this->success !== null) {
-			$data->success = $this->success;
+		if ($this->sessionId !== null) {
+			$data->sessionId = $this->sessionId;
 		}
 		return $data;
 	}

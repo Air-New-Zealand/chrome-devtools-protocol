@@ -2,8 +2,10 @@
 namespace ChromeDevtoolsProtocol\Domain;
 
 use ChromeDevtoolsProtocol\ContextInterface;
+use ChromeDevtoolsProtocol\Model\Runtime\AddBindingRequest;
 use ChromeDevtoolsProtocol\Model\Runtime\AwaitPromiseRequest;
 use ChromeDevtoolsProtocol\Model\Runtime\AwaitPromiseResponse;
+use ChromeDevtoolsProtocol\Model\Runtime\BindingCalledEvent;
 use ChromeDevtoolsProtocol\Model\Runtime\CallFunctionOnRequest;
 use ChromeDevtoolsProtocol\Model\Runtime\CallFunctionOnResponse;
 use ChromeDevtoolsProtocol\Model\Runtime\CompileScriptRequest;
@@ -27,9 +29,12 @@ use ChromeDevtoolsProtocol\Model\Runtime\QueryObjectsRequest;
 use ChromeDevtoolsProtocol\Model\Runtime\QueryObjectsResponse;
 use ChromeDevtoolsProtocol\Model\Runtime\ReleaseObjectGroupRequest;
 use ChromeDevtoolsProtocol\Model\Runtime\ReleaseObjectRequest;
+use ChromeDevtoolsProtocol\Model\Runtime\RemoveBindingRequest;
 use ChromeDevtoolsProtocol\Model\Runtime\RunScriptRequest;
 use ChromeDevtoolsProtocol\Model\Runtime\RunScriptResponse;
+use ChromeDevtoolsProtocol\Model\Runtime\SetAsyncCallStackDepthRequest;
 use ChromeDevtoolsProtocol\Model\Runtime\SetCustomObjectFormatterEnabledRequest;
+use ChromeDevtoolsProtocol\Model\Runtime\SetMaxCallStackSizeToCaptureRequest;
 use ChromeDevtoolsProtocol\SubscriptionInterface;
 
 /**
@@ -41,6 +46,17 @@ use ChromeDevtoolsProtocol\SubscriptionInterface;
  */
 interface RuntimeDomainInterface
 {
+	/**
+	 * If executionContextId is empty, adds binding with the given name on the global objects of all inspected contexts, including those created later, bindings survive reloads. If executionContextId is specified, adds binding only on global object of given execution context. Binding function takes exactly one argument, this argument should be string, in case of any other input, function throws an exception. Each binding function call produces Runtime.bindingCalled notification.
+	 *
+	 * @param ContextInterface $ctx
+	 * @param AddBindingRequest $request
+	 *
+	 * @return void
+	 */
+	public function addBinding(ContextInterface $ctx, AddBindingRequest $request): void;
+
+
 	/**
 	 * Add handler to promise with given promise object id.
 	 *
@@ -191,6 +207,17 @@ interface RuntimeDomainInterface
 
 
 	/**
+	 * This method does not remove binding function from global object but unsubscribes current runtime agent from Runtime.bindingCalled notifications.
+	 *
+	 * @param ContextInterface $ctx
+	 * @param RemoveBindingRequest $request
+	 *
+	 * @return void
+	 */
+	public function removeBinding(ContextInterface $ctx, RemoveBindingRequest $request): void;
+
+
+	/**
 	 * Tells inspected instance to run if it was waiting for debugger to attach.
 	 *
 	 * @param ContextInterface $ctx
@@ -212,6 +239,17 @@ interface RuntimeDomainInterface
 
 
 	/**
+	 * Enables or disables async call stacks tracking.
+	 *
+	 * @param ContextInterface $ctx
+	 * @param SetAsyncCallStackDepthRequest $request
+	 *
+	 * @return void
+	 */
+	public function setAsyncCallStackDepth(ContextInterface $ctx, SetAsyncCallStackDepthRequest $request): void;
+
+
+	/**
 	 * Call Runtime.setCustomObjectFormatterEnabled command.
 	 *
 	 * @param ContextInterface $ctx
@@ -223,6 +261,17 @@ interface RuntimeDomainInterface
 
 
 	/**
+	 * Call Runtime.setMaxCallStackSizeToCapture command.
+	 *
+	 * @param ContextInterface $ctx
+	 * @param SetMaxCallStackSizeToCaptureRequest $request
+	 *
+	 * @return void
+	 */
+	public function setMaxCallStackSizeToCapture(ContextInterface $ctx, SetMaxCallStackSizeToCaptureRequest $request): void;
+
+
+	/**
 	 * Terminate current or next JavaScript execution. Will cancel the termination when the outer-most script execution ends.
 	 *
 	 * @param ContextInterface $ctx
@@ -230,6 +279,30 @@ interface RuntimeDomainInterface
 	 * @return void
 	 */
 	public function terminateExecution(ContextInterface $ctx): void;
+
+
+	/**
+	 * Notification is issued every time when binding is called.
+	 *
+	 * Listener will be called whenever event Runtime.bindingCalled is fired.
+	 *
+	 * @param callable $listener
+	 *
+	 * @return SubscriptionInterface
+	 */
+	public function addBindingCalledListener(callable $listener): SubscriptionInterface;
+
+
+	/**
+	 * Notification is issued every time when binding is called.
+	 *
+	 * Method will block until first Runtime.bindingCalled event is fired.
+	 *
+	 * @param ContextInterface $ctx
+	 *
+	 * @return BindingCalledEvent
+	 */
+	public function awaitBindingCalled(ContextInterface $ctx): BindingCalledEvent;
 
 
 	/**

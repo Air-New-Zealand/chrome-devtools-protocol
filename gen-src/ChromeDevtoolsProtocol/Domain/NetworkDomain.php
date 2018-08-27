@@ -43,6 +43,9 @@ use ChromeDevtoolsProtocol\Model\Network\SetDataSizeLimitsForTestRequest;
 use ChromeDevtoolsProtocol\Model\Network\SetExtraHTTPHeadersRequest;
 use ChromeDevtoolsProtocol\Model\Network\SetRequestInterceptionRequest;
 use ChromeDevtoolsProtocol\Model\Network\SetUserAgentOverrideRequest;
+use ChromeDevtoolsProtocol\Model\Network\SignedExchangeReceivedEvent;
+use ChromeDevtoolsProtocol\Model\Network\TakeResponseBodyForInterceptionAsStreamRequest;
+use ChromeDevtoolsProtocol\Model\Network\TakeResponseBodyForInterceptionAsStreamResponse;
 use ChromeDevtoolsProtocol\Model\Network\WebSocketClosedEvent;
 use ChromeDevtoolsProtocol\Model\Network\WebSocketCreatedEvent;
 use ChromeDevtoolsProtocol\Model\Network\WebSocketFrameErrorEvent;
@@ -244,6 +247,13 @@ class NetworkDomain implements NetworkDomainInterface
 	}
 
 
+	public function takeResponseBodyForInterceptionAsStream(ContextInterface $ctx, TakeResponseBodyForInterceptionAsStreamRequest $request): TakeResponseBodyForInterceptionAsStreamResponse
+	{
+		$response = $this->internalClient->executeCommand($ctx, 'Network.takeResponseBodyForInterceptionAsStream', $request);
+		return TakeResponseBodyForInterceptionAsStreamResponse::fromJson($response);
+	}
+
+
 	public function addDataReceivedListener(callable $listener): SubscriptionInterface
 	{
 		return $this->internalClient->addListener('Network.dataReceived', function ($event) use ($listener) {
@@ -367,6 +377,20 @@ class NetworkDomain implements NetworkDomainInterface
 	public function awaitResponseReceived(ContextInterface $ctx): ResponseReceivedEvent
 	{
 		return ResponseReceivedEvent::fromJson($this->internalClient->awaitEvent($ctx, 'Network.responseReceived'));
+	}
+
+
+	public function addSignedExchangeReceivedListener(callable $listener): SubscriptionInterface
+	{
+		return $this->internalClient->addListener('Network.signedExchangeReceived', function ($event) use ($listener) {
+			return $listener(SignedExchangeReceivedEvent::fromJson($event));
+		});
+	}
+
+
+	public function awaitSignedExchangeReceived(ContextInterface $ctx): SignedExchangeReceivedEvent
+	{
+		return SignedExchangeReceivedEvent::fromJson($this->internalClient->awaitEvent($ctx, 'Network.signedExchangeReceived'));
 	}
 
 

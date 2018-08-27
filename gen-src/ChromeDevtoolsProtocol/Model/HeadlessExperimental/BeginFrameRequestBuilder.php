@@ -8,9 +8,7 @@ namespace ChromeDevtoolsProtocol\Model\HeadlessExperimental;
  */
 final class BeginFrameRequestBuilder
 {
-	private $frameTime;
-
-	private $deadline;
+	private $frameTimeTicks;
 
 	private $interval;
 
@@ -25,8 +23,7 @@ final class BeginFrameRequestBuilder
 	public function build(): BeginFrameRequest
 	{
 		$instance = new BeginFrameRequest();
-		$instance->frameTime = $this->frameTime;
-		$instance->deadline = $this->deadline;
+		$instance->frameTimeTicks = $this->frameTimeTicks;
 		$instance->interval = $this->interval;
 		$instance->noDisplayUpdates = $this->noDisplayUpdates;
 		$instance->screenshot = $this->screenshot;
@@ -35,25 +32,13 @@ final class BeginFrameRequestBuilder
 
 
 	/**
-	 * @param int|float $frameTime
+	 * @param int|float|null $frameTimeTicks
 	 *
 	 * @return self
 	 */
-	public function setFrameTime($frameTime): self
+	public function setFrameTimeTicks($frameTimeTicks): self
 	{
-		$this->frameTime = $frameTime;
-		return $this;
-	}
-
-
-	/**
-	 * @param int|float $deadline
-	 *
-	 * @return self
-	 */
-	public function setDeadline($deadline): self
-	{
-		$this->deadline = $deadline;
+		$this->frameTimeTicks = $frameTimeTicks;
 		return $this;
 	}
 

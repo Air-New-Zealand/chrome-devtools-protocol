@@ -6,13 +6,16 @@ use ChromeDevtoolsProtocol\Model\Emulation\CanEmulateResponse;
 use ChromeDevtoolsProtocol\Model\Emulation\SetCPUThrottlingRateRequest;
 use ChromeDevtoolsProtocol\Model\Emulation\SetDefaultBackgroundColorOverrideRequest;
 use ChromeDevtoolsProtocol\Model\Emulation\SetDeviceMetricsOverrideRequest;
+use ChromeDevtoolsProtocol\Model\Emulation\SetDocumentCookieDisabledRequest;
 use ChromeDevtoolsProtocol\Model\Emulation\SetEmitTouchEventsForMouseRequest;
 use ChromeDevtoolsProtocol\Model\Emulation\SetEmulatedMediaRequest;
 use ChromeDevtoolsProtocol\Model\Emulation\SetGeolocationOverrideRequest;
 use ChromeDevtoolsProtocol\Model\Emulation\SetNavigatorOverridesRequest;
 use ChromeDevtoolsProtocol\Model\Emulation\SetPageScaleFactorRequest;
 use ChromeDevtoolsProtocol\Model\Emulation\SetScriptExecutionDisabledRequest;
+use ChromeDevtoolsProtocol\Model\Emulation\SetScrollbarsHiddenRequest;
 use ChromeDevtoolsProtocol\Model\Emulation\SetTouchEmulationEnabledRequest;
+use ChromeDevtoolsProtocol\Model\Emulation\SetUserAgentOverrideRequest;
 use ChromeDevtoolsProtocol\Model\Emulation\SetVirtualTimePolicyRequest;
 use ChromeDevtoolsProtocol\Model\Emulation\SetVirtualTimePolicyResponse;
 use ChromeDevtoolsProtocol\Model\Emulation\SetVisibleSizeRequest;
@@ -104,6 +107,17 @@ interface EmulationDomainInterface
 
 
 	/**
+	 * Call Emulation.setDocumentCookieDisabled command.
+	 *
+	 * @param ContextInterface $ctx
+	 * @param SetDocumentCookieDisabledRequest $request
+	 *
+	 * @return void
+	 */
+	public function setDocumentCookieDisabled(ContextInterface $ctx, SetDocumentCookieDisabledRequest $request): void;
+
+
+	/**
 	 * Call Emulation.setEmitTouchEventsForMouse command.
 	 *
 	 * @param ContextInterface $ctx
@@ -170,6 +184,17 @@ interface EmulationDomainInterface
 
 
 	/**
+	 * Call Emulation.setScrollbarsHidden command.
+	 *
+	 * @param ContextInterface $ctx
+	 * @param SetScrollbarsHiddenRequest $request
+	 *
+	 * @return void
+	 */
+	public function setScrollbarsHidden(ContextInterface $ctx, SetScrollbarsHiddenRequest $request): void;
+
+
+	/**
 	 * Enables touch on platforms which do not support them.
 	 *
 	 * @param ContextInterface $ctx
@@ -178,6 +203,17 @@ interface EmulationDomainInterface
 	 * @return void
 	 */
 	public function setTouchEmulationEnabled(ContextInterface $ctx, SetTouchEmulationEnabledRequest $request): void;
+
+
+	/**
+	 * Allows overriding user agent with the given string.
+	 *
+	 * @param ContextInterface $ctx
+	 * @param SetUserAgentOverrideRequest $request
+	 *
+	 * @return void
+	 */
+	public function setUserAgentOverride(ContextInterface $ctx, SetUserAgentOverrideRequest $request): void;
 
 
 	/**

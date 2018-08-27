@@ -42,6 +42,9 @@ use ChromeDevtoolsProtocol\Model\Network\SetDataSizeLimitsForTestRequest;
 use ChromeDevtoolsProtocol\Model\Network\SetExtraHTTPHeadersRequest;
 use ChromeDevtoolsProtocol\Model\Network\SetRequestInterceptionRequest;
 use ChromeDevtoolsProtocol\Model\Network\SetUserAgentOverrideRequest;
+use ChromeDevtoolsProtocol\Model\Network\SignedExchangeReceivedEvent;
+use ChromeDevtoolsProtocol\Model\Network\TakeResponseBodyForInterceptionAsStreamRequest;
+use ChromeDevtoolsProtocol\Model\Network\TakeResponseBodyForInterceptionAsStreamResponse;
 use ChromeDevtoolsProtocol\Model\Network\WebSocketClosedEvent;
 use ChromeDevtoolsProtocol\Model\Network\WebSocketCreatedEvent;
 use ChromeDevtoolsProtocol\Model\Network\WebSocketFrameErrorEvent;
@@ -351,6 +354,17 @@ interface NetworkDomainInterface
 
 
 	/**
+	 * Returns a handle to the stream representing the response body. Note that after this command, the intercepted request can't be continued as is -- you either need to cancel it or to provide the response body. The stream only supports sequential read, IO.read will fail if the position is specified.
+	 *
+	 * @param ContextInterface $ctx
+	 * @param TakeResponseBodyForInterceptionAsStreamRequest $request
+	 *
+	 * @return TakeResponseBodyForInterceptionAsStreamResponse
+	 */
+	public function takeResponseBodyForInterceptionAsStream(ContextInterface $ctx, TakeResponseBodyForInterceptionAsStreamRequest $request): TakeResponseBodyForInterceptionAsStreamResponse;
+
+
+	/**
 	 * Fired when data chunk was received over the network.
 	 *
 	 * Listener will be called whenever event Network.dataReceived is fired.
@@ -564,6 +578,30 @@ interface NetworkDomainInterface
 	 * @return ResponseReceivedEvent
 	 */
 	public function awaitResponseReceived(ContextInterface $ctx): ResponseReceivedEvent;
+
+
+	/**
+	 * Fired when a signed exchange was received over the network
+	 *
+	 * Listener will be called whenever event Network.signedExchangeReceived is fired.
+	 *
+	 * @param callable $listener
+	 *
+	 * @return SubscriptionInterface
+	 */
+	public function addSignedExchangeReceivedListener(callable $listener): SubscriptionInterface;
+
+
+	/**
+	 * Fired when a signed exchange was received over the network
+	 *
+	 * Method will block until first Network.signedExchangeReceived event is fired.
+	 *
+	 * @param ContextInterface $ctx
+	 *
+	 * @return SignedExchangeReceivedEvent
+	 */
+	public function awaitSignedExchangeReceived(ContextInterface $ctx): SignedExchangeReceivedEvent;
 
 
 	/**

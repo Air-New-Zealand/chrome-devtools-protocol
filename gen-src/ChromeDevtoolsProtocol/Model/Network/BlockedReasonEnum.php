@@ -10,11 +10,13 @@ namespace ChromeDevtoolsProtocol\Model\Network;
  */
 final class BlockedReasonEnum
 {
+	const OTHER = 'other';
 	const CSP = 'csp';
 	const MIXED_CONTENT = 'mixed-content';
 	const ORIGIN = 'origin';
 	const INSPECTOR = 'inspector';
 	const SUBRESOURCE_FILTER = 'subresource-filter';
-	const OTHER = 'other';
+	const CONTENT_TYPE = 'content-type';
+	const COLLAPSED_BY_CLIENT = 'collapsed-by-client';
 
 }

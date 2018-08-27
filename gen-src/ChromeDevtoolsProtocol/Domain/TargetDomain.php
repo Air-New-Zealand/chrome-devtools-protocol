@@ -4,6 +4,7 @@ namespace ChromeDevtoolsProtocol\Domain;
 use ChromeDevtoolsProtocol\ContextInterface;
 use ChromeDevtoolsProtocol\InternalClientInterface;
 use ChromeDevtoolsProtocol\Model\Target\ActivateTargetRequest;
+use ChromeDevtoolsProtocol\Model\Target\AttachToBrowserTargetResponse;
 use ChromeDevtoolsProtocol\Model\Target\AttachToTargetRequest;
 use ChromeDevtoolsProtocol\Model\Target\AttachToTargetResponse;
 use ChromeDevtoolsProtocol\Model\Target\AttachedToTargetEvent;
@@ -15,7 +16,8 @@ use ChromeDevtoolsProtocol\Model\Target\CreateTargetResponse;
 use ChromeDevtoolsProtocol\Model\Target\DetachFromTargetRequest;
 use ChromeDevtoolsProtocol\Model\Target\DetachedFromTargetEvent;
 use ChromeDevtoolsProtocol\Model\Target\DisposeBrowserContextRequest;
-use ChromeDevtoolsProtocol\Model\Target\DisposeBrowserContextResponse;
+use ChromeDevtoolsProtocol\Model\Target\ExposeDevToolsProtocolRequest;
+use ChromeDevtoolsProtocol\Model\Target\GetBrowserContextsResponse;
 use ChromeDevtoolsProtocol\Model\Target\GetTargetInfoRequest;
 use ChromeDevtoolsProtocol\Model\Target\GetTargetInfoResponse;
 use ChromeDevtoolsProtocol\Model\Target\GetTargetsResponse;
@@ -24,6 +26,7 @@ use ChromeDevtoolsProtocol\Model\Target\SendMessageToTargetRequest;
 use ChromeDevtoolsProtocol\Model\Target\SetAutoAttachRequest;
 use ChromeDevtoolsProtocol\Model\Target\SetDiscoverTargetsRequest;
 use ChromeDevtoolsProtocol\Model\Target\SetRemoteLocationsRequest;
+use ChromeDevtoolsProtocol\Model\Target\TargetCrashedEvent;
 use ChromeDevtoolsProtocol\Model\Target\TargetCreatedEvent;
 use ChromeDevtoolsProtocol\Model\Target\TargetDestroyedEvent;
 use ChromeDevtoolsProtocol\Model\Target\TargetInfoChangedEvent;
@@ -44,6 +47,14 @@ class TargetDomain implements TargetDomainInterface
 	public function activateTarget(ContextInterface $ctx, ActivateTargetRequest $request): void
 	{
 		$this->internalClient->executeCommand($ctx, 'Target.activateTarget', $request);
+	}
+
+
+	public function attachToBrowserTarget(ContextInterface $ctx): AttachToBrowserTargetResponse
+	{
+		$request = new \stdClass();
+		$response = $this->internalClient->executeCommand($ctx, 'Target.attachToBrowserTarget', $request);
+		return AttachToBrowserTargetResponse::fromJson($response);
 	}
 
 
@@ -82,10 +93,23 @@ class TargetDomain implements TargetDomainInterface
 	}
 
 
-	public function disposeBrowserContext(ContextInterface $ctx, DisposeBrowserContextRequest $request): DisposeBrowserContextResponse
+	public function disposeBrowserContext(ContextInterface $ctx, DisposeBrowserContextRequest $request): void
 	{
-		$response = $this->internalClient->executeCommand($ctx, 'Target.disposeBrowserContext', $request);
-		return DisposeBrowserContextResponse::fromJson($response);
+		$this->internalClient->executeCommand($ctx, 'Target.disposeBrowserContext', $request);
+	}
+
+
+	public function exposeDevToolsProtocol(ContextInterface $ctx, ExposeDevToolsProtocolRequest $request): void
+	{
+		$this->internalClient->executeCommand($ctx, 'Target.exposeDevToolsProtocol', $request);
+	}
+
+
+	public function getBrowserContexts(ContextInterface $ctx): GetBrowserContextsResponse
+	{
+		$request = new \stdClass();
+		$response = $this->internalClient->executeCommand($ctx, 'Target.getBrowserContexts', $request);
+		return GetBrowserContextsResponse::fromJson($response);
 	}
 
 
@@ -167,6 +191,20 @@ class TargetDomain implements TargetDomainInterface
 	public function awaitReceivedMessageFromTarget(ContextInterface $ctx): ReceivedMessageFromTargetEvent
 	{
 		return ReceivedMessageFromTargetEvent::fromJson($this->internalClient->awaitEvent($ctx, 'Target.receivedMessageFromTarget'));
+	}
+
+
+	public function addTargetCrashedListener(callable $listener): SubscriptionInterface
+	{
+		return $this->internalClient->addListener('Target.targetCrashed', function ($event) use ($listener) {
+			return $listener(TargetCrashedEvent::fromJson($event));
+		});
+	}
+
+
+	public function awaitTargetCrashed(ContextInterface $ctx): TargetCrashedEvent
+	{
+		return TargetCrashedEvent::fromJson($this->internalClient->awaitEvent($ctx, 'Target.targetCrashed'));
 	}
 
 

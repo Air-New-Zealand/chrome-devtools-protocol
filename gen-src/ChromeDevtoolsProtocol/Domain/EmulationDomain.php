@@ -7,13 +7,16 @@ use ChromeDevtoolsProtocol\Model\Emulation\CanEmulateResponse;
 use ChromeDevtoolsProtocol\Model\Emulation\SetCPUThrottlingRateRequest;
 use ChromeDevtoolsProtocol\Model\Emulation\SetDefaultBackgroundColorOverrideRequest;
 use ChromeDevtoolsProtocol\Model\Emulation\SetDeviceMetricsOverrideRequest;
+use ChromeDevtoolsProtocol\Model\Emulation\SetDocumentCookieDisabledRequest;
 use ChromeDevtoolsProtocol\Model\Emulation\SetEmitTouchEventsForMouseRequest;
 use ChromeDevtoolsProtocol\Model\Emulation\SetEmulatedMediaRequest;
 use ChromeDevtoolsProtocol\Model\Emulation\SetGeolocationOverrideRequest;
 use ChromeDevtoolsProtocol\Model\Emulation\SetNavigatorOverridesRequest;
 use ChromeDevtoolsProtocol\Model\Emulation\SetPageScaleFactorRequest;
 use ChromeDevtoolsProtocol\Model\Emulation\SetScriptExecutionDisabledRequest;
+use ChromeDevtoolsProtocol\Model\Emulation\SetScrollbarsHiddenRequest;
 use ChromeDevtoolsProtocol\Model\Emulation\SetTouchEmulationEnabledRequest;
+use ChromeDevtoolsProtocol\Model\Emulation\SetUserAgentOverrideRequest;
 use ChromeDevtoolsProtocol\Model\Emulation\SetVirtualTimePolicyRequest;
 use ChromeDevtoolsProtocol\Model\Emulation\SetVirtualTimePolicyResponse;
 use ChromeDevtoolsProtocol\Model\Emulation\SetVisibleSizeRequest;
@@ -81,6 +84,12 @@ class EmulationDomain implements EmulationDomainInterface
 	}
 
 
+	public function setDocumentCookieDisabled(ContextInterface $ctx, SetDocumentCookieDisabledRequest $request): void
+	{
+		$this->internalClient->executeCommand($ctx, 'Emulation.setDocumentCookieDisabled', $request);
+	}
+
+
 	public function setEmitTouchEventsForMouse(ContextInterface $ctx, SetEmitTouchEventsForMouseRequest $request): void
 	{
 		$this->internalClient->executeCommand($ctx, 'Emulation.setEmitTouchEventsForMouse', $request);
@@ -117,9 +126,21 @@ class EmulationDomain implements EmulationDomainInterface
 	}
 
 
+	public function setScrollbarsHidden(ContextInterface $ctx, SetScrollbarsHiddenRequest $request): void
+	{
+		$this->internalClient->executeCommand($ctx, 'Emulation.setScrollbarsHidden', $request);
+	}
+
+
 	public function setTouchEmulationEnabled(ContextInterface $ctx, SetTouchEmulationEnabledRequest $request): void
 	{
 		$this->internalClient->executeCommand($ctx, 'Emulation.setTouchEmulationEnabled', $request);
+	}
+
+
+	public function setUserAgentOverride(ContextInterface $ctx, SetUserAgentOverrideRequest $request): void
+	{
+		$this->internalClient->executeCommand($ctx, 'Emulation.setUserAgentOverride', $request);
 	}
 
 

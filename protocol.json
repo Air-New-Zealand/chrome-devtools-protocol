@@ -1088,6 +1088,11 @@
                     "description": "Close browser gracefully."
                 },
                 {
+                    "name": "crash",
+                    "description": "Crashes browser on the main thread.",
+                    "experimental": true
+                },
+                {
                     "name": "getBrowserCommandLine",
                     "description": "Returns the command line switches for the browser process if, and only if --enable-automation is on the commandline.",
                     "experimental": true,
@@ -11779,6 +11784,7 @@
                     "enum": [
                         "link",
                         "typed",
+                        "address_bar",
                         "auto_bookmark",
                         "auto_subframe",
                         "manual_subframe",
@@ -12267,6 +12273,24 @@
                 {
                     "name": "enable",
                     "description": "Enables page domain notifications."
+                },
+                {
+                    "name": "generateTestReport",
+                    "description": "Generates a report for testing.",
+                    "experimental": true,
+                    "parameters": [
+                        {
+                            "name": "message",
+                            "description": "Message to be displayed in the report.",
+                            "type": "string"
+                        },
+                        {
+                            "name": "group",
+                            "description": "Specifies the endpoint group to deliver the report to.",
+                            "optional": true,
+                            "type": "string"
+                        }
+                    ]
                 },
                 {
                     "name": "getAppManifest",
@@ -16392,6 +16416,34 @@
                     ]
                 }
             ]
+        },
+        {
+            "domain": "Testing",
+            "description": "Testing domain is a dumping ground for the capabilities requires for browser or app testing that do not fit other domains.",
+            "experimental": true,
+            "dependencies": [
+                "Page"
+            ],
+            "commands": [
+                {
+                    "name": "generateTestReport",
+                    "description": "Generates a report for testing.",
+                    "parameters": [
+                        {
+                            "name": "message",
+                            "description": "Message to be displayed in the report.",
+                            "type": "string"
+                        },
+                        {
+                            "name": "group",
+                            "description": "Specifies the endpoint group to deliver the report to.",
+                            "optional": true,
+                            "type": "string"
+                        }
+                    ]
+                }
+            ],
+            "events": []
         },
         {
             "domain": "Tethering",

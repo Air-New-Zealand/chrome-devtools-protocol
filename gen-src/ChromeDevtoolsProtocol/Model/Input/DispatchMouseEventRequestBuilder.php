@@ -1,4 +1,5 @@
 <?php
+
 namespace ChromeDevtoolsProtocol\Model\Input;
 
 use ChromeDevtoolsProtocol\Exception\BuilderException;
@@ -22,11 +23,15 @@ final class DispatchMouseEventRequestBuilder
 
 	private $button;
 
+	private $buttons;
+
 	private $clickCount;
 
 	private $deltaX;
 
 	private $deltaY;
+
+	private $pointerType;
 
 
 	/**
@@ -50,9 +55,11 @@ final class DispatchMouseEventRequestBuilder
 		$instance->modifiers = $this->modifiers;
 		$instance->timestamp = $this->timestamp;
 		$instance->button = $this->button;
+		$instance->buttons = $this->buttons;
 		$instance->clickCount = $this->clickCount;
 		$instance->deltaX = $this->deltaX;
 		$instance->deltaY = $this->deltaY;
+		$instance->pointerType = $this->pointerType;
 		return $instance;
 	}
 
@@ -130,6 +137,18 @@ final class DispatchMouseEventRequestBuilder
 
 
 	/**
+	 * @param int|null $buttons
+	 *
+	 * @return self
+	 */
+	public function setButtons($buttons): self
+	{
+		$this->buttons = $buttons;
+		return $this;
+	}
+
+
+	/**
 	 * @param int|null $clickCount
 	 *
 	 * @return self
@@ -161,6 +180,18 @@ final class DispatchMouseEventRequestBuilder
 	public function setDeltaY($deltaY): self
 	{
 		$this->deltaY = $deltaY;
+		return $this;
+	}
+
+
+	/**
+	 * @param string|null $pointerType
+	 *
+	 * @return self
+	 */
+	public function setPointerType($pointerType): self
+	{
+		$this->pointerType = $pointerType;
 		return $this;
 	}
 }

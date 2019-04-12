@@ -1,4 +1,5 @@
 <?php
+
 namespace ChromeDevtoolsProtocol\Domain;
 
 use ChromeDevtoolsProtocol\ContextInterface;
@@ -6,6 +7,8 @@ use ChromeDevtoolsProtocol\InternalClientInterface;
 use ChromeDevtoolsProtocol\Model\IndexedDB\ClearObjectStoreRequest;
 use ChromeDevtoolsProtocol\Model\IndexedDB\DeleteDatabaseRequest;
 use ChromeDevtoolsProtocol\Model\IndexedDB\DeleteObjectStoreEntriesRequest;
+use ChromeDevtoolsProtocol\Model\IndexedDB\GetMetadataRequest;
+use ChromeDevtoolsProtocol\Model\IndexedDB\GetMetadataResponse;
 use ChromeDevtoolsProtocol\Model\IndexedDB\RequestDataRequest;
 use ChromeDevtoolsProtocol\Model\IndexedDB\RequestDataResponse;
 use ChromeDevtoolsProtocol\Model\IndexedDB\RequestDatabaseNamesRequest;
@@ -54,6 +57,13 @@ class IndexedDBDomain implements IndexedDBDomainInterface
 	{
 		$request = new \stdClass();
 		$this->internalClient->executeCommand($ctx, 'IndexedDB.enable', $request);
+	}
+
+
+	public function getMetadata(ContextInterface $ctx, GetMetadataRequest $request): GetMetadataResponse
+	{
+		$response = $this->internalClient->executeCommand($ctx, 'IndexedDB.getMetadata', $request);
+		return GetMetadataResponse::fromJson($response);
 	}
 
 

@@ -1,4 +1,5 @@
 <?php
+
 namespace ChromeDevtoolsProtocol\Model\CacheStorage;
 
 /**
@@ -11,7 +12,7 @@ namespace ChromeDevtoolsProtocol\Model\CacheStorage;
 final class RequestCachedResponseRequest implements \JsonSerializable
 {
 	/**
-	 * Id of cache that contains the enty.
+	 * Id of cache that contains the entry.
 	 *
 	 * @var string
 	 */
@@ -24,6 +25,13 @@ final class RequestCachedResponseRequest implements \JsonSerializable
 	 */
 	public $requestURL;
 
+	/**
+	 * headers of the request.
+	 *
+	 * @var Header[]
+	 */
+	public $requestHeaders;
+
 
 	public static function fromJson($data)
 	{
@@ -33,6 +41,12 @@ final class RequestCachedResponseRequest implements \JsonSerializable
 		}
 		if (isset($data->requestURL)) {
 			$instance->requestURL = (string)$data->requestURL;
+		}
+		if (isset($data->requestHeaders)) {
+			$instance->requestHeaders = [];
+			foreach ($data->requestHeaders as $item) {
+				$instance->requestHeaders[] = Header::fromJson($item);
+			}
 		}
 		return $instance;
 	}
@@ -46,6 +60,12 @@ final class RequestCachedResponseRequest implements \JsonSerializable
 		}
 		if ($this->requestURL !== null) {
 			$data->requestURL = $this->requestURL;
+		}
+		if ($this->requestHeaders !== null) {
+			$data->requestHeaders = [];
+			foreach ($this->requestHeaders as $item) {
+				$data->requestHeaders[] = $item->jsonSerialize();
+			}
 		}
 		return $data;
 	}

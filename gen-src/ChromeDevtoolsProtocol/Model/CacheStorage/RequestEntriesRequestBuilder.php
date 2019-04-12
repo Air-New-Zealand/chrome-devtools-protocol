@@ -1,4 +1,5 @@
 <?php
+
 namespace ChromeDevtoolsProtocol\Model\CacheStorage;
 
 use ChromeDevtoolsProtocol\Exception\BuilderException;
@@ -15,6 +16,8 @@ final class RequestEntriesRequestBuilder
 	private $skipCount;
 
 	private $pageSize;
+
+	private $pathFilter;
 
 
 	/**
@@ -35,6 +38,7 @@ final class RequestEntriesRequestBuilder
 			throw new BuilderException('Property [pageSize] is required.');
 		}
 		$instance->pageSize = $this->pageSize;
+		$instance->pathFilter = $this->pathFilter;
 		return $instance;
 	}
 
@@ -71,6 +75,18 @@ final class RequestEntriesRequestBuilder
 	public function setPageSize($pageSize): self
 	{
 		$this->pageSize = $pageSize;
+		return $this;
+	}
+
+
+	/**
+	 * @param string|null $pathFilter
+	 *
+	 * @return self
+	 */
+	public function setPathFilter($pathFilter): self
+	{
+		$this->pathFilter = $pathFilter;
 		return $this;
 	}
 }

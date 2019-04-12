@@ -1,4 +1,5 @@
 <?php
+
 namespace ChromeDevtoolsProtocol\Domain;
 
 use ChromeDevtoolsProtocol\ContextInterface;
@@ -26,6 +27,8 @@ use ChromeDevtoolsProtocol\Model\DOM\GetContentQuadsRequest;
 use ChromeDevtoolsProtocol\Model\DOM\GetContentQuadsResponse;
 use ChromeDevtoolsProtocol\Model\DOM\GetDocumentRequest;
 use ChromeDevtoolsProtocol\Model\DOM\GetDocumentResponse;
+use ChromeDevtoolsProtocol\Model\DOM\GetFileInfoRequest;
+use ChromeDevtoolsProtocol\Model\DOM\GetFileInfoResponse;
 use ChromeDevtoolsProtocol\Model\DOM\GetFlattenedDocumentRequest;
 use ChromeDevtoolsProtocol\Model\DOM\GetFlattenedDocumentResponse;
 use ChromeDevtoolsProtocol\Model\DOM\GetFrameOwnerRequest;
@@ -202,6 +205,17 @@ interface DOMDomainInterface
 
 
 	/**
+	 * Returns file information for the given File wrapper.
+	 *
+	 * @param ContextInterface $ctx
+	 * @param GetFileInfoRequest $request
+	 *
+	 * @return GetFileInfoResponse
+	 */
+	public function getFileInfo(ContextInterface $ctx, GetFileInfoRequest $request): GetFileInfoResponse;
+
+
+	/**
 	 * Returns the root DOM node (and optionally the subtree) to the caller.
 	 *
 	 * @param ContextInterface $ctx
@@ -224,7 +238,7 @@ interface DOMDomainInterface
 
 
 	/**
-	 * Returns node id at given location.
+	 * Returns node id at given location. Depending on whether DOM domain is enabled, nodeId is either returned or not.
 	 *
 	 * @param ContextInterface $ctx
 	 * @param GetNodeForLocationRequest $request

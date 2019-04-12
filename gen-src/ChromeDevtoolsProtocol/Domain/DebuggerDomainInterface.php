@@ -1,9 +1,11 @@
 <?php
+
 namespace ChromeDevtoolsProtocol\Domain;
 
 use ChromeDevtoolsProtocol\ContextInterface;
 use ChromeDevtoolsProtocol\Model\Debugger\BreakpointResolvedEvent;
 use ChromeDevtoolsProtocol\Model\Debugger\ContinueToLocationRequest;
+use ChromeDevtoolsProtocol\Model\Debugger\EnableRequest;
 use ChromeDevtoolsProtocol\Model\Debugger\EnableResponse;
 use ChromeDevtoolsProtocol\Model\Debugger\EvaluateOnCallFrameRequest;
 use ChromeDevtoolsProtocol\Model\Debugger\EvaluateOnCallFrameResponse;
@@ -76,10 +78,11 @@ interface DebuggerDomainInterface
 	 * Enables debugger for the given page. Clients should not assume that the debugging has been enabled until the result for this command is received.
 	 *
 	 * @param ContextInterface $ctx
+	 * @param EnableRequest $request
 	 *
 	 * @return EnableResponse
 	 */
-	public function enable(ContextInterface $ctx): EnableResponse;
+	public function enable(ContextInterface $ctx, EnableRequest $request): EnableResponse;
 
 
 	/**
@@ -177,16 +180,6 @@ interface DebuggerDomainInterface
 	 * @return void
 	 */
 	public function resume(ContextInterface $ctx): void;
-
-
-	/**
-	 * This method is deprecated - use Debugger.stepInto with breakOnAsyncCall and Debugger.pauseOnAsyncTask instead. Steps into next scheduled async task if any is scheduled before next pause. Returns success when async task is actually scheduled, returns error if no task were scheduled or another scheduleStepIntoAsync was called.
-	 *
-	 * @param ContextInterface $ctx
-	 *
-	 * @return void
-	 */
-	public function scheduleStepIntoAsync(ContextInterface $ctx): void;
 
 
 	/**

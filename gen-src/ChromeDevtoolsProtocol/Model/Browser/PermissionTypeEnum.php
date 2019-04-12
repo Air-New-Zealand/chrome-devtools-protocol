@@ -1,4 +1,5 @@
 <?php
+
 namespace ChromeDevtoolsProtocol\Model\Browser;
 
 /**
@@ -13,6 +14,7 @@ final class PermissionTypeEnum
 	const ACCESSIBILITY_EVENTS = 'accessibilityEvents';
 	const AUDIO_CAPTURE = 'audioCapture';
 	const BACKGROUND_SYNC = 'backgroundSync';
+	const BACKGROUND_FETCH = 'backgroundFetch';
 	const CLIPBOARD_READ = 'clipboardRead';
 	const CLIPBOARD_WRITE = 'clipboardWrite';
 	const DURABLE_STORAGE = 'durableStorage';
@@ -25,5 +27,5 @@ final class PermissionTypeEnum
 	const PROTECTED_MEDIA_IDENTIFIER = 'protectedMediaIdentifier';
 	const SENSORS = 'sensors';
 	const VIDEO_CAPTURE = 'videoCapture';
-
+	const IDLE_DETECTION = 'idleDetection';
 }

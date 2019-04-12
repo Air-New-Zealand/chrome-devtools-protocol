@@ -1,4 +1,5 @@
 <?php
+
 namespace ChromeDevtoolsProtocol\Domain;
 
 use ChromeDevtoolsProtocol\ContextInterface;
@@ -9,6 +10,8 @@ use ChromeDevtoolsProtocol\Model\Page\AddScriptToEvaluateOnNewDocumentRequest;
 use ChromeDevtoolsProtocol\Model\Page\AddScriptToEvaluateOnNewDocumentResponse;
 use ChromeDevtoolsProtocol\Model\Page\CaptureScreenshotRequest;
 use ChromeDevtoolsProtocol\Model\Page\CaptureScreenshotResponse;
+use ChromeDevtoolsProtocol\Model\Page\CaptureSnapshotRequest;
+use ChromeDevtoolsProtocol\Model\Page\CaptureSnapshotResponse;
 use ChromeDevtoolsProtocol\Model\Page\CompilationCacheProducedEvent;
 use ChromeDevtoolsProtocol\Model\Page\CreateIsolatedWorldRequest;
 use ChromeDevtoolsProtocol\Model\Page\CreateIsolatedWorldResponse;
@@ -18,6 +21,7 @@ use ChromeDevtoolsProtocol\Model\Page\FrameAttachedEvent;
 use ChromeDevtoolsProtocol\Model\Page\FrameClearedScheduledNavigationEvent;
 use ChromeDevtoolsProtocol\Model\Page\FrameDetachedEvent;
 use ChromeDevtoolsProtocol\Model\Page\FrameNavigatedEvent;
+use ChromeDevtoolsProtocol\Model\Page\FrameRequestedNavigationEvent;
 use ChromeDevtoolsProtocol\Model\Page\FrameResizedEvent;
 use ChromeDevtoolsProtocol\Model\Page\FrameScheduledNavigationEvent;
 use ChromeDevtoolsProtocol\Model\Page\FrameStartedLoadingEvent;
@@ -26,6 +30,7 @@ use ChromeDevtoolsProtocol\Model\Page\GenerateTestReportRequest;
 use ChromeDevtoolsProtocol\Model\Page\GetAppManifestResponse;
 use ChromeDevtoolsProtocol\Model\Page\GetCookiesResponse;
 use ChromeDevtoolsProtocol\Model\Page\GetFrameTreeResponse;
+use ChromeDevtoolsProtocol\Model\Page\GetInstallabilityErrorsResponse;
 use ChromeDevtoolsProtocol\Model\Page\GetLayoutMetricsResponse;
 use ChromeDevtoolsProtocol\Model\Page\GetNavigationHistoryResponse;
 use ChromeDevtoolsProtocol\Model\Page\GetResourceContentRequest;
@@ -130,6 +135,17 @@ interface PageDomainInterface
 	 * @return CaptureScreenshotResponse
 	 */
 	public function captureScreenshot(ContextInterface $ctx, CaptureScreenshotRequest $request): CaptureScreenshotResponse;
+
+
+	/**
+	 * Returns a snapshot of the page as a string. For MHTML format, the serialization includes iframes, shadow DOM, external resources, and element-inline styles.
+	 *
+	 * @param ContextInterface $ctx
+	 * @param CaptureSnapshotRequest $request
+	 *
+	 * @return CaptureSnapshotResponse
+	 */
+	public function captureSnapshot(ContextInterface $ctx, CaptureSnapshotRequest $request): CaptureSnapshotResponse;
 
 
 	/**
@@ -276,6 +292,16 @@ interface PageDomainInterface
 
 
 	/**
+	 * Call Page.getInstallabilityErrors command.
+	 *
+	 * @param ContextInterface $ctx
+	 *
+	 * @return GetInstallabilityErrorsResponse
+	 */
+	public function getInstallabilityErrors(ContextInterface $ctx): GetInstallabilityErrorsResponse;
+
+
+	/**
 	 * Returns metrics relating to the layouting of the page, such as viewport bounds/scale.
 	 *
 	 * @param ContextInterface $ctx
@@ -394,13 +420,13 @@ interface PageDomainInterface
 
 
 	/**
-	 * Call Page.requestAppBanner command.
+	 * Resets navigation history for the current page.
 	 *
 	 * @param ContextInterface $ctx
 	 *
 	 * @return void
 	 */
-	public function requestAppBanner(ContextInterface $ctx): void;
+	public function resetNavigationHistory(ContextInterface $ctx): void;
 
 
 	/**
@@ -600,6 +626,16 @@ interface PageDomainInterface
 
 
 	/**
+	 * Pauses page execution. Can be resumed using generic Runtime.runIfWaitingForDebugger.
+	 *
+	 * @param ContextInterface $ctx
+	 *
+	 * @return void
+	 */
+	public function waitForDebugger(ContextInterface $ctx): void;
+
+
+	/**
 	 * Issued for every compilation cache generated. Is only available if Page.setGenerateCompilationCache is enabled.
 	 *
 	 * Listener will be called whenever event Page.compilationCacheProduced is fired.
@@ -741,6 +777,30 @@ interface PageDomainInterface
 	 * @return FrameNavigatedEvent
 	 */
 	public function awaitFrameNavigated(ContextInterface $ctx): FrameNavigatedEvent;
+
+
+	/**
+	 * Fired when a renderer-initiated navigation is requested. Navigation may still be cancelled after the event is issued.
+	 *
+	 * Listener will be called whenever event Page.frameRequestedNavigation is fired.
+	 *
+	 * @param callable $listener
+	 *
+	 * @return SubscriptionInterface
+	 */
+	public function addFrameRequestedNavigationListener(callable $listener): SubscriptionInterface;
+
+
+	/**
+	 * Fired when a renderer-initiated navigation is requested. Navigation may still be cancelled after the event is issued.
+	 *
+	 * Method will block until first Page.frameRequestedNavigation event is fired.
+	 *
+	 * @param ContextInterface $ctx
+	 *
+	 * @return FrameRequestedNavigationEvent
+	 */
+	public function awaitFrameRequestedNavigation(ContextInterface $ctx): FrameRequestedNavigationEvent;
 
 
 	/**

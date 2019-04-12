@@ -1,4 +1,5 @@
 <?php
+
 namespace ChromeDevtoolsProtocol\Domain;
 
 use ChromeDevtoolsProtocol\ContextInterface;
@@ -332,7 +333,7 @@ interface NetworkDomainInterface
 
 
 	/**
-	 * Sets the requests to intercept that match a the provided patterns and optionally resource types.
+	 * Sets the requests to intercept that match the provided patterns and optionally resource types.
 	 *
 	 * @param ContextInterface $ctx
 	 * @param SetRequestInterceptionRequest $request
@@ -653,7 +654,7 @@ interface NetworkDomainInterface
 
 
 	/**
-	 * Fired when WebSocket frame error occurs.
+	 * Fired when WebSocket message error occurs.
 	 *
 	 * Listener will be called whenever event Network.webSocketFrameError is fired.
 	 *
@@ -665,7 +666,7 @@ interface NetworkDomainInterface
 
 
 	/**
-	 * Fired when WebSocket frame error occurs.
+	 * Fired when WebSocket message error occurs.
 	 *
 	 * Method will block until first Network.webSocketFrameError event is fired.
 	 *
@@ -677,7 +678,7 @@ interface NetworkDomainInterface
 
 
 	/**
-	 * Fired when WebSocket frame is received.
+	 * Fired when WebSocket message is received.
 	 *
 	 * Listener will be called whenever event Network.webSocketFrameReceived is fired.
 	 *
@@ -689,7 +690,7 @@ interface NetworkDomainInterface
 
 
 	/**
-	 * Fired when WebSocket frame is received.
+	 * Fired when WebSocket message is received.
 	 *
 	 * Method will block until first Network.webSocketFrameReceived event is fired.
 	 *
@@ -701,7 +702,7 @@ interface NetworkDomainInterface
 
 
 	/**
-	 * Fired when WebSocket frame is sent.
+	 * Fired when WebSocket message is sent.
 	 *
 	 * Listener will be called whenever event Network.webSocketFrameSent is fired.
 	 *
@@ -713,7 +714,7 @@ interface NetworkDomainInterface
 
 
 	/**
-	 * Fired when WebSocket frame is sent.
+	 * Fired when WebSocket message is sent.
 	 *
 	 * Method will block until first Network.webSocketFrameSent event is fired.
 	 *

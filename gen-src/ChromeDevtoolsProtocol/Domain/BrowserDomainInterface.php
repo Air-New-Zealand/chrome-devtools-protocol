@@ -1,4 +1,5 @@
 <?php
+
 namespace ChromeDevtoolsProtocol\Domain;
 
 use ChromeDevtoolsProtocol\ContextInterface;
@@ -14,6 +15,7 @@ use ChromeDevtoolsProtocol\Model\Browser\GetWindowForTargetRequest;
 use ChromeDevtoolsProtocol\Model\Browser\GetWindowForTargetResponse;
 use ChromeDevtoolsProtocol\Model\Browser\GrantPermissionsRequest;
 use ChromeDevtoolsProtocol\Model\Browser\ResetPermissionsRequest;
+use ChromeDevtoolsProtocol\Model\Browser\SetDockTileRequest;
 use ChromeDevtoolsProtocol\Model\Browser\SetWindowBoundsRequest;
 
 /**
@@ -43,6 +45,16 @@ interface BrowserDomainInterface
 	 * @return void
 	 */
 	public function crash(ContextInterface $ctx): void;
+
+
+	/**
+	 * Crashes GPU process.
+	 *
+	 * @param ContextInterface $ctx
+	 *
+	 * @return void
+	 */
+	public function crashGpuProcess(ContextInterface $ctx): void;
 
 
 	/**
@@ -129,6 +141,17 @@ interface BrowserDomainInterface
 	 * @return void
 	 */
 	public function resetPermissions(ContextInterface $ctx, ResetPermissionsRequest $request): void;
+
+
+	/**
+	 * Set dock tile details, platform-specific.
+	 *
+	 * @param ContextInterface $ctx
+	 * @param SetDockTileRequest $request
+	 *
+	 * @return void
+	 */
+	public function setDockTile(ContextInterface $ctx, SetDockTileRequest $request): void;
 
 
 	/**

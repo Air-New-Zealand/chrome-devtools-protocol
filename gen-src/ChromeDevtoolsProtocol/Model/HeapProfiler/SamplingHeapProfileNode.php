@@ -1,4 +1,5 @@
 <?php
+
 namespace ChromeDevtoolsProtocol\Model\HeapProfiler;
 
 use ChromeDevtoolsProtocol\Model\Runtime\CallFrame;
@@ -27,6 +28,13 @@ final class SamplingHeapProfileNode implements \JsonSerializable
 	public $selfSize;
 
 	/**
+	 * Node id. Ids are unique across all profiles collected between startSampling and stopSampling.
+	 *
+	 * @var int
+	 */
+	public $id;
+
+	/**
 	 * Child nodes.
 	 *
 	 * @var SamplingHeapProfileNode[]
@@ -42,6 +50,9 @@ final class SamplingHeapProfileNode implements \JsonSerializable
 		}
 		if (isset($data->selfSize)) {
 			$instance->selfSize = $data->selfSize;
+		}
+		if (isset($data->id)) {
+			$instance->id = (int)$data->id;
 		}
 		if (isset($data->children)) {
 			$instance->children = [];
@@ -61,6 +72,9 @@ final class SamplingHeapProfileNode implements \JsonSerializable
 		}
 		if ($this->selfSize !== null) {
 			$data->selfSize = $this->selfSize;
+		}
+		if ($this->id !== null) {
+			$data->id = $this->id;
 		}
 		if ($this->children !== null) {
 			$data->children = [];

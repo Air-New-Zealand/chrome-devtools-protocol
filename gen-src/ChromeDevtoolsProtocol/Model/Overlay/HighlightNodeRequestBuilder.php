@@ -1,4 +1,5 @@
 <?php
+
 namespace ChromeDevtoolsProtocol\Model\Overlay;
 
 use ChromeDevtoolsProtocol\Exception\BuilderException;
@@ -18,6 +19,8 @@ final class HighlightNodeRequestBuilder
 
 	private $objectId;
 
+	private $selector;
+
 
 	/**
 	 * Validate non-optional parameters and return new instance.
@@ -32,6 +35,7 @@ final class HighlightNodeRequestBuilder
 		$instance->nodeId = $this->nodeId;
 		$instance->backendNodeId = $this->backendNodeId;
 		$instance->objectId = $this->objectId;
+		$instance->selector = $this->selector;
 		return $instance;
 	}
 
@@ -80,6 +84,18 @@ final class HighlightNodeRequestBuilder
 	public function setObjectId($objectId): self
 	{
 		$this->objectId = $objectId;
+		return $this;
+	}
+
+
+	/**
+	 * @param string|null $selector
+	 *
+	 * @return self
+	 */
+	public function setSelector($selector): self
+	{
+		$this->selector = $selector;
 		return $this;
 	}
 }

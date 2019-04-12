@@ -1,13 +1,16 @@
 <?php
+
 namespace ChromeDevtoolsProtocol;
 
 use ChromeDevtoolsProtocol\Domain\AccessibilityDomainInterface;
 use ChromeDevtoolsProtocol\Domain\AnimationDomainInterface;
 use ChromeDevtoolsProtocol\Domain\ApplicationCacheDomainInterface;
 use ChromeDevtoolsProtocol\Domain\AuditsDomainInterface;
+use ChromeDevtoolsProtocol\Domain\BackgroundServiceDomainInterface;
 use ChromeDevtoolsProtocol\Domain\BrowserDomainInterface;
 use ChromeDevtoolsProtocol\Domain\CSSDomainInterface;
 use ChromeDevtoolsProtocol\Domain\CacheStorageDomainInterface;
+use ChromeDevtoolsProtocol\Domain\CastDomainInterface;
 use ChromeDevtoolsProtocol\Domain\ConsoleDomainInterface;
 use ChromeDevtoolsProtocol\Domain\DOMDebuggerDomainInterface;
 use ChromeDevtoolsProtocol\Domain\DOMDomainInterface;
@@ -17,6 +20,7 @@ use ChromeDevtoolsProtocol\Domain\DatabaseDomainInterface;
 use ChromeDevtoolsProtocol\Domain\DebuggerDomainInterface;
 use ChromeDevtoolsProtocol\Domain\DeviceOrientationDomainInterface;
 use ChromeDevtoolsProtocol\Domain\EmulationDomainInterface;
+use ChromeDevtoolsProtocol\Domain\FetchDomainInterface;
 use ChromeDevtoolsProtocol\Domain\HeadlessExperimentalDomainInterface;
 use ChromeDevtoolsProtocol\Domain\HeapProfilerDomainInterface;
 use ChromeDevtoolsProtocol\Domain\IODomainInterface;
@@ -38,7 +42,6 @@ use ChromeDevtoolsProtocol\Domain\ServiceWorkerDomainInterface;
 use ChromeDevtoolsProtocol\Domain\StorageDomainInterface;
 use ChromeDevtoolsProtocol\Domain\SystemInfoDomainInterface;
 use ChromeDevtoolsProtocol\Domain\TargetDomainInterface;
-use ChromeDevtoolsProtocol\Domain\TestingDomainInterface;
 use ChromeDevtoolsProtocol\Domain\TetheringDomainInterface;
 use ChromeDevtoolsProtocol\Domain\TracingDomainInterface;
 
@@ -84,6 +87,14 @@ interface DevtoolsClientInterface extends CloseableResourceInterface
 
 
 	/**
+	 * Defines events for background web platform features.
+	 *
+	 * @experimental
+	 */
+	public function backgroundService(): BackgroundServiceDomainInterface;
+
+
+	/**
 	 * The Browser domain defines methods and events for browser managing.
 	 */
 	public function browser(): BrowserDomainInterface;
@@ -95,6 +106,14 @@ interface DevtoolsClientInterface extends CloseableResourceInterface
 	 * @experimental
 	 */
 	public function cacheStorage(): CacheStorageDomainInterface;
+
+
+	/**
+	 * A domain for interacting with Cast, Presentation API, and Remote Playback API functionalities.
+	 *
+	 * @experimental
+	 */
+	public function cast(): CastDomainInterface;
 
 
 	/**
@@ -165,6 +184,14 @@ interface DevtoolsClientInterface extends CloseableResourceInterface
 	 * This domain emulates different environments for the page.
 	 */
 	public function emulation(): EmulationDomainInterface;
+
+
+	/**
+	 * A domain for letting clients substitute browser's network layer with client code.
+	 *
+	 * @experimental
+	 */
+	public function fetch(): FetchDomainInterface;
 
 
 	/**
@@ -311,14 +338,6 @@ interface DevtoolsClientInterface extends CloseableResourceInterface
 	 * Supports additional targets discovery and allows to attach to them.
 	 */
 	public function target(): TargetDomainInterface;
-
-
-	/**
-	 * Testing domain is a dumping ground for the capabilities requires for browser or app testing that do not fit other domains.
-	 *
-	 * @experimental
-	 */
-	public function testing(): TestingDomainInterface;
 
 
 	/**

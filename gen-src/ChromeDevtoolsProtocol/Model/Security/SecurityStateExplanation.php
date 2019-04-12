@@ -1,4 +1,5 @@
 <?php
+
 namespace ChromeDevtoolsProtocol\Model\Security;
 
 /**
@@ -52,6 +53,13 @@ final class SecurityStateExplanation implements \JsonSerializable
 	 */
 	public $certificate;
 
+	/**
+	 * Recommendations to fix any issues.
+	 *
+	 * @var string[]|null
+	 */
+	public $recommendations;
+
 
 	public static function fromJson($data)
 	{
@@ -75,6 +83,12 @@ final class SecurityStateExplanation implements \JsonSerializable
 			$instance->certificate = [];
 			foreach ($data->certificate as $item) {
 				$instance->certificate[] = (string)$item;
+			}
+		}
+		if (isset($data->recommendations)) {
+			$instance->recommendations = [];
+			foreach ($data->recommendations as $item) {
+				$instance->recommendations[] = (string)$item;
 			}
 		}
 		return $instance;
@@ -103,6 +117,12 @@ final class SecurityStateExplanation implements \JsonSerializable
 			$data->certificate = [];
 			foreach ($this->certificate as $item) {
 				$data->certificate[] = $item;
+			}
+		}
+		if ($this->recommendations !== null) {
+			$data->recommendations = [];
+			foreach ($this->recommendations as $item) {
+				$data->recommendations[] = $item;
 			}
 		}
 		return $data;

@@ -1,4 +1,5 @@
 <?php
+
 namespace ChromeDevtoolsProtocol\Domain;
 
 use ChromeDevtoolsProtocol\ContextInterface;
@@ -8,17 +9,19 @@ use ChromeDevtoolsProtocol\Model\Overlay\HighlightFrameRequest;
 use ChromeDevtoolsProtocol\Model\Overlay\HighlightNodeRequest;
 use ChromeDevtoolsProtocol\Model\Overlay\HighlightQuadRequest;
 use ChromeDevtoolsProtocol\Model\Overlay\HighlightRectRequest;
+use ChromeDevtoolsProtocol\Model\Overlay\InspectModeCanceledEvent;
 use ChromeDevtoolsProtocol\Model\Overlay\InspectNodeRequestedEvent;
 use ChromeDevtoolsProtocol\Model\Overlay\NodeHighlightRequestedEvent;
 use ChromeDevtoolsProtocol\Model\Overlay\ScreenshotRequestedEvent;
 use ChromeDevtoolsProtocol\Model\Overlay\SetInspectModeRequest;
 use ChromeDevtoolsProtocol\Model\Overlay\SetPausedInDebuggerMessageRequest;
+use ChromeDevtoolsProtocol\Model\Overlay\SetShowAdHighlightsRequest;
 use ChromeDevtoolsProtocol\Model\Overlay\SetShowDebugBordersRequest;
 use ChromeDevtoolsProtocol\Model\Overlay\SetShowFPSCounterRequest;
+use ChromeDevtoolsProtocol\Model\Overlay\SetShowHitTestBordersRequest;
 use ChromeDevtoolsProtocol\Model\Overlay\SetShowPaintRectsRequest;
 use ChromeDevtoolsProtocol\Model\Overlay\SetShowScrollBottleneckRectsRequest;
 use ChromeDevtoolsProtocol\Model\Overlay\SetShowViewportSizeOnResizeRequest;
-use ChromeDevtoolsProtocol\Model\Overlay\SetSuspendedRequest;
 use ChromeDevtoolsProtocol\SubscriptionInterface;
 
 /**
@@ -140,6 +143,17 @@ interface OverlayDomainInterface
 
 
 	/**
+	 * Highlights owner element of all frames detected to be ads.
+	 *
+	 * @param ContextInterface $ctx
+	 * @param SetShowAdHighlightsRequest $request
+	 *
+	 * @return void
+	 */
+	public function setShowAdHighlights(ContextInterface $ctx, SetShowAdHighlightsRequest $request): void;
+
+
+	/**
 	 * Requests that backend shows debug borders on layers
 	 *
 	 * @param ContextInterface $ctx
@@ -159,6 +173,17 @@ interface OverlayDomainInterface
 	 * @return void
 	 */
 	public function setShowFPSCounter(ContextInterface $ctx, SetShowFPSCounterRequest $request): void;
+
+
+	/**
+	 * Requests that backend shows hit-test borders on layers
+	 *
+	 * @param ContextInterface $ctx
+	 * @param SetShowHitTestBordersRequest $request
+	 *
+	 * @return void
+	 */
+	public function setShowHitTestBorders(ContextInterface $ctx, SetShowHitTestBordersRequest $request): void;
 
 
 	/**
@@ -195,14 +220,27 @@ interface OverlayDomainInterface
 
 
 	/**
-	 * Call Overlay.setSuspended command.
+	 * Fired when user cancels the inspect mode.
+	 *
+	 * Listener will be called whenever event Overlay.inspectModeCanceled is fired.
+	 *
+	 * @param callable $listener
+	 *
+	 * @return SubscriptionInterface
+	 */
+	public function addInspectModeCanceledListener(callable $listener): SubscriptionInterface;
+
+
+	/**
+	 * Fired when user cancels the inspect mode.
+	 *
+	 * Method will block until first Overlay.inspectModeCanceled event is fired.
 	 *
 	 * @param ContextInterface $ctx
-	 * @param SetSuspendedRequest $request
 	 *
-	 * @return void
+	 * @return InspectModeCanceledEvent
 	 */
-	public function setSuspended(ContextInterface $ctx, SetSuspendedRequest $request): void;
+	public function awaitInspectModeCanceled(ContextInterface $ctx): InspectModeCanceledEvent;
 
 
 	/**

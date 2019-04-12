@@ -1,4 +1,5 @@
 <?php
+
 namespace ChromeDevtoolsProtocol\Model\Input;
 
 /**
@@ -53,6 +54,13 @@ final class DispatchMouseEventRequest implements \JsonSerializable
 	public $button;
 
 	/**
+	 * A number indicating which buttons are pressed on the mouse when a mouse event is triggered. Left=1, Right=2, Middle=4, Back=8, Forward=16, None=0.
+	 *
+	 * @var int|null
+	 */
+	public $buttons;
+
+	/**
 	 * Number of times the mouse button was clicked (default: 0).
 	 *
 	 * @var int|null
@@ -72,6 +80,13 @@ final class DispatchMouseEventRequest implements \JsonSerializable
 	 * @var int|float|null
 	 */
 	public $deltaY;
+
+	/**
+	 * Pointer type (default: "mouse").
+	 *
+	 * @var string|null
+	 */
+	public $pointerType;
 
 
 	public static function fromJson($data)
@@ -95,6 +110,9 @@ final class DispatchMouseEventRequest implements \JsonSerializable
 		if (isset($data->button)) {
 			$instance->button = (string)$data->button;
 		}
+		if (isset($data->buttons)) {
+			$instance->buttons = (int)$data->buttons;
+		}
 		if (isset($data->clickCount)) {
 			$instance->clickCount = (int)$data->clickCount;
 		}
@@ -103,6 +121,9 @@ final class DispatchMouseEventRequest implements \JsonSerializable
 		}
 		if (isset($data->deltaY)) {
 			$instance->deltaY = $data->deltaY;
+		}
+		if (isset($data->pointerType)) {
+			$instance->pointerType = (string)$data->pointerType;
 		}
 		return $instance;
 	}
@@ -129,6 +150,9 @@ final class DispatchMouseEventRequest implements \JsonSerializable
 		if ($this->button !== null) {
 			$data->button = $this->button;
 		}
+		if ($this->buttons !== null) {
+			$data->buttons = $this->buttons;
+		}
 		if ($this->clickCount !== null) {
 			$data->clickCount = $this->clickCount;
 		}
@@ -137,6 +161,9 @@ final class DispatchMouseEventRequest implements \JsonSerializable
 		}
 		if ($this->deltaY !== null) {
 			$data->deltaY = $this->deltaY;
+		}
+		if ($this->pointerType !== null) {
+			$data->pointerType = $this->pointerType;
 		}
 		return $data;
 	}

@@ -1,4 +1,5 @@
 <?php
+
 namespace ChromeDevtoolsProtocol\Domain;
 
 use ChromeDevtoolsProtocol\ContextInterface;
@@ -10,6 +11,8 @@ use ChromeDevtoolsProtocol\Model\Page\AddScriptToEvaluateOnNewDocumentRequest;
 use ChromeDevtoolsProtocol\Model\Page\AddScriptToEvaluateOnNewDocumentResponse;
 use ChromeDevtoolsProtocol\Model\Page\CaptureScreenshotRequest;
 use ChromeDevtoolsProtocol\Model\Page\CaptureScreenshotResponse;
+use ChromeDevtoolsProtocol\Model\Page\CaptureSnapshotRequest;
+use ChromeDevtoolsProtocol\Model\Page\CaptureSnapshotResponse;
 use ChromeDevtoolsProtocol\Model\Page\CompilationCacheProducedEvent;
 use ChromeDevtoolsProtocol\Model\Page\CreateIsolatedWorldRequest;
 use ChromeDevtoolsProtocol\Model\Page\CreateIsolatedWorldResponse;
@@ -19,6 +22,7 @@ use ChromeDevtoolsProtocol\Model\Page\FrameAttachedEvent;
 use ChromeDevtoolsProtocol\Model\Page\FrameClearedScheduledNavigationEvent;
 use ChromeDevtoolsProtocol\Model\Page\FrameDetachedEvent;
 use ChromeDevtoolsProtocol\Model\Page\FrameNavigatedEvent;
+use ChromeDevtoolsProtocol\Model\Page\FrameRequestedNavigationEvent;
 use ChromeDevtoolsProtocol\Model\Page\FrameResizedEvent;
 use ChromeDevtoolsProtocol\Model\Page\FrameScheduledNavigationEvent;
 use ChromeDevtoolsProtocol\Model\Page\FrameStartedLoadingEvent;
@@ -27,6 +31,7 @@ use ChromeDevtoolsProtocol\Model\Page\GenerateTestReportRequest;
 use ChromeDevtoolsProtocol\Model\Page\GetAppManifestResponse;
 use ChromeDevtoolsProtocol\Model\Page\GetCookiesResponse;
 use ChromeDevtoolsProtocol\Model\Page\GetFrameTreeResponse;
+use ChromeDevtoolsProtocol\Model\Page\GetInstallabilityErrorsResponse;
 use ChromeDevtoolsProtocol\Model\Page\GetLayoutMetricsResponse;
 use ChromeDevtoolsProtocol\Model\Page\GetNavigationHistoryResponse;
 use ChromeDevtoolsProtocol\Model\Page\GetResourceContentRequest;
@@ -113,6 +118,13 @@ class PageDomain implements PageDomainInterface
 	{
 		$response = $this->internalClient->executeCommand($ctx, 'Page.captureScreenshot', $request);
 		return CaptureScreenshotResponse::fromJson($response);
+	}
+
+
+	public function captureSnapshot(ContextInterface $ctx, CaptureSnapshotRequest $request): CaptureSnapshotResponse
+	{
+		$response = $this->internalClient->executeCommand($ctx, 'Page.captureSnapshot', $request);
+		return CaptureSnapshotResponse::fromJson($response);
 	}
 
 
@@ -215,6 +227,14 @@ class PageDomain implements PageDomainInterface
 	}
 
 
+	public function getInstallabilityErrors(ContextInterface $ctx): GetInstallabilityErrorsResponse
+	{
+		$request = new \stdClass();
+		$response = $this->internalClient->executeCommand($ctx, 'Page.getInstallabilityErrors', $request);
+		return GetInstallabilityErrorsResponse::fromJson($response);
+	}
+
+
 	public function getLayoutMetrics(ContextInterface $ctx): GetLayoutMetricsResponse
 	{
 		$request = new \stdClass();
@@ -290,10 +310,10 @@ class PageDomain implements PageDomainInterface
 	}
 
 
-	public function requestAppBanner(ContextInterface $ctx): void
+	public function resetNavigationHistory(ContextInterface $ctx): void
 	{
 		$request = new \stdClass();
-		$this->internalClient->executeCommand($ctx, 'Page.requestAppBanner', $request);
+		$this->internalClient->executeCommand($ctx, 'Page.resetNavigationHistory', $request);
 	}
 
 
@@ -408,6 +428,13 @@ class PageDomain implements PageDomainInterface
 	}
 
 
+	public function waitForDebugger(ContextInterface $ctx): void
+	{
+		$request = new \stdClass();
+		$this->internalClient->executeCommand($ctx, 'Page.waitForDebugger', $request);
+	}
+
+
 	public function addCompilationCacheProducedListener(callable $listener): SubscriptionInterface
 	{
 		return $this->internalClient->addListener('Page.compilationCacheProduced', function ($event) use ($listener) {
@@ -489,6 +516,20 @@ class PageDomain implements PageDomainInterface
 	public function awaitFrameNavigated(ContextInterface $ctx): FrameNavigatedEvent
 	{
 		return FrameNavigatedEvent::fromJson($this->internalClient->awaitEvent($ctx, 'Page.frameNavigated'));
+	}
+
+
+	public function addFrameRequestedNavigationListener(callable $listener): SubscriptionInterface
+	{
+		return $this->internalClient->addListener('Page.frameRequestedNavigation', function ($event) use ($listener) {
+			return $listener(FrameRequestedNavigationEvent::fromJson($event));
+		});
+	}
+
+
+	public function awaitFrameRequestedNavigation(ContextInterface $ctx): FrameRequestedNavigationEvent
+	{
+		return FrameRequestedNavigationEvent::fromJson($this->internalClient->awaitEvent($ctx, 'Page.frameRequestedNavigation'));
 	}
 
 

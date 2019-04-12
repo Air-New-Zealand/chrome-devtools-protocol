@@ -1,4 +1,5 @@
 <?php
+
 namespace ChromeDevtoolsProtocol\Model\IndexedDB;
 
 /**
@@ -18,9 +19,9 @@ final class DatabaseWithObjectStores implements \JsonSerializable
 	public $name;
 
 	/**
-	 * Database version.
+	 * Database version (type is not 'integer', as the standard requires the version number to be 'unsigned long long')
 	 *
-	 * @var int
+	 * @var int|float
 	 */
 	public $version;
 
@@ -39,7 +40,7 @@ final class DatabaseWithObjectStores implements \JsonSerializable
 			$instance->name = (string)$data->name;
 		}
 		if (isset($data->version)) {
-			$instance->version = (int)$data->version;
+			$instance->version = $data->version;
 		}
 		if (isset($data->objectStores)) {
 			$instance->objectStores = [];

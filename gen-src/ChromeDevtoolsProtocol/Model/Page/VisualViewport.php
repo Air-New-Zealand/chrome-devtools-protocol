@@ -1,4 +1,5 @@
 <?php
+
 namespace ChromeDevtoolsProtocol\Model\Page;
 
 /**
@@ -59,6 +60,13 @@ final class VisualViewport implements \JsonSerializable
 	 */
 	public $scale;
 
+	/**
+	 * Page zoom factor (CSS to device independent pixels ratio).
+	 *
+	 * @var int|float|null
+	 */
+	public $zoom;
+
 
 	public static function fromJson($data)
 	{
@@ -83,6 +91,9 @@ final class VisualViewport implements \JsonSerializable
 		}
 		if (isset($data->scale)) {
 			$instance->scale = $data->scale;
+		}
+		if (isset($data->zoom)) {
+			$instance->zoom = $data->zoom;
 		}
 		return $instance;
 	}
@@ -111,6 +122,9 @@ final class VisualViewport implements \JsonSerializable
 		}
 		if ($this->scale !== null) {
 			$data->scale = $this->scale;
+		}
+		if ($this->zoom !== null) {
+			$data->zoom = $this->zoom;
 		}
 		return $data;
 	}

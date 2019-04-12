@@ -1,4 +1,5 @@
 <?php
+
 namespace ChromeDevtoolsProtocol\Model\CSS;
 
 /**
@@ -31,13 +32,6 @@ final class GetBackgroundColorsResponse implements \JsonSerializable
 	 */
 	public $computedFontWeight;
 
-	/**
-	 * The computed font size for the document body, as a computed CSS value string (e.g. '16px').
-	 *
-	 * @var string|null
-	 */
-	public $computedBodyFontSize;
-
 
 	public static function fromJson($data)
 	{
@@ -53,9 +47,6 @@ final class GetBackgroundColorsResponse implements \JsonSerializable
 		}
 		if (isset($data->computedFontWeight)) {
 			$instance->computedFontWeight = (string)$data->computedFontWeight;
-		}
-		if (isset($data->computedBodyFontSize)) {
-			$instance->computedBodyFontSize = (string)$data->computedBodyFontSize;
 		}
 		return $instance;
 	}
@@ -75,9 +66,6 @@ final class GetBackgroundColorsResponse implements \JsonSerializable
 		}
 		if ($this->computedFontWeight !== null) {
 			$data->computedFontWeight = $this->computedFontWeight;
-		}
-		if ($this->computedBodyFontSize !== null) {
-			$data->computedBodyFontSize = $this->computedBodyFontSize;
 		}
 		return $data;
 	}

@@ -1,4 +1,5 @@
 <?php
+
 namespace ChromeDevtoolsProtocol\Model\Overlay;
 
 use ChromeDevtoolsProtocol\Model\Page\Viewport;
@@ -13,7 +14,7 @@ use ChromeDevtoolsProtocol\Model\Page\Viewport;
 final class ScreenshotRequestedEvent implements \JsonSerializable
 {
 	/**
-	 * Viewport to capture, in CSS.
+	 * Viewport to capture, in device independent pixels (dip).
 	 *
 	 * @var Viewport
 	 */

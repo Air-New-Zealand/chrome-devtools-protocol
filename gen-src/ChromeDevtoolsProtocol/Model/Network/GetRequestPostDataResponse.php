@@ -1,4 +1,5 @@
 <?php
+
 namespace ChromeDevtoolsProtocol\Model\Network;
 
 /**
@@ -11,7 +12,7 @@ namespace ChromeDevtoolsProtocol\Model\Network;
 final class GetRequestPostDataResponse implements \JsonSerializable
 {
 	/**
-	 * Base64-encoded request body.
+	 * Request body string, omitting files from multipart requests
 	 *
 	 * @var string
 	 */

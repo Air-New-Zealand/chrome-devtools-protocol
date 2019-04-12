@@ -1,4 +1,5 @@
 <?php
+
 namespace ChromeDevtoolsProtocol;
 
 use ChromeDevtoolsProtocol\Domain\AccessibilityDomain;
@@ -9,12 +10,16 @@ use ChromeDevtoolsProtocol\Domain\ApplicationCacheDomain;
 use ChromeDevtoolsProtocol\Domain\ApplicationCacheDomainInterface;
 use ChromeDevtoolsProtocol\Domain\AuditsDomain;
 use ChromeDevtoolsProtocol\Domain\AuditsDomainInterface;
+use ChromeDevtoolsProtocol\Domain\BackgroundServiceDomain;
+use ChromeDevtoolsProtocol\Domain\BackgroundServiceDomainInterface;
 use ChromeDevtoolsProtocol\Domain\BrowserDomain;
 use ChromeDevtoolsProtocol\Domain\BrowserDomainInterface;
 use ChromeDevtoolsProtocol\Domain\CSSDomain;
 use ChromeDevtoolsProtocol\Domain\CSSDomainInterface;
 use ChromeDevtoolsProtocol\Domain\CacheStorageDomain;
 use ChromeDevtoolsProtocol\Domain\CacheStorageDomainInterface;
+use ChromeDevtoolsProtocol\Domain\CastDomain;
+use ChromeDevtoolsProtocol\Domain\CastDomainInterface;
 use ChromeDevtoolsProtocol\Domain\ConsoleDomain;
 use ChromeDevtoolsProtocol\Domain\ConsoleDomainInterface;
 use ChromeDevtoolsProtocol\Domain\DOMDebuggerDomain;
@@ -33,6 +38,8 @@ use ChromeDevtoolsProtocol\Domain\DeviceOrientationDomain;
 use ChromeDevtoolsProtocol\Domain\DeviceOrientationDomainInterface;
 use ChromeDevtoolsProtocol\Domain\EmulationDomain;
 use ChromeDevtoolsProtocol\Domain\EmulationDomainInterface;
+use ChromeDevtoolsProtocol\Domain\FetchDomain;
+use ChromeDevtoolsProtocol\Domain\FetchDomainInterface;
 use ChromeDevtoolsProtocol\Domain\HeadlessExperimentalDomain;
 use ChromeDevtoolsProtocol\Domain\HeadlessExperimentalDomainInterface;
 use ChromeDevtoolsProtocol\Domain\HeapProfilerDomain;
@@ -75,8 +82,6 @@ use ChromeDevtoolsProtocol\Domain\SystemInfoDomain;
 use ChromeDevtoolsProtocol\Domain\SystemInfoDomainInterface;
 use ChromeDevtoolsProtocol\Domain\TargetDomain;
 use ChromeDevtoolsProtocol\Domain\TargetDomainInterface;
-use ChromeDevtoolsProtocol\Domain\TestingDomain;
-use ChromeDevtoolsProtocol\Domain\TestingDomainInterface;
 use ChromeDevtoolsProtocol\Domain\TetheringDomain;
 use ChromeDevtoolsProtocol\Domain\TetheringDomainInterface;
 use ChromeDevtoolsProtocol\Domain\TracingDomain;
@@ -136,6 +141,18 @@ trait DevtoolsClientTrait
 	}
 
 
+	public function backgroundService(): BackgroundServiceDomainInterface
+	{
+		if (!isset($this->domains['BackgroundService'])) {
+			/** @var InternalClientInterface $this */
+			$this->domains['BackgroundService'] = new BackgroundServiceDomain($this);
+		}
+		/** @var BackgroundServiceDomainInterface $domain */
+		$domain = $this->domains['BackgroundService'];
+		return $domain;
+	}
+
+
 	public function browser(): BrowserDomainInterface
 	{
 		if (!isset($this->domains['Browser'])) {
@@ -156,6 +173,18 @@ trait DevtoolsClientTrait
 		}
 		/** @var CacheStorageDomainInterface $domain */
 		$domain = $this->domains['CacheStorage'];
+		return $domain;
+	}
+
+
+	public function cast(): CastDomainInterface
+	{
+		if (!isset($this->domains['Cast'])) {
+			/** @var InternalClientInterface $this */
+			$this->domains['Cast'] = new CastDomain($this);
+		}
+		/** @var CastDomainInterface $domain */
+		$domain = $this->domains['Cast'];
 		return $domain;
 	}
 
@@ -276,6 +305,18 @@ trait DevtoolsClientTrait
 		}
 		/** @var EmulationDomainInterface $domain */
 		$domain = $this->domains['Emulation'];
+		return $domain;
+	}
+
+
+	public function fetch(): FetchDomainInterface
+	{
+		if (!isset($this->domains['Fetch'])) {
+			/** @var InternalClientInterface $this */
+			$this->domains['Fetch'] = new FetchDomain($this);
+		}
+		/** @var FetchDomainInterface $domain */
+		$domain = $this->domains['Fetch'];
 		return $domain;
 	}
 
@@ -528,18 +569,6 @@ trait DevtoolsClientTrait
 		}
 		/** @var TargetDomainInterface $domain */
 		$domain = $this->domains['Target'];
-		return $domain;
-	}
-
-
-	public function testing(): TestingDomainInterface
-	{
-		if (!isset($this->domains['Testing'])) {
-			/** @var InternalClientInterface $this */
-			$this->domains['Testing'] = new TestingDomain($this);
-		}
-		/** @var TestingDomainInterface $domain */
-		$domain = $this->domains['Testing'];
 		return $domain;
 	}
 

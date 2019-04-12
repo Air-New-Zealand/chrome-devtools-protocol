@@ -1,10 +1,12 @@
 <?php
+
 namespace ChromeDevtoolsProtocol\Domain;
 
 use ChromeDevtoolsProtocol\ContextInterface;
 use ChromeDevtoolsProtocol\InternalClientInterface;
 use ChromeDevtoolsProtocol\Model\Debugger\BreakpointResolvedEvent;
 use ChromeDevtoolsProtocol\Model\Debugger\ContinueToLocationRequest;
+use ChromeDevtoolsProtocol\Model\Debugger\EnableRequest;
 use ChromeDevtoolsProtocol\Model\Debugger\EnableResponse;
 use ChromeDevtoolsProtocol\Model\Debugger\EvaluateOnCallFrameRequest;
 use ChromeDevtoolsProtocol\Model\Debugger\EvaluateOnCallFrameResponse;
@@ -68,9 +70,8 @@ class DebuggerDomain implements DebuggerDomainInterface
 	}
 
 
-	public function enable(ContextInterface $ctx): EnableResponse
+	public function enable(ContextInterface $ctx, EnableRequest $request): EnableResponse
 	{
-		$request = new \stdClass();
 		$response = $this->internalClient->executeCommand($ctx, 'Debugger.enable', $request);
 		return EnableResponse::fromJson($response);
 	}
@@ -134,13 +135,6 @@ class DebuggerDomain implements DebuggerDomainInterface
 	{
 		$request = new \stdClass();
 		$this->internalClient->executeCommand($ctx, 'Debugger.resume', $request);
-	}
-
-
-	public function scheduleStepIntoAsync(ContextInterface $ctx): void
-	{
-		$request = new \stdClass();
-		$this->internalClient->executeCommand($ctx, 'Debugger.scheduleStepIntoAsync', $request);
 	}
 
 

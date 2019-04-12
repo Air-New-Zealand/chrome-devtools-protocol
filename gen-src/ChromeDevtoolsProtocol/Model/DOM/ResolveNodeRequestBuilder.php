@@ -1,4 +1,5 @@
 <?php
+
 namespace ChromeDevtoolsProtocol\Model\DOM;
 
 /**
@@ -14,6 +15,8 @@ final class ResolveNodeRequestBuilder
 
 	private $objectGroup;
 
+	private $executionContextId;
+
 
 	/**
 	 * Validate non-optional parameters and return new instance.
@@ -24,6 +27,7 @@ final class ResolveNodeRequestBuilder
 		$instance->nodeId = $this->nodeId;
 		$instance->backendNodeId = $this->backendNodeId;
 		$instance->objectGroup = $this->objectGroup;
+		$instance->executionContextId = $this->executionContextId;
 		return $instance;
 	}
 
@@ -60,6 +64,18 @@ final class ResolveNodeRequestBuilder
 	public function setObjectGroup($objectGroup): self
 	{
 		$this->objectGroup = $objectGroup;
+		return $this;
+	}
+
+
+	/**
+	 * @param int $executionContextId
+	 *
+	 * @return self
+	 */
+	public function setExecutionContextId($executionContextId): self
+	{
+		$this->executionContextId = $executionContextId;
 		return $this;
 	}
 }

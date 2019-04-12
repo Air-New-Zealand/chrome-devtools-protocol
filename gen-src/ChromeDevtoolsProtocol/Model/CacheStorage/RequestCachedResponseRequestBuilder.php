@@ -1,4 +1,5 @@
 <?php
+
 namespace ChromeDevtoolsProtocol\Model\CacheStorage;
 
 use ChromeDevtoolsProtocol\Exception\BuilderException;
@@ -13,6 +14,8 @@ final class RequestCachedResponseRequestBuilder
 	private $cacheId;
 
 	private $requestURL;
+
+	private $requestHeaders;
 
 
 	/**
@@ -29,6 +32,10 @@ final class RequestCachedResponseRequestBuilder
 			throw new BuilderException('Property [requestURL] is required.');
 		}
 		$instance->requestURL = $this->requestURL;
+		if ($this->requestHeaders === null) {
+			throw new BuilderException('Property [requestHeaders] is required.');
+		}
+		$instance->requestHeaders = $this->requestHeaders;
 		return $instance;
 	}
 
@@ -53,6 +60,18 @@ final class RequestCachedResponseRequestBuilder
 	public function setRequestURL($requestURL): self
 	{
 		$this->requestURL = $requestURL;
+		return $this;
+	}
+
+
+	/**
+	 * @param Header[] $requestHeaders
+	 *
+	 * @return self
+	 */
+	public function setRequestHeaders($requestHeaders): self
+	{
+		$this->requestHeaders = $requestHeaders;
 		return $this;
 	}
 }

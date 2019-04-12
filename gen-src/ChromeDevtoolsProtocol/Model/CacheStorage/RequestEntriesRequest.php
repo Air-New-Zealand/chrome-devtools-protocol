@@ -1,4 +1,5 @@
 <?php
+
 namespace ChromeDevtoolsProtocol\Model\CacheStorage;
 
 /**
@@ -31,6 +32,13 @@ final class RequestEntriesRequest implements \JsonSerializable
 	 */
 	public $pageSize;
 
+	/**
+	 * If present, only return the entries containing this substring in the path
+	 *
+	 * @var string|null
+	 */
+	public $pathFilter;
+
 
 	public static function fromJson($data)
 	{
@@ -43,6 +51,9 @@ final class RequestEntriesRequest implements \JsonSerializable
 		}
 		if (isset($data->pageSize)) {
 			$instance->pageSize = (int)$data->pageSize;
+		}
+		if (isset($data->pathFilter)) {
+			$instance->pathFilter = (string)$data->pathFilter;
 		}
 		return $instance;
 	}
@@ -59,6 +70,9 @@ final class RequestEntriesRequest implements \JsonSerializable
 		}
 		if ($this->pageSize !== null) {
 			$data->pageSize = $this->pageSize;
+		}
+		if ($this->pathFilter !== null) {
+			$data->pathFilter = $this->pathFilter;
 		}
 		return $data;
 	}

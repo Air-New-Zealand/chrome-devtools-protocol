@@ -1,4 +1,5 @@
 <?php
+
 namespace ChromeDevtoolsProtocol\Model\Page;
 
 /**
@@ -11,28 +12,28 @@ namespace ChromeDevtoolsProtocol\Model\Page;
 final class Viewport implements \JsonSerializable
 {
 	/**
-	 * X offset in CSS pixels.
+	 * X offset in device independent pixels (dip).
 	 *
 	 * @var int|float
 	 */
 	public $x;
 
 	/**
-	 * Y offset in CSS pixels
+	 * Y offset in device independent pixels (dip).
 	 *
 	 * @var int|float
 	 */
 	public $y;
 
 	/**
-	 * Rectangle width in CSS pixels
+	 * Rectangle width in device independent pixels (dip).
 	 *
 	 * @var int|float
 	 */
 	public $width;
 
 	/**
-	 * Rectangle height in CSS pixels
+	 * Rectangle height in device independent pixels (dip).
 	 *
 	 * @var int|float
 	 */

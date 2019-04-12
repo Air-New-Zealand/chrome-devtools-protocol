@@ -1,10 +1,13 @@
 <?php
+
 namespace ChromeDevtoolsProtocol\Domain;
 
 use ChromeDevtoolsProtocol\ContextInterface;
 use ChromeDevtoolsProtocol\Model\IndexedDB\ClearObjectStoreRequest;
 use ChromeDevtoolsProtocol\Model\IndexedDB\DeleteDatabaseRequest;
 use ChromeDevtoolsProtocol\Model\IndexedDB\DeleteObjectStoreEntriesRequest;
+use ChromeDevtoolsProtocol\Model\IndexedDB\GetMetadataRequest;
+use ChromeDevtoolsProtocol\Model\IndexedDB\GetMetadataResponse;
 use ChromeDevtoolsProtocol\Model\IndexedDB\RequestDataRequest;
 use ChromeDevtoolsProtocol\Model\IndexedDB\RequestDataResponse;
 use ChromeDevtoolsProtocol\Model\IndexedDB\RequestDatabaseNamesRequest;
@@ -74,6 +77,17 @@ interface IndexedDBDomainInterface
 	 * @return void
 	 */
 	public function enable(ContextInterface $ctx): void;
+
+
+	/**
+	 * Gets metadata of an object store
+	 *
+	 * @param ContextInterface $ctx
+	 * @param GetMetadataRequest $request
+	 *
+	 * @return GetMetadataResponse
+	 */
+	public function getMetadata(ContextInterface $ctx, GetMetadataRequest $request): GetMetadataResponse;
 
 
 	/**

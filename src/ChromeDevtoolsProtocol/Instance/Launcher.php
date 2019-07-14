@@ -100,7 +100,7 @@ class Launcher
      * Start new Chrome process.
      *
      * @param ContextInterface $ctx
-     * @param array ...$args
+     * @param string ...$args
      * @return ProcessInstance
      * @throws \Exception
      */
@@ -143,7 +143,7 @@ class Launcher
     /**
      * @param ContextInterface $ctx
      * @param string $executable
-     * @param array ...$args
+     * @param string ...$args
      * @return ProcessInstance
      * @throws \Exception
      */

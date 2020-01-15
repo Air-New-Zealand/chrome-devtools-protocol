@@ -18,6 +18,20 @@ final class CaptureSnapshotRequest implements \JsonSerializable
 	 */
 	public $computedStyles;
 
+	/**
+	 * Whether to include layout object paint orders into the snapshot.
+	 *
+	 * @var bool|null
+	 */
+	public $includePaintOrder;
+
+	/**
+	 * Whether to include DOM rectangles (offsetRects, clientRects, scrollRects) into the snapshot
+	 *
+	 * @var bool|null
+	 */
+	public $includeDOMRects;
+
 
 	public static function fromJson($data)
 	{
@@ -27,6 +41,12 @@ final class CaptureSnapshotRequest implements \JsonSerializable
 			foreach ($data->computedStyles as $item) {
 				$instance->computedStyles[] = (string)$item;
 			}
+		}
+		if (isset($data->includePaintOrder)) {
+			$instance->includePaintOrder = (bool)$data->includePaintOrder;
+		}
+		if (isset($data->includeDOMRects)) {
+			$instance->includeDOMRects = (bool)$data->includeDOMRects;
 		}
 		return $instance;
 	}
@@ -40,6 +60,12 @@ final class CaptureSnapshotRequest implements \JsonSerializable
 			foreach ($this->computedStyles as $item) {
 				$data->computedStyles[] = $item;
 			}
+		}
+		if ($this->includePaintOrder !== null) {
+			$data->includePaintOrder = $this->includePaintOrder;
+		}
+		if ($this->includeDOMRects !== null) {
+			$data->includeDOMRects = $this->includeDOMRects;
 		}
 		return $data;
 	}

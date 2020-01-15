@@ -7,8 +7,10 @@ use ChromeDevtoolsProtocol\InternalClientInterface;
 use ChromeDevtoolsProtocol\Model\Profiler\ConsoleProfileFinishedEvent;
 use ChromeDevtoolsProtocol\Model\Profiler\ConsoleProfileStartedEvent;
 use ChromeDevtoolsProtocol\Model\Profiler\GetBestEffortCoverageResponse;
+use ChromeDevtoolsProtocol\Model\Profiler\GetRuntimeCallStatsResponse;
 use ChromeDevtoolsProtocol\Model\Profiler\SetSamplingIntervalRequest;
 use ChromeDevtoolsProtocol\Model\Profiler\StartPreciseCoverageRequest;
+use ChromeDevtoolsProtocol\Model\Profiler\StartPreciseCoverageResponse;
 use ChromeDevtoolsProtocol\Model\Profiler\StopResponse;
 use ChromeDevtoolsProtocol\Model\Profiler\TakePreciseCoverageResponse;
 use ChromeDevtoolsProtocol\Model\Profiler\TakeTypeProfileResponse;
@@ -33,10 +35,24 @@ class ProfilerDomain implements ProfilerDomainInterface
 	}
 
 
+	public function disableRuntimeCallStats(ContextInterface $ctx): void
+	{
+		$request = new \stdClass();
+		$this->internalClient->executeCommand($ctx, 'Profiler.disableRuntimeCallStats', $request);
+	}
+
+
 	public function enable(ContextInterface $ctx): void
 	{
 		$request = new \stdClass();
 		$this->internalClient->executeCommand($ctx, 'Profiler.enable', $request);
+	}
+
+
+	public function enableRuntimeCallStats(ContextInterface $ctx): void
+	{
+		$request = new \stdClass();
+		$this->internalClient->executeCommand($ctx, 'Profiler.enableRuntimeCallStats', $request);
 	}
 
 
@@ -45,6 +61,14 @@ class ProfilerDomain implements ProfilerDomainInterface
 		$request = new \stdClass();
 		$response = $this->internalClient->executeCommand($ctx, 'Profiler.getBestEffortCoverage', $request);
 		return GetBestEffortCoverageResponse::fromJson($response);
+	}
+
+
+	public function getRuntimeCallStats(ContextInterface $ctx): GetRuntimeCallStatsResponse
+	{
+		$request = new \stdClass();
+		$response = $this->internalClient->executeCommand($ctx, 'Profiler.getRuntimeCallStats', $request);
+		return GetRuntimeCallStatsResponse::fromJson($response);
 	}
 
 
@@ -61,9 +85,10 @@ class ProfilerDomain implements ProfilerDomainInterface
 	}
 
 
-	public function startPreciseCoverage(ContextInterface $ctx, StartPreciseCoverageRequest $request): void
+	public function startPreciseCoverage(ContextInterface $ctx, StartPreciseCoverageRequest $request): StartPreciseCoverageResponse
 	{
-		$this->internalClient->executeCommand($ctx, 'Profiler.startPreciseCoverage', $request);
+		$response = $this->internalClient->executeCommand($ctx, 'Profiler.startPreciseCoverage', $request);
+		return StartPreciseCoverageResponse::fromJson($response);
 	}
 
 

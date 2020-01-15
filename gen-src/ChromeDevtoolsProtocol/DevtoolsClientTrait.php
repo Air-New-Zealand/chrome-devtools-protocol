@@ -56,6 +56,8 @@ use ChromeDevtoolsProtocol\Domain\LayerTreeDomain;
 use ChromeDevtoolsProtocol\Domain\LayerTreeDomainInterface;
 use ChromeDevtoolsProtocol\Domain\LogDomain;
 use ChromeDevtoolsProtocol\Domain\LogDomainInterface;
+use ChromeDevtoolsProtocol\Domain\MediaDomain;
+use ChromeDevtoolsProtocol\Domain\MediaDomainInterface;
 use ChromeDevtoolsProtocol\Domain\MemoryDomain;
 use ChromeDevtoolsProtocol\Domain\MemoryDomainInterface;
 use ChromeDevtoolsProtocol\Domain\NetworkDomain;
@@ -86,6 +88,10 @@ use ChromeDevtoolsProtocol\Domain\TetheringDomain;
 use ChromeDevtoolsProtocol\Domain\TetheringDomainInterface;
 use ChromeDevtoolsProtocol\Domain\TracingDomain;
 use ChromeDevtoolsProtocol\Domain\TracingDomainInterface;
+use ChromeDevtoolsProtocol\Domain\WebAudioDomain;
+use ChromeDevtoolsProtocol\Domain\WebAudioDomainInterface;
+use ChromeDevtoolsProtocol\Domain\WebAuthnDomain;
+use ChromeDevtoolsProtocol\Domain\WebAuthnDomainInterface;
 
 trait DevtoolsClientTrait
 {
@@ -417,6 +423,18 @@ trait DevtoolsClientTrait
 	}
 
 
+	public function media(): MediaDomainInterface
+	{
+		if (!isset($this->domains['Media'])) {
+			/** @var InternalClientInterface $this */
+			$this->domains['Media'] = new MediaDomain($this);
+		}
+		/** @var MediaDomainInterface $domain */
+		$domain = $this->domains['Media'];
+		return $domain;
+	}
+
+
 	public function memory(): MemoryDomainInterface
 	{
 		if (!isset($this->domains['Memory'])) {
@@ -593,6 +611,30 @@ trait DevtoolsClientTrait
 		}
 		/** @var TracingDomainInterface $domain */
 		$domain = $this->domains['Tracing'];
+		return $domain;
+	}
+
+
+	public function webAudio(): WebAudioDomainInterface
+	{
+		if (!isset($this->domains['WebAudio'])) {
+			/** @var InternalClientInterface $this */
+			$this->domains['WebAudio'] = new WebAudioDomain($this);
+		}
+		/** @var WebAudioDomainInterface $domain */
+		$domain = $this->domains['WebAudio'];
+		return $domain;
+	}
+
+
+	public function webAuthn(): WebAuthnDomainInterface
+	{
+		if (!isset($this->domains['WebAuthn'])) {
+			/** @var InternalClientInterface $this */
+			$this->domains['WebAuthn'] = new WebAuthnDomain($this);
+		}
+		/** @var WebAuthnDomainInterface $domain */
+		$domain = $this->domains['WebAuthn'];
 		return $domain;
 	}
 }

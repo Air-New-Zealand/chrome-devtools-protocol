@@ -18,6 +18,13 @@ final class TakePreciseCoverageResponse implements \JsonSerializable
 	 */
 	public $result;
 
+	/**
+	 * Monotonically increasing time (in seconds) when the coverage update was taken in the backend.
+	 *
+	 * @var int|float
+	 */
+	public $timestamp;
+
 
 	public static function fromJson($data)
 	{
@@ -27,6 +34,9 @@ final class TakePreciseCoverageResponse implements \JsonSerializable
 			foreach ($data->result as $item) {
 				$instance->result[] = ScriptCoverage::fromJson($item);
 			}
+		}
+		if (isset($data->timestamp)) {
+			$instance->timestamp = $data->timestamp;
 		}
 		return $instance;
 	}
@@ -40,6 +50,9 @@ final class TakePreciseCoverageResponse implements \JsonSerializable
 			foreach ($this->result as $item) {
 				$data->result[] = $item->jsonSerialize();
 			}
+		}
+		if ($this->timestamp !== null) {
+			$data->timestamp = $this->timestamp;
 		}
 		return $data;
 	}

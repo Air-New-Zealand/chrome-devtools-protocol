@@ -6,8 +6,10 @@ use ChromeDevtoolsProtocol\ContextInterface;
 use ChromeDevtoolsProtocol\Model\Profiler\ConsoleProfileFinishedEvent;
 use ChromeDevtoolsProtocol\Model\Profiler\ConsoleProfileStartedEvent;
 use ChromeDevtoolsProtocol\Model\Profiler\GetBestEffortCoverageResponse;
+use ChromeDevtoolsProtocol\Model\Profiler\GetRuntimeCallStatsResponse;
 use ChromeDevtoolsProtocol\Model\Profiler\SetSamplingIntervalRequest;
 use ChromeDevtoolsProtocol\Model\Profiler\StartPreciseCoverageRequest;
+use ChromeDevtoolsProtocol\Model\Profiler\StartPreciseCoverageResponse;
 use ChromeDevtoolsProtocol\Model\Profiler\StopResponse;
 use ChromeDevtoolsProtocol\Model\Profiler\TakePreciseCoverageResponse;
 use ChromeDevtoolsProtocol\Model\Profiler\TakeTypeProfileResponse;
@@ -33,6 +35,16 @@ interface ProfilerDomainInterface
 
 
 	/**
+	 * Disable run time call stats collection.
+	 *
+	 * @param ContextInterface $ctx
+	 *
+	 * @return void
+	 */
+	public function disableRuntimeCallStats(ContextInterface $ctx): void;
+
+
+	/**
 	 * Call Profiler.enable command.
 	 *
 	 * @param ContextInterface $ctx
@@ -43,6 +55,16 @@ interface ProfilerDomainInterface
 
 
 	/**
+	 * Enable run time call stats collection.
+	 *
+	 * @param ContextInterface $ctx
+	 *
+	 * @return void
+	 */
+	public function enableRuntimeCallStats(ContextInterface $ctx): void;
+
+
+	/**
 	 * Collect coverage data for the current isolate. The coverage data may be incomplete due to garbage collection.
 	 *
 	 * @param ContextInterface $ctx
@@ -50,6 +72,16 @@ interface ProfilerDomainInterface
 	 * @return GetBestEffortCoverageResponse
 	 */
 	public function getBestEffortCoverage(ContextInterface $ctx): GetBestEffortCoverageResponse;
+
+
+	/**
+	 * Retrieve run time call stats.
+	 *
+	 * @param ContextInterface $ctx
+	 *
+	 * @return GetRuntimeCallStatsResponse
+	 */
+	public function getRuntimeCallStats(ContextInterface $ctx): GetRuntimeCallStatsResponse;
 
 
 	/**
@@ -79,9 +111,9 @@ interface ProfilerDomainInterface
 	 * @param ContextInterface $ctx
 	 * @param StartPreciseCoverageRequest $request
 	 *
-	 * @return void
+	 * @return StartPreciseCoverageResponse
 	 */
-	public function startPreciseCoverage(ContextInterface $ctx, StartPreciseCoverageRequest $request): void;
+	public function startPreciseCoverage(ContextInterface $ctx, StartPreciseCoverageRequest $request): StartPreciseCoverageResponse;
 
 
 	/**

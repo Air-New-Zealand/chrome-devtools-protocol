@@ -3,7 +3,7 @@
 namespace ChromeDevtoolsProtocol\Model\DOMSnapshot;
 
 /**
- * Details of an element in the DOM tree with a LayoutObject.
+ * Table of details of an element in the DOM tree with a LayoutObject.
  *
  * @generated This file has been auto-generated, do not edit.
  *
@@ -12,14 +12,14 @@ namespace ChromeDevtoolsProtocol\Model\DOMSnapshot;
 final class LayoutTreeSnapshot implements \JsonSerializable
 {
 	/**
-	 * The index of the related DOM node in the `domNodes` array returned by `getSnapshot`.
+	 * Index of the corresponding node in the `NodeTreeSnapshot` array returned by `captureSnapshot`.
 	 *
 	 * @var int[]
 	 */
 	public $nodeIndex;
 
 	/**
-	 * Index into the `computedStyles` array returned by `captureSnapshot`.
+	 * Array of indexes specifying computed style strings, filtered according to the `computedStyles` parameter passed to `captureSnapshot`.
 	 *
 	 * @var int[][]
 	 */
@@ -45,6 +45,34 @@ final class LayoutTreeSnapshot implements \JsonSerializable
 	 * @var RareBooleanData
 	 */
 	public $stackingContexts;
+
+	/**
+	 * Global paint order index, which is determined by the stacking order of the nodes. Nodes that are painted together will have the same index. Only provided if includePaintOrder in captureSnapshot was true.
+	 *
+	 * @var int[]|null
+	 */
+	public $paintOrders;
+
+	/**
+	 * The offset rect of nodes. Only available when includeDOMRects is set to true
+	 *
+	 * @var int[][]|float[][]|null
+	 */
+	public $offsetRects;
+
+	/**
+	 * The scroll rect of nodes. Only available when includeDOMRects is set to true
+	 *
+	 * @var int[][]|float[][]|null
+	 */
+	public $scrollRects;
+
+	/**
+	 * The client rect of nodes. Only available when includeDOMRects is set to true
+	 *
+	 * @var int[][]|float[][]|null
+	 */
+	public $clientRects;
 
 
 	public static function fromJson($data)
@@ -93,6 +121,51 @@ final class LayoutTreeSnapshot implements \JsonSerializable
 		}
 		if (isset($data->stackingContexts)) {
 			$instance->stackingContexts = RareBooleanData::fromJson($data->stackingContexts);
+		}
+		if (isset($data->paintOrders)) {
+			$instance->paintOrders = [];
+			foreach ($data->paintOrders as $item) {
+				$instance->paintOrders[] = (int)$item;
+			}
+		}
+		if (isset($data->offsetRects)) {
+			$instance->offsetRects = [];
+		if (isset($data->offsetRects)) {
+			$instance->offsetRects = [];
+			foreach ($data->offsetRects as $item) {
+				$nested = [];
+				foreach ($item as $nestedItem) {
+					$nested[] = $nestedItem;
+				}
+				$instance->offsetRects[] = $nested;
+			}
+		}
+		}
+		if (isset($data->scrollRects)) {
+			$instance->scrollRects = [];
+		if (isset($data->scrollRects)) {
+			$instance->scrollRects = [];
+			foreach ($data->scrollRects as $item) {
+				$nested = [];
+				foreach ($item as $nestedItem) {
+					$nested[] = $nestedItem;
+				}
+				$instance->scrollRects[] = $nested;
+			}
+		}
+		}
+		if (isset($data->clientRects)) {
+			$instance->clientRects = [];
+		if (isset($data->clientRects)) {
+			$instance->clientRects = [];
+			foreach ($data->clientRects as $item) {
+				$nested = [];
+				foreach ($item as $nestedItem) {
+					$nested[] = $nestedItem;
+				}
+				$instance->clientRects[] = $nested;
+			}
+		}
 		}
 		return $instance;
 	}
@@ -144,6 +217,51 @@ final class LayoutTreeSnapshot implements \JsonSerializable
 		}
 		if ($this->stackingContexts !== null) {
 			$data->stackingContexts = $this->stackingContexts->jsonSerialize();
+		}
+		if ($this->paintOrders !== null) {
+			$data->paintOrders = [];
+			foreach ($this->paintOrders as $item) {
+				$data->paintOrders[] = $item;
+			}
+		}
+		if ($this->offsetRects !== null) {
+			$data->offsetRects = [];
+		if ($this->offsetRects !== null) {
+			$data->offsetRects = [];
+			foreach ($this->offsetRects as $item) {
+				$nested = [];
+				foreach ($item as $nestedItem) {
+					$nested[] = $nestedItem;
+				}
+				$data->offsetRects[] = $nested;
+			}
+		}
+		}
+		if ($this->scrollRects !== null) {
+			$data->scrollRects = [];
+		if ($this->scrollRects !== null) {
+			$data->scrollRects = [];
+			foreach ($this->scrollRects as $item) {
+				$nested = [];
+				foreach ($item as $nestedItem) {
+					$nested[] = $nestedItem;
+				}
+				$data->scrollRects[] = $nested;
+			}
+		}
+		}
+		if ($this->clientRects !== null) {
+			$data->clientRects = [];
+		if ($this->clientRects !== null) {
+			$data->clientRects = [];
+			foreach ($this->clientRects as $item) {
+				$nested = [];
+				foreach ($item as $nestedItem) {
+					$nested[] = $nestedItem;
+				}
+				$data->clientRects[] = $nested;
+			}
+		}
 		}
 		return $data;
 	}

@@ -29,6 +29,7 @@ use ChromeDevtoolsProtocol\Domain\InputDomainInterface;
 use ChromeDevtoolsProtocol\Domain\InspectorDomainInterface;
 use ChromeDevtoolsProtocol\Domain\LayerTreeDomainInterface;
 use ChromeDevtoolsProtocol\Domain\LogDomainInterface;
+use ChromeDevtoolsProtocol\Domain\MediaDomainInterface;
 use ChromeDevtoolsProtocol\Domain\MemoryDomainInterface;
 use ChromeDevtoolsProtocol\Domain\NetworkDomainInterface;
 use ChromeDevtoolsProtocol\Domain\OverlayDomainInterface;
@@ -44,6 +45,8 @@ use ChromeDevtoolsProtocol\Domain\SystemInfoDomainInterface;
 use ChromeDevtoolsProtocol\Domain\TargetDomainInterface;
 use ChromeDevtoolsProtocol\Domain\TetheringDomainInterface;
 use ChromeDevtoolsProtocol\Domain\TracingDomainInterface;
+use ChromeDevtoolsProtocol\Domain\WebAudioDomainInterface;
+use ChromeDevtoolsProtocol\Domain\WebAuthnDomainInterface;
 
 /**
  * Interface for Chrome devtools protocol client.
@@ -253,6 +256,14 @@ interface DevtoolsClientInterface extends CloseableResourceInterface
 
 
 	/**
+	 * This domain allows detailed inspection of media elements
+	 *
+	 * @experimental
+	 */
+	public function media(): MediaDomainInterface;
+
+
+	/**
 	 * Memory domain.
 	 *
 	 * @experimental
@@ -354,4 +365,20 @@ interface DevtoolsClientInterface extends CloseableResourceInterface
 	 * @experimental
 	 */
 	public function tracing(): TracingDomainInterface;
+
+
+	/**
+	 * This domain allows inspection of Web Audio API. https://webaudio.github.io/web-audio-api/
+	 *
+	 * @experimental
+	 */
+	public function webAudio(): WebAudioDomainInterface;
+
+
+	/**
+	 * This domain allows configuring virtual authenticators to test the WebAuthn API.
+	 *
+	 * @experimental
+	 */
+	public function webAuthn(): WebAuthnDomainInterface;
 }

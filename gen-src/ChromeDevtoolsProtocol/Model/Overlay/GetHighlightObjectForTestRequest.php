@@ -18,12 +18,32 @@ final class GetHighlightObjectForTestRequest implements \JsonSerializable
 	 */
 	public $nodeId;
 
+	/**
+	 * Whether to include distance info.
+	 *
+	 * @var bool|null
+	 */
+	public $includeDistance;
+
+	/**
+	 * Whether to include style info.
+	 *
+	 * @var bool|null
+	 */
+	public $includeStyle;
+
 
 	public static function fromJson($data)
 	{
 		$instance = new static();
 		if (isset($data->nodeId)) {
 			$instance->nodeId = (int)$data->nodeId;
+		}
+		if (isset($data->includeDistance)) {
+			$instance->includeDistance = (bool)$data->includeDistance;
+		}
+		if (isset($data->includeStyle)) {
+			$instance->includeStyle = (bool)$data->includeStyle;
 		}
 		return $instance;
 	}
@@ -34,6 +54,12 @@ final class GetHighlightObjectForTestRequest implements \JsonSerializable
 		$data = new \stdClass();
 		if ($this->nodeId !== null) {
 			$data->nodeId = $this->nodeId;
+		}
+		if ($this->includeDistance !== null) {
+			$data->includeDistance = $this->includeDistance;
+		}
+		if ($this->includeStyle !== null) {
+			$data->includeStyle = $this->includeStyle;
 		}
 		return $data;
 	}

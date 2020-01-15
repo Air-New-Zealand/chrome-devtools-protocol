@@ -16,6 +16,8 @@ use ChromeDevtoolsProtocol\Model\Debugger\GetScriptSourceRequest;
 use ChromeDevtoolsProtocol\Model\Debugger\GetScriptSourceResponse;
 use ChromeDevtoolsProtocol\Model\Debugger\GetStackTraceRequest;
 use ChromeDevtoolsProtocol\Model\Debugger\GetStackTraceResponse;
+use ChromeDevtoolsProtocol\Model\Debugger\GetWasmBytecodeRequest;
+use ChromeDevtoolsProtocol\Model\Debugger\GetWasmBytecodeResponse;
 use ChromeDevtoolsProtocol\Model\Debugger\PauseOnAsyncCallRequest;
 use ChromeDevtoolsProtocol\Model\Debugger\PausedEvent;
 use ChromeDevtoolsProtocol\Model\Debugger\RemoveBreakpointRequest;
@@ -36,6 +38,8 @@ use ChromeDevtoolsProtocol\Model\Debugger\SetBreakpointOnFunctionCallResponse;
 use ChromeDevtoolsProtocol\Model\Debugger\SetBreakpointRequest;
 use ChromeDevtoolsProtocol\Model\Debugger\SetBreakpointResponse;
 use ChromeDevtoolsProtocol\Model\Debugger\SetBreakpointsActiveRequest;
+use ChromeDevtoolsProtocol\Model\Debugger\SetInstrumentationBreakpointRequest;
+use ChromeDevtoolsProtocol\Model\Debugger\SetInstrumentationBreakpointResponse;
 use ChromeDevtoolsProtocol\Model\Debugger\SetPauseOnExceptionsRequest;
 use ChromeDevtoolsProtocol\Model\Debugger\SetReturnValueRequest;
 use ChromeDevtoolsProtocol\Model\Debugger\SetScriptSourceRequest;
@@ -102,6 +106,13 @@ class DebuggerDomain implements DebuggerDomainInterface
 	{
 		$response = $this->internalClient->executeCommand($ctx, 'Debugger.getStackTrace', $request);
 		return GetStackTraceResponse::fromJson($response);
+	}
+
+
+	public function getWasmBytecode(ContextInterface $ctx, GetWasmBytecodeRequest $request): GetWasmBytecodeResponse
+	{
+		$response = $this->internalClient->executeCommand($ctx, 'Debugger.getWasmBytecode', $request);
+		return GetWasmBytecodeResponse::fromJson($response);
 	}
 
 
@@ -187,6 +198,13 @@ class DebuggerDomain implements DebuggerDomainInterface
 	public function setBreakpointsActive(ContextInterface $ctx, SetBreakpointsActiveRequest $request): void
 	{
 		$this->internalClient->executeCommand($ctx, 'Debugger.setBreakpointsActive', $request);
+	}
+
+
+	public function setInstrumentationBreakpoint(ContextInterface $ctx, SetInstrumentationBreakpointRequest $request): SetInstrumentationBreakpointResponse
+	{
+		$response = $this->internalClient->executeCommand($ctx, 'Debugger.setInstrumentationBreakpoint', $request);
+		return SetInstrumentationBreakpointResponse::fromJson($response);
 	}
 
 

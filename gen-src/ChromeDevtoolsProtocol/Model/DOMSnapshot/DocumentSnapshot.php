@@ -19,6 +19,13 @@ final class DocumentSnapshot implements \JsonSerializable
 	public $documentURL;
 
 	/**
+	 * Document title.
+	 *
+	 * @var int
+	 */
+	public $title;
+
+	/**
 	 * Base URL that `Document` or `FrameOwner` node uses for URL completion.
 	 *
 	 * @var int
@@ -82,14 +89,32 @@ final class DocumentSnapshot implements \JsonSerializable
 	public $textBoxes;
 
 	/**
-	 * Scroll offsets.
+	 * Horizontal scroll offset.
 	 *
 	 * @var int|float|null
 	 */
 	public $scrollOffsetX;
 
-	/** @var int|float|null */
+	/**
+	 * Vertical scroll offset.
+	 *
+	 * @var int|float|null
+	 */
 	public $scrollOffsetY;
+
+	/**
+	 * Document content width.
+	 *
+	 * @var int|float|null
+	 */
+	public $contentWidth;
+
+	/**
+	 * Document content height.
+	 *
+	 * @var int|float|null
+	 */
+	public $contentHeight;
 
 
 	public static function fromJson($data)
@@ -97,6 +122,9 @@ final class DocumentSnapshot implements \JsonSerializable
 		$instance = new static();
 		if (isset($data->documentURL)) {
 			$instance->documentURL = (int)$data->documentURL;
+		}
+		if (isset($data->title)) {
+			$instance->title = (int)$data->title;
 		}
 		if (isset($data->baseURL)) {
 			$instance->baseURL = (int)$data->baseURL;
@@ -131,6 +159,12 @@ final class DocumentSnapshot implements \JsonSerializable
 		if (isset($data->scrollOffsetY)) {
 			$instance->scrollOffsetY = $data->scrollOffsetY;
 		}
+		if (isset($data->contentWidth)) {
+			$instance->contentWidth = $data->contentWidth;
+		}
+		if (isset($data->contentHeight)) {
+			$instance->contentHeight = $data->contentHeight;
+		}
 		return $instance;
 	}
 
@@ -140,6 +174,9 @@ final class DocumentSnapshot implements \JsonSerializable
 		$data = new \stdClass();
 		if ($this->documentURL !== null) {
 			$data->documentURL = $this->documentURL;
+		}
+		if ($this->title !== null) {
+			$data->title = $this->title;
 		}
 		if ($this->baseURL !== null) {
 			$data->baseURL = $this->baseURL;
@@ -173,6 +210,12 @@ final class DocumentSnapshot implements \JsonSerializable
 		}
 		if ($this->scrollOffsetY !== null) {
 			$data->scrollOffsetY = $this->scrollOffsetY;
+		}
+		if ($this->contentWidth !== null) {
+			$data->contentWidth = $this->contentWidth;
+		}
+		if ($this->contentHeight !== null) {
+			$data->contentHeight = $this->contentHeight;
 		}
 		return $data;
 	}

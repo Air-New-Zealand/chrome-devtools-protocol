@@ -13,4 +13,5 @@ final class CookieSameSiteEnum
 {
 	const STRICT = 'Strict';
 	const LAX = 'Lax';
+	const NONE = 'None';
 }

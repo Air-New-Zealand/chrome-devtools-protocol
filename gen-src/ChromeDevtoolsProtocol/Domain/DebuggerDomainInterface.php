@@ -15,6 +15,8 @@ use ChromeDevtoolsProtocol\Model\Debugger\GetScriptSourceRequest;
 use ChromeDevtoolsProtocol\Model\Debugger\GetScriptSourceResponse;
 use ChromeDevtoolsProtocol\Model\Debugger\GetStackTraceRequest;
 use ChromeDevtoolsProtocol\Model\Debugger\GetStackTraceResponse;
+use ChromeDevtoolsProtocol\Model\Debugger\GetWasmBytecodeRequest;
+use ChromeDevtoolsProtocol\Model\Debugger\GetWasmBytecodeResponse;
 use ChromeDevtoolsProtocol\Model\Debugger\PauseOnAsyncCallRequest;
 use ChromeDevtoolsProtocol\Model\Debugger\PausedEvent;
 use ChromeDevtoolsProtocol\Model\Debugger\RemoveBreakpointRequest;
@@ -35,6 +37,8 @@ use ChromeDevtoolsProtocol\Model\Debugger\SetBreakpointOnFunctionCallResponse;
 use ChromeDevtoolsProtocol\Model\Debugger\SetBreakpointRequest;
 use ChromeDevtoolsProtocol\Model\Debugger\SetBreakpointResponse;
 use ChromeDevtoolsProtocol\Model\Debugger\SetBreakpointsActiveRequest;
+use ChromeDevtoolsProtocol\Model\Debugger\SetInstrumentationBreakpointRequest;
+use ChromeDevtoolsProtocol\Model\Debugger\SetInstrumentationBreakpointResponse;
 use ChromeDevtoolsProtocol\Model\Debugger\SetPauseOnExceptionsRequest;
 use ChromeDevtoolsProtocol\Model\Debugger\SetReturnValueRequest;
 use ChromeDevtoolsProtocol\Model\Debugger\SetScriptSourceRequest;
@@ -127,6 +131,17 @@ interface DebuggerDomainInterface
 	 * @return GetStackTraceResponse
 	 */
 	public function getStackTrace(ContextInterface $ctx, GetStackTraceRequest $request): GetStackTraceResponse;
+
+
+	/**
+	 * This command is deprecated. Use getScriptSource instead.
+	 *
+	 * @param ContextInterface $ctx
+	 * @param GetWasmBytecodeRequest $request
+	 *
+	 * @return GetWasmBytecodeResponse
+	 */
+	public function getWasmBytecode(ContextInterface $ctx, GetWasmBytecodeRequest $request): GetWasmBytecodeResponse;
 
 
 	/**
@@ -268,6 +283,17 @@ interface DebuggerDomainInterface
 	 * @return void
 	 */
 	public function setBreakpointsActive(ContextInterface $ctx, SetBreakpointsActiveRequest $request): void;
+
+
+	/**
+	 * Sets instrumentation breakpoint.
+	 *
+	 * @param ContextInterface $ctx
+	 * @param SetInstrumentationBreakpointRequest $request
+	 *
+	 * @return SetInstrumentationBreakpointResponse
+	 */
+	public function setInstrumentationBreakpoint(ContextInterface $ctx, SetInstrumentationBreakpointRequest $request): SetInstrumentationBreakpointResponse;
 
 
 	/**

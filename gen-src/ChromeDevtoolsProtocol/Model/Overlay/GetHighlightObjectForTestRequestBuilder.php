@@ -12,10 +12,10 @@ use ChromeDevtoolsProtocol\Exception\BuilderException;
 final class GetHighlightObjectForTestRequestBuilder
 {
 	private $nodeId;
-
 	private $includeDistance;
-
 	private $includeStyle;
+	private $colorFormat;
+	private $showAccessibilityInfo;
 
 
 	/**
@@ -30,6 +30,8 @@ final class GetHighlightObjectForTestRequestBuilder
 		$instance->nodeId = $this->nodeId;
 		$instance->includeDistance = $this->includeDistance;
 		$instance->includeStyle = $this->includeStyle;
+		$instance->colorFormat = $this->colorFormat;
+		$instance->showAccessibilityInfo = $this->showAccessibilityInfo;
 		return $instance;
 	}
 
@@ -66,6 +68,30 @@ final class GetHighlightObjectForTestRequestBuilder
 	public function setIncludeStyle($includeStyle): self
 	{
 		$this->includeStyle = $includeStyle;
+		return $this;
+	}
+
+
+	/**
+	 * @param string $colorFormat
+	 *
+	 * @return self
+	 */
+	public function setColorFormat($colorFormat): self
+	{
+		$this->colorFormat = $colorFormat;
+		return $this;
+	}
+
+
+	/**
+	 * @param bool|null $showAccessibilityInfo
+	 *
+	 * @return self
+	 */
+	public function setShowAccessibilityInfo($showAccessibilityInfo): self
+	{
+		$this->showAccessibilityInfo = $showAccessibilityInfo;
 		return $this;
 	}
 }

@@ -17,7 +17,9 @@ use ChromeDevtoolsProtocol\Model\Page\CompilationCacheProducedEvent;
 use ChromeDevtoolsProtocol\Model\Page\CreateIsolatedWorldRequest;
 use ChromeDevtoolsProtocol\Model\Page\CreateIsolatedWorldResponse;
 use ChromeDevtoolsProtocol\Model\Page\DeleteCookieRequest;
+use ChromeDevtoolsProtocol\Model\Page\DocumentOpenedEvent;
 use ChromeDevtoolsProtocol\Model\Page\DomContentEventFiredEvent;
+use ChromeDevtoolsProtocol\Model\Page\DownloadProgressEvent;
 use ChromeDevtoolsProtocol\Model\Page\DownloadWillBeginEvent;
 use ChromeDevtoolsProtocol\Model\Page\FileChooserOpenedEvent;
 use ChromeDevtoolsProtocol\Model\Page\FrameAttachedEvent;
@@ -37,6 +39,8 @@ use ChromeDevtoolsProtocol\Model\Page\GetInstallabilityErrorsResponse;
 use ChromeDevtoolsProtocol\Model\Page\GetLayoutMetricsResponse;
 use ChromeDevtoolsProtocol\Model\Page\GetManifestIconsResponse;
 use ChromeDevtoolsProtocol\Model\Page\GetNavigationHistoryResponse;
+use ChromeDevtoolsProtocol\Model\Page\GetPermissionsPolicyStateRequest;
+use ChromeDevtoolsProtocol\Model\Page\GetPermissionsPolicyStateResponse;
 use ChromeDevtoolsProtocol\Model\Page\GetResourceContentRequest;
 use ChromeDevtoolsProtocol\Model\Page\GetResourceContentResponse;
 use ChromeDevtoolsProtocol\Model\Page\GetResourceTreeResponse;
@@ -53,6 +57,7 @@ use ChromeDevtoolsProtocol\Model\Page\NavigateToHistoryEntryRequest;
 use ChromeDevtoolsProtocol\Model\Page\NavigatedWithinDocumentEvent;
 use ChromeDevtoolsProtocol\Model\Page\PrintToPDFRequest;
 use ChromeDevtoolsProtocol\Model\Page\PrintToPDFResponse;
+use ChromeDevtoolsProtocol\Model\Page\ProduceCompilationCacheRequest;
 use ChromeDevtoolsProtocol\Model\Page\ReloadRequest;
 use ChromeDevtoolsProtocol\Model\Page\RemoveScriptToEvaluateOnLoadRequest;
 use ChromeDevtoolsProtocol\Model\Page\RemoveScriptToEvaluateOnNewDocumentRequest;
@@ -97,15 +102,19 @@ class PageDomain implements PageDomainInterface
 	}
 
 
-	public function addScriptToEvaluateOnLoad(ContextInterface $ctx, AddScriptToEvaluateOnLoadRequest $request): AddScriptToEvaluateOnLoadResponse
-	{
+	public function addScriptToEvaluateOnLoad(
+		ContextInterface $ctx,
+		AddScriptToEvaluateOnLoadRequest $request
+	): AddScriptToEvaluateOnLoadResponse {
 		$response = $this->internalClient->executeCommand($ctx, 'Page.addScriptToEvaluateOnLoad', $request);
 		return AddScriptToEvaluateOnLoadResponse::fromJson($response);
 	}
 
 
-	public function addScriptToEvaluateOnNewDocument(ContextInterface $ctx, AddScriptToEvaluateOnNewDocumentRequest $request): AddScriptToEvaluateOnNewDocumentResponse
-	{
+	public function addScriptToEvaluateOnNewDocument(
+		ContextInterface $ctx,
+		AddScriptToEvaluateOnNewDocumentRequest $request
+	): AddScriptToEvaluateOnNewDocumentResponse {
 		$response = $this->internalClient->executeCommand($ctx, 'Page.addScriptToEvaluateOnNewDocument', $request);
 		return AddScriptToEvaluateOnNewDocumentResponse::fromJson($response);
 	}
@@ -174,8 +183,10 @@ class PageDomain implements PageDomainInterface
 	}
 
 
-	public function createIsolatedWorld(ContextInterface $ctx, CreateIsolatedWorldRequest $request): CreateIsolatedWorldResponse
-	{
+	public function createIsolatedWorld(
+		ContextInterface $ctx,
+		CreateIsolatedWorldRequest $request
+	): CreateIsolatedWorldResponse {
 		$response = $this->internalClient->executeCommand($ctx, 'Page.createIsolatedWorld', $request);
 		return CreateIsolatedWorldResponse::fromJson($response);
 	}
@@ -263,8 +274,19 @@ class PageDomain implements PageDomainInterface
 	}
 
 
-	public function getResourceContent(ContextInterface $ctx, GetResourceContentRequest $request): GetResourceContentResponse
-	{
+	public function getPermissionsPolicyState(
+		ContextInterface $ctx,
+		GetPermissionsPolicyStateRequest $request
+	): GetPermissionsPolicyStateResponse {
+		$response = $this->internalClient->executeCommand($ctx, 'Page.getPermissionsPolicyState', $request);
+		return GetPermissionsPolicyStateResponse::fromJson($response);
+	}
+
+
+	public function getResourceContent(
+		ContextInterface $ctx,
+		GetResourceContentRequest $request
+	): GetResourceContentResponse {
 		$response = $this->internalClient->executeCommand($ctx, 'Page.getResourceContent', $request);
 		return GetResourceContentResponse::fromJson($response);
 	}
@@ -304,6 +326,12 @@ class PageDomain implements PageDomainInterface
 	}
 
 
+	public function produceCompilationCache(ContextInterface $ctx, ProduceCompilationCacheRequest $request): void
+	{
+		$this->internalClient->executeCommand($ctx, 'Page.produceCompilationCache', $request);
+	}
+
+
 	public function reload(ContextInterface $ctx, ReloadRequest $request): void
 	{
 		$this->internalClient->executeCommand($ctx, 'Page.reload', $request);
@@ -316,8 +344,10 @@ class PageDomain implements PageDomainInterface
 	}
 
 
-	public function removeScriptToEvaluateOnNewDocument(ContextInterface $ctx, RemoveScriptToEvaluateOnNewDocumentRequest $request): void
-	{
+	public function removeScriptToEvaluateOnNewDocument(
+		ContextInterface $ctx,
+		RemoveScriptToEvaluateOnNewDocumentRequest $request
+	): void {
 		$this->internalClient->executeCommand($ctx, 'Page.removeScriptToEvaluateOnNewDocument', $request);
 	}
 
@@ -396,8 +426,10 @@ class PageDomain implements PageDomainInterface
 	}
 
 
-	public function setInterceptFileChooserDialog(ContextInterface $ctx, SetInterceptFileChooserDialogRequest $request): void
-	{
+	public function setInterceptFileChooserDialog(
+		ContextInterface $ctx,
+		SetInterceptFileChooserDialogRequest $request
+	): void {
 		$this->internalClient->executeCommand($ctx, 'Page.setInterceptFileChooserDialog', $request);
 	}
 
@@ -467,6 +499,20 @@ class PageDomain implements PageDomainInterface
 	}
 
 
+	public function addDocumentOpenedListener(callable $listener): SubscriptionInterface
+	{
+		return $this->internalClient->addListener('Page.documentOpened', function ($event) use ($listener) {
+			return $listener(DocumentOpenedEvent::fromJson($event));
+		});
+	}
+
+
+	public function awaitDocumentOpened(ContextInterface $ctx): DocumentOpenedEvent
+	{
+		return DocumentOpenedEvent::fromJson($this->internalClient->awaitEvent($ctx, 'Page.documentOpened'));
+	}
+
+
 	public function addDomContentEventFiredListener(callable $listener): SubscriptionInterface
 	{
 		return $this->internalClient->addListener('Page.domContentEventFired', function ($event) use ($listener) {
@@ -478,6 +524,20 @@ class PageDomain implements PageDomainInterface
 	public function awaitDomContentEventFired(ContextInterface $ctx): DomContentEventFiredEvent
 	{
 		return DomContentEventFiredEvent::fromJson($this->internalClient->awaitEvent($ctx, 'Page.domContentEventFired'));
+	}
+
+
+	public function addDownloadProgressListener(callable $listener): SubscriptionInterface
+	{
+		return $this->internalClient->addListener('Page.downloadProgress', function ($event) use ($listener) {
+			return $listener(DownloadProgressEvent::fromJson($event));
+		});
+	}
+
+
+	public function awaitDownloadProgress(ContextInterface $ctx): DownloadProgressEvent
+	{
+		return DownloadProgressEvent::fromJson($this->internalClient->awaitEvent($ctx, 'Page.downloadProgress'));
 	}
 
 

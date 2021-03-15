@@ -8,11 +8,15 @@ use ChromeDevtoolsProtocol\Model\Emulation\CanEmulateResponse;
 use ChromeDevtoolsProtocol\Model\Emulation\SetCPUThrottlingRateRequest;
 use ChromeDevtoolsProtocol\Model\Emulation\SetDefaultBackgroundColorOverrideRequest;
 use ChromeDevtoolsProtocol\Model\Emulation\SetDeviceMetricsOverrideRequest;
+use ChromeDevtoolsProtocol\Model\Emulation\SetDisabledImageTypesRequest;
 use ChromeDevtoolsProtocol\Model\Emulation\SetDocumentCookieDisabledRequest;
 use ChromeDevtoolsProtocol\Model\Emulation\SetEmitTouchEventsForMouseRequest;
 use ChromeDevtoolsProtocol\Model\Emulation\SetEmulatedMediaRequest;
+use ChromeDevtoolsProtocol\Model\Emulation\SetEmulatedVisionDeficiencyRequest;
 use ChromeDevtoolsProtocol\Model\Emulation\SetFocusEmulationEnabledRequest;
 use ChromeDevtoolsProtocol\Model\Emulation\SetGeolocationOverrideRequest;
+use ChromeDevtoolsProtocol\Model\Emulation\SetIdleOverrideRequest;
+use ChromeDevtoolsProtocol\Model\Emulation\SetLocaleOverrideRequest;
 use ChromeDevtoolsProtocol\Model\Emulation\SetNavigatorOverridesRequest;
 use ChromeDevtoolsProtocol\Model\Emulation\SetPageScaleFactorRequest;
 use ChromeDevtoolsProtocol\Model\Emulation\SetScriptExecutionDisabledRequest;
@@ -60,6 +64,13 @@ class EmulationDomain implements EmulationDomainInterface
 	}
 
 
+	public function clearIdleOverride(ContextInterface $ctx): void
+	{
+		$request = new \stdClass();
+		$this->internalClient->executeCommand($ctx, 'Emulation.clearIdleOverride', $request);
+	}
+
+
 	public function resetPageScaleFactor(ContextInterface $ctx): void
 	{
 		$request = new \stdClass();
@@ -73,8 +84,10 @@ class EmulationDomain implements EmulationDomainInterface
 	}
 
 
-	public function setDefaultBackgroundColorOverride(ContextInterface $ctx, SetDefaultBackgroundColorOverrideRequest $request): void
-	{
+	public function setDefaultBackgroundColorOverride(
+		ContextInterface $ctx,
+		SetDefaultBackgroundColorOverrideRequest $request
+	): void {
 		$this->internalClient->executeCommand($ctx, 'Emulation.setDefaultBackgroundColorOverride', $request);
 	}
 
@@ -82,6 +95,12 @@ class EmulationDomain implements EmulationDomainInterface
 	public function setDeviceMetricsOverride(ContextInterface $ctx, SetDeviceMetricsOverrideRequest $request): void
 	{
 		$this->internalClient->executeCommand($ctx, 'Emulation.setDeviceMetricsOverride', $request);
+	}
+
+
+	public function setDisabledImageTypes(ContextInterface $ctx, SetDisabledImageTypesRequest $request): void
+	{
+		$this->internalClient->executeCommand($ctx, 'Emulation.setDisabledImageTypes', $request);
 	}
 
 
@@ -103,6 +122,12 @@ class EmulationDomain implements EmulationDomainInterface
 	}
 
 
+	public function setEmulatedVisionDeficiency(ContextInterface $ctx, SetEmulatedVisionDeficiencyRequest $request): void
+	{
+		$this->internalClient->executeCommand($ctx, 'Emulation.setEmulatedVisionDeficiency', $request);
+	}
+
+
 	public function setFocusEmulationEnabled(ContextInterface $ctx, SetFocusEmulationEnabledRequest $request): void
 	{
 		$this->internalClient->executeCommand($ctx, 'Emulation.setFocusEmulationEnabled', $request);
@@ -112,6 +137,18 @@ class EmulationDomain implements EmulationDomainInterface
 	public function setGeolocationOverride(ContextInterface $ctx, SetGeolocationOverrideRequest $request): void
 	{
 		$this->internalClient->executeCommand($ctx, 'Emulation.setGeolocationOverride', $request);
+	}
+
+
+	public function setIdleOverride(ContextInterface $ctx, SetIdleOverrideRequest $request): void
+	{
+		$this->internalClient->executeCommand($ctx, 'Emulation.setIdleOverride', $request);
+	}
+
+
+	public function setLocaleOverride(ContextInterface $ctx, SetLocaleOverrideRequest $request): void
+	{
+		$this->internalClient->executeCommand($ctx, 'Emulation.setLocaleOverride', $request);
 	}
 
 
@@ -157,8 +194,10 @@ class EmulationDomain implements EmulationDomainInterface
 	}
 
 
-	public function setVirtualTimePolicy(ContextInterface $ctx, SetVirtualTimePolicyRequest $request): SetVirtualTimePolicyResponse
-	{
+	public function setVirtualTimePolicy(
+		ContextInterface $ctx,
+		SetVirtualTimePolicyRequest $request
+	): SetVirtualTimePolicyResponse {
 		$response = $this->internalClient->executeCommand($ctx, 'Emulation.setVirtualTimePolicy', $request);
 		return SetVirtualTimePolicyResponse::fromJson($response);
 	}

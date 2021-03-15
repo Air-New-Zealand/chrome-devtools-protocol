@@ -12,12 +12,10 @@ use ChromeDevtoolsProtocol\Exception\BuilderException;
 final class NavigateRequestBuilder
 {
 	private $url;
-
 	private $referrer;
-
 	private $transitionType;
-
 	private $frameId;
+	private $referrerPolicy;
 
 
 	/**
@@ -33,6 +31,7 @@ final class NavigateRequestBuilder
 		$instance->referrer = $this->referrer;
 		$instance->transitionType = $this->transitionType;
 		$instance->frameId = $this->frameId;
+		$instance->referrerPolicy = $this->referrerPolicy;
 		return $instance;
 	}
 
@@ -81,6 +80,18 @@ final class NavigateRequestBuilder
 	public function setFrameId($frameId): self
 	{
 		$this->frameId = $frameId;
+		return $this;
+	}
+
+
+	/**
+	 * @param string $referrerPolicy
+	 *
+	 * @return self
+	 */
+	public function setReferrerPolicy($referrerPolicy): self
+	{
+		$this->referrerPolicy = $referrerPolicy;
 		return $this;
 	}
 }

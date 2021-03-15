@@ -7,7 +7,9 @@ use ChromeDevtoolsProtocol\InternalClientInterface;
 use ChromeDevtoolsProtocol\Model\Profiler\ConsoleProfileFinishedEvent;
 use ChromeDevtoolsProtocol\Model\Profiler\ConsoleProfileStartedEvent;
 use ChromeDevtoolsProtocol\Model\Profiler\GetBestEffortCoverageResponse;
+use ChromeDevtoolsProtocol\Model\Profiler\GetCountersResponse;
 use ChromeDevtoolsProtocol\Model\Profiler\GetRuntimeCallStatsResponse;
+use ChromeDevtoolsProtocol\Model\Profiler\PreciseCoverageDeltaUpdateEvent;
 use ChromeDevtoolsProtocol\Model\Profiler\SetSamplingIntervalRequest;
 use ChromeDevtoolsProtocol\Model\Profiler\StartPreciseCoverageRequest;
 use ChromeDevtoolsProtocol\Model\Profiler\StartPreciseCoverageResponse;
@@ -35,6 +37,13 @@ class ProfilerDomain implements ProfilerDomainInterface
 	}
 
 
+	public function disableCounters(ContextInterface $ctx): void
+	{
+		$request = new \stdClass();
+		$this->internalClient->executeCommand($ctx, 'Profiler.disableCounters', $request);
+	}
+
+
 	public function disableRuntimeCallStats(ContextInterface $ctx): void
 	{
 		$request = new \stdClass();
@@ -46,6 +55,13 @@ class ProfilerDomain implements ProfilerDomainInterface
 	{
 		$request = new \stdClass();
 		$this->internalClient->executeCommand($ctx, 'Profiler.enable', $request);
+	}
+
+
+	public function enableCounters(ContextInterface $ctx): void
+	{
+		$request = new \stdClass();
+		$this->internalClient->executeCommand($ctx, 'Profiler.enableCounters', $request);
 	}
 
 
@@ -61,6 +77,14 @@ class ProfilerDomain implements ProfilerDomainInterface
 		$request = new \stdClass();
 		$response = $this->internalClient->executeCommand($ctx, 'Profiler.getBestEffortCoverage', $request);
 		return GetBestEffortCoverageResponse::fromJson($response);
+	}
+
+
+	public function getCounters(ContextInterface $ctx): GetCountersResponse
+	{
+		$request = new \stdClass();
+		$response = $this->internalClient->executeCommand($ctx, 'Profiler.getCounters', $request);
+		return GetCountersResponse::fromJson($response);
 	}
 
 
@@ -85,8 +109,10 @@ class ProfilerDomain implements ProfilerDomainInterface
 	}
 
 
-	public function startPreciseCoverage(ContextInterface $ctx, StartPreciseCoverageRequest $request): StartPreciseCoverageResponse
-	{
+	public function startPreciseCoverage(
+		ContextInterface $ctx,
+		StartPreciseCoverageRequest $request
+	): StartPreciseCoverageResponse {
 		$response = $this->internalClient->executeCommand($ctx, 'Profiler.startPreciseCoverage', $request);
 		return StartPreciseCoverageResponse::fromJson($response);
 	}
@@ -162,5 +188,19 @@ class ProfilerDomain implements ProfilerDomainInterface
 	public function awaitConsoleProfileStarted(ContextInterface $ctx): ConsoleProfileStartedEvent
 	{
 		return ConsoleProfileStartedEvent::fromJson($this->internalClient->awaitEvent($ctx, 'Profiler.consoleProfileStarted'));
+	}
+
+
+	public function addPreciseCoverageDeltaUpdateListener(callable $listener): SubscriptionInterface
+	{
+		return $this->internalClient->addListener('Profiler.preciseCoverageDeltaUpdate', function ($event) use ($listener) {
+			return $listener(PreciseCoverageDeltaUpdateEvent::fromJson($event));
+		});
+	}
+
+
+	public function awaitPreciseCoverageDeltaUpdate(ContextInterface $ctx): PreciseCoverageDeltaUpdateEvent
+	{
+		return PreciseCoverageDeltaUpdateEvent::fromJson($this->internalClient->awaitEvent($ctx, 'Profiler.preciseCoverageDeltaUpdate'));
 	}
 }

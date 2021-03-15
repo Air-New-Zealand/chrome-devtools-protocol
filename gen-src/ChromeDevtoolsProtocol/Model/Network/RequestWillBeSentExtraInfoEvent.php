@@ -19,11 +19,11 @@ final class RequestWillBeSentExtraInfoEvent implements \JsonSerializable
 	public $requestId;
 
 	/**
-	 * A list of cookies which will not be sent with this request along with corresponding reasons for blocking.
+	 * A list of cookies potentially associated to the requested URL. This includes both cookies sent with the request and the ones not sent; the latter are distinguished by having blockedReason field set.
 	 *
 	 * @var BlockedCookieWithReason[]
 	 */
-	public $blockedCookies;
+	public $associatedCookies;
 
 	/**
 	 * Raw request headers as they will be sent over the wire.
@@ -32,6 +32,13 @@ final class RequestWillBeSentExtraInfoEvent implements \JsonSerializable
 	 */
 	public $headers;
 
+	/**
+	 * The client security state set for the request.
+	 *
+	 * @var ClientSecurityState|null
+	 */
+	public $clientSecurityState;
+
 
 	public static function fromJson($data)
 	{
@@ -39,14 +46,17 @@ final class RequestWillBeSentExtraInfoEvent implements \JsonSerializable
 		if (isset($data->requestId)) {
 			$instance->requestId = (string)$data->requestId;
 		}
-		if (isset($data->blockedCookies)) {
-			$instance->blockedCookies = [];
-			foreach ($data->blockedCookies as $item) {
-				$instance->blockedCookies[] = BlockedCookieWithReason::fromJson($item);
+		if (isset($data->associatedCookies)) {
+			$instance->associatedCookies = [];
+			foreach ($data->associatedCookies as $item) {
+				$instance->associatedCookies[] = BlockedCookieWithReason::fromJson($item);
 			}
 		}
 		if (isset($data->headers)) {
 			$instance->headers = Headers::fromJson($data->headers);
+		}
+		if (isset($data->clientSecurityState)) {
+			$instance->clientSecurityState = ClientSecurityState::fromJson($data->clientSecurityState);
 		}
 		return $instance;
 	}
@@ -58,14 +68,17 @@ final class RequestWillBeSentExtraInfoEvent implements \JsonSerializable
 		if ($this->requestId !== null) {
 			$data->requestId = $this->requestId;
 		}
-		if ($this->blockedCookies !== null) {
-			$data->blockedCookies = [];
-			foreach ($this->blockedCookies as $item) {
-				$data->blockedCookies[] = $item->jsonSerialize();
+		if ($this->associatedCookies !== null) {
+			$data->associatedCookies = [];
+			foreach ($this->associatedCookies as $item) {
+				$data->associatedCookies[] = $item->jsonSerialize();
 			}
 		}
 		if ($this->headers !== null) {
 			$data->headers = $this->headers->jsonSerialize();
+		}
+		if ($this->clientSecurityState !== null) {
+			$data->clientSecurityState = $this->clientSecurityState->jsonSerialize();
 		}
 		return $data;
 	}

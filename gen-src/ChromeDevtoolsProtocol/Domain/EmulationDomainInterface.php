@@ -7,11 +7,15 @@ use ChromeDevtoolsProtocol\Model\Emulation\CanEmulateResponse;
 use ChromeDevtoolsProtocol\Model\Emulation\SetCPUThrottlingRateRequest;
 use ChromeDevtoolsProtocol\Model\Emulation\SetDefaultBackgroundColorOverrideRequest;
 use ChromeDevtoolsProtocol\Model\Emulation\SetDeviceMetricsOverrideRequest;
+use ChromeDevtoolsProtocol\Model\Emulation\SetDisabledImageTypesRequest;
 use ChromeDevtoolsProtocol\Model\Emulation\SetDocumentCookieDisabledRequest;
 use ChromeDevtoolsProtocol\Model\Emulation\SetEmitTouchEventsForMouseRequest;
 use ChromeDevtoolsProtocol\Model\Emulation\SetEmulatedMediaRequest;
+use ChromeDevtoolsProtocol\Model\Emulation\SetEmulatedVisionDeficiencyRequest;
 use ChromeDevtoolsProtocol\Model\Emulation\SetFocusEmulationEnabledRequest;
 use ChromeDevtoolsProtocol\Model\Emulation\SetGeolocationOverrideRequest;
+use ChromeDevtoolsProtocol\Model\Emulation\SetIdleOverrideRequest;
+use ChromeDevtoolsProtocol\Model\Emulation\SetLocaleOverrideRequest;
 use ChromeDevtoolsProtocol\Model\Emulation\SetNavigatorOverridesRequest;
 use ChromeDevtoolsProtocol\Model\Emulation\SetPageScaleFactorRequest;
 use ChromeDevtoolsProtocol\Model\Emulation\SetScriptExecutionDisabledRequest;
@@ -65,6 +69,16 @@ interface EmulationDomainInterface
 
 
 	/**
+	 * Clears Idle state overrides.
+	 *
+	 * @param ContextInterface $ctx
+	 *
+	 * @return void
+	 */
+	public function clearIdleOverride(ContextInterface $ctx): void;
+
+
+	/**
 	 * Requests that page scale factor is reset to initial values.
 	 *
 	 * @param ContextInterface $ctx
@@ -93,7 +107,10 @@ interface EmulationDomainInterface
 	 *
 	 * @return void
 	 */
-	public function setDefaultBackgroundColorOverride(ContextInterface $ctx, SetDefaultBackgroundColorOverrideRequest $request): void;
+	public function setDefaultBackgroundColorOverride(
+		ContextInterface $ctx,
+		SetDefaultBackgroundColorOverrideRequest $request
+	): void;
 
 
 	/**
@@ -105,6 +122,17 @@ interface EmulationDomainInterface
 	 * @return void
 	 */
 	public function setDeviceMetricsOverride(ContextInterface $ctx, SetDeviceMetricsOverrideRequest $request): void;
+
+
+	/**
+	 * Call Emulation.setDisabledImageTypes command.
+	 *
+	 * @param ContextInterface $ctx
+	 * @param SetDisabledImageTypesRequest $request
+	 *
+	 * @return void
+	 */
+	public function setDisabledImageTypes(ContextInterface $ctx, SetDisabledImageTypesRequest $request): void;
 
 
 	/**
@@ -141,6 +169,17 @@ interface EmulationDomainInterface
 
 
 	/**
+	 * Emulates the given vision deficiency.
+	 *
+	 * @param ContextInterface $ctx
+	 * @param SetEmulatedVisionDeficiencyRequest $request
+	 *
+	 * @return void
+	 */
+	public function setEmulatedVisionDeficiency(ContextInterface $ctx, SetEmulatedVisionDeficiencyRequest $request): void;
+
+
+	/**
 	 * Enables or disables simulating a focused and active page.
 	 *
 	 * @param ContextInterface $ctx
@@ -160,6 +199,28 @@ interface EmulationDomainInterface
 	 * @return void
 	 */
 	public function setGeolocationOverride(ContextInterface $ctx, SetGeolocationOverrideRequest $request): void;
+
+
+	/**
+	 * Overrides the Idle state.
+	 *
+	 * @param ContextInterface $ctx
+	 * @param SetIdleOverrideRequest $request
+	 *
+	 * @return void
+	 */
+	public function setIdleOverride(ContextInterface $ctx, SetIdleOverrideRequest $request): void;
+
+
+	/**
+	 * Overrides default host system locale with the specified one.
+	 *
+	 * @param ContextInterface $ctx
+	 * @param SetLocaleOverrideRequest $request
+	 *
+	 * @return void
+	 */
+	public function setLocaleOverride(ContextInterface $ctx, SetLocaleOverrideRequest $request): void;
 
 
 	/**
@@ -247,7 +308,10 @@ interface EmulationDomainInterface
 	 *
 	 * @return SetVirtualTimePolicyResponse
 	 */
-	public function setVirtualTimePolicy(ContextInterface $ctx, SetVirtualTimePolicyRequest $request): SetVirtualTimePolicyResponse;
+	public function setVirtualTimePolicy(
+		ContextInterface $ctx,
+		SetVirtualTimePolicyRequest $request
+	): SetVirtualTimePolicyResponse;
 
 
 	/**

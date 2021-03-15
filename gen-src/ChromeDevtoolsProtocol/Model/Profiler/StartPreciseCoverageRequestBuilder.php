@@ -10,8 +10,8 @@ namespace ChromeDevtoolsProtocol\Model\Profiler;
 final class StartPreciseCoverageRequestBuilder
 {
 	private $callCount;
-
 	private $detailed;
+	private $allowTriggeredUpdates;
 
 
 	/**
@@ -22,6 +22,7 @@ final class StartPreciseCoverageRequestBuilder
 		$instance = new StartPreciseCoverageRequest();
 		$instance->callCount = $this->callCount;
 		$instance->detailed = $this->detailed;
+		$instance->allowTriggeredUpdates = $this->allowTriggeredUpdates;
 		return $instance;
 	}
 
@@ -46,6 +47,18 @@ final class StartPreciseCoverageRequestBuilder
 	public function setDetailed($detailed): self
 	{
 		$this->detailed = $detailed;
+		return $this;
+	}
+
+
+	/**
+	 * @param bool|null $allowTriggeredUpdates
+	 *
+	 * @return self
+	 */
+	public function setAllowTriggeredUpdates($allowTriggeredUpdates): self
+	{
+		$this->allowTriggeredUpdates = $allowTriggeredUpdates;
 		return $this;
 	}
 }

@@ -40,7 +40,7 @@ final class EvaluateRequest implements \JsonSerializable
 	public $silent;
 
 	/**
-	 * Specifies in which execution context to perform evaluation. If the parameter is omitted the evaluation will be performed in the context of the inspected page.
+	 * Specifies in which execution context to perform evaluation. If the parameter is omitted the evaluation will be performed in the context of the inspected page. This is mutually exclusive with `uniqueContextId`, which offers an alternative way to identify the execution context that is more reliable in a multi-process environment.
 	 *
 	 * @var int
 	 */
@@ -96,11 +96,25 @@ final class EvaluateRequest implements \JsonSerializable
 	public $disableBreaks;
 
 	/**
-	 * Reserved flag for future REPL mode support. Setting this flag has currently no effect.
+	 * Setting this flag to true enables `let` re-declaration and top-level `await`. Note that `let` variables can only be re-declared if they originate from `replMode` themselves.
 	 *
 	 * @var bool|null
 	 */
 	public $replMode;
+
+	/**
+	 * The Content Security Policy (CSP) for the target might block 'unsafe-eval' which includes eval(), Function(), setTimeout() and setInterval() when called with non-callable arguments. This flag bypasses CSP for this evaluation and allows unsafe-eval. Defaults to true.
+	 *
+	 * @var bool|null
+	 */
+	public $allowUnsafeEvalBlockedByCSP;
+
+	/**
+	 * An alternative way to specify the execution context to evaluate in. Compared to contextId that may be reused accross processes, this is guaranteed to be system-unique, so it can be used to prevent accidental evaluation of the expression in context different than intended (e.g. as a result of navigation accross process boundaries). This is mutually exclusive with `contextId`.
+	 *
+	 * @var string|null
+	 */
+	public $uniqueContextId;
 
 
 	public static function fromJson($data)
@@ -144,6 +158,12 @@ final class EvaluateRequest implements \JsonSerializable
 		}
 		if (isset($data->replMode)) {
 			$instance->replMode = (bool)$data->replMode;
+		}
+		if (isset($data->allowUnsafeEvalBlockedByCSP)) {
+			$instance->allowUnsafeEvalBlockedByCSP = (bool)$data->allowUnsafeEvalBlockedByCSP;
+		}
+		if (isset($data->uniqueContextId)) {
+			$instance->uniqueContextId = (string)$data->uniqueContextId;
 		}
 		return $instance;
 	}
@@ -190,6 +210,12 @@ final class EvaluateRequest implements \JsonSerializable
 		}
 		if ($this->replMode !== null) {
 			$data->replMode = $this->replMode;
+		}
+		if ($this->allowUnsafeEvalBlockedByCSP !== null) {
+			$data->allowUnsafeEvalBlockedByCSP = $this->allowUnsafeEvalBlockedByCSP;
+		}
+		if ($this->uniqueContextId !== null) {
+			$data->uniqueContextId = $this->uniqueContextId;
 		}
 		return $data;
 	}

@@ -11,10 +11,8 @@ use ChromeDevtoolsProtocol\Exception\BuilderException;
  */
 final class GrantPermissionsRequestBuilder
 {
-	private $origin;
-
 	private $permissions;
-
+	private $origin;
 	private $browserContextId;
 
 
@@ -24,28 +22,13 @@ final class GrantPermissionsRequestBuilder
 	public function build(): GrantPermissionsRequest
 	{
 		$instance = new GrantPermissionsRequest();
-		if ($this->origin === null) {
-			throw new BuilderException('Property [origin] is required.');
-		}
-		$instance->origin = $this->origin;
 		if ($this->permissions === null) {
 			throw new BuilderException('Property [permissions] is required.');
 		}
 		$instance->permissions = $this->permissions;
+		$instance->origin = $this->origin;
 		$instance->browserContextId = $this->browserContextId;
 		return $instance;
-	}
-
-
-	/**
-	 * @param string $origin
-	 *
-	 * @return self
-	 */
-	public function setOrigin($origin): self
-	{
-		$this->origin = $origin;
-		return $this;
 	}
 
 
@@ -57,6 +40,18 @@ final class GrantPermissionsRequestBuilder
 	public function setPermissions($permissions): self
 	{
 		$this->permissions = $permissions;
+		return $this;
+	}
+
+
+	/**
+	 * @param string|null $origin
+	 *
+	 * @return self
+	 */
+	public function setOrigin($origin): self
+	{
+		$this->origin = $origin;
 		return $this;
 	}
 

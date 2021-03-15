@@ -24,6 +24,10 @@ use ChromeDevtoolsProtocol\Model\Network\GetResponseBodyForInterceptionRequest;
 use ChromeDevtoolsProtocol\Model\Network\GetResponseBodyForInterceptionResponse;
 use ChromeDevtoolsProtocol\Model\Network\GetResponseBodyRequest;
 use ChromeDevtoolsProtocol\Model\Network\GetResponseBodyResponse;
+use ChromeDevtoolsProtocol\Model\Network\GetSecurityIsolationStatusRequest;
+use ChromeDevtoolsProtocol\Model\Network\GetSecurityIsolationStatusResponse;
+use ChromeDevtoolsProtocol\Model\Network\LoadNetworkResourceRequest;
+use ChromeDevtoolsProtocol\Model\Network\LoadNetworkResourceResponse;
 use ChromeDevtoolsProtocol\Model\Network\LoadingFailedEvent;
 use ChromeDevtoolsProtocol\Model\Network\LoadingFinishedEvent;
 use ChromeDevtoolsProtocol\Model\Network\ReplayXHRRequest;
@@ -36,6 +40,7 @@ use ChromeDevtoolsProtocol\Model\Network\ResponseReceivedEvent;
 use ChromeDevtoolsProtocol\Model\Network\ResponseReceivedExtraInfoEvent;
 use ChromeDevtoolsProtocol\Model\Network\SearchInResponseBodyRequest;
 use ChromeDevtoolsProtocol\Model\Network\SearchInResponseBodyResponse;
+use ChromeDevtoolsProtocol\Model\Network\SetAttachDebugStackRequest;
 use ChromeDevtoolsProtocol\Model\Network\SetBlockedURLsRequest;
 use ChromeDevtoolsProtocol\Model\Network\SetBypassServiceWorkerRequest;
 use ChromeDevtoolsProtocol\Model\Network\SetCacheDisabledRequest;
@@ -49,6 +54,7 @@ use ChromeDevtoolsProtocol\Model\Network\SetUserAgentOverrideRequest;
 use ChromeDevtoolsProtocol\Model\Network\SignedExchangeReceivedEvent;
 use ChromeDevtoolsProtocol\Model\Network\TakeResponseBodyForInterceptionAsStreamRequest;
 use ChromeDevtoolsProtocol\Model\Network\TakeResponseBodyForInterceptionAsStreamResponse;
+use ChromeDevtoolsProtocol\Model\Network\TrustTokenOperationDoneEvent;
 use ChromeDevtoolsProtocol\Model\Network\WebSocketClosedEvent;
 use ChromeDevtoolsProtocol\Model\Network\WebSocketCreatedEvent;
 use ChromeDevtoolsProtocol\Model\Network\WebSocketFrameErrorEvent;
@@ -56,6 +62,9 @@ use ChromeDevtoolsProtocol\Model\Network\WebSocketFrameReceivedEvent;
 use ChromeDevtoolsProtocol\Model\Network\WebSocketFrameSentEvent;
 use ChromeDevtoolsProtocol\Model\Network\WebSocketHandshakeResponseReceivedEvent;
 use ChromeDevtoolsProtocol\Model\Network\WebSocketWillSendHandshakeRequestEvent;
+use ChromeDevtoolsProtocol\Model\Network\WebTransportClosedEvent;
+use ChromeDevtoolsProtocol\Model\Network\WebTransportConnectionEstablishedEvent;
+use ChromeDevtoolsProtocol\Model\Network\WebTransportCreatedEvent;
 use ChromeDevtoolsProtocol\SubscriptionInterface;
 
 class NetworkDomain implements NetworkDomainInterface
@@ -161,8 +170,10 @@ class NetworkDomain implements NetworkDomainInterface
 	}
 
 
-	public function getRequestPostData(ContextInterface $ctx, GetRequestPostDataRequest $request): GetRequestPostDataResponse
-	{
+	public function getRequestPostData(
+		ContextInterface $ctx,
+		GetRequestPostDataRequest $request
+	): GetRequestPostDataResponse {
 		$response = $this->internalClient->executeCommand($ctx, 'Network.getRequestPostData', $request);
 		return GetRequestPostDataResponse::fromJson($response);
 	}
@@ -175,10 +186,30 @@ class NetworkDomain implements NetworkDomainInterface
 	}
 
 
-	public function getResponseBodyForInterception(ContextInterface $ctx, GetResponseBodyForInterceptionRequest $request): GetResponseBodyForInterceptionResponse
-	{
+	public function getResponseBodyForInterception(
+		ContextInterface $ctx,
+		GetResponseBodyForInterceptionRequest $request
+	): GetResponseBodyForInterceptionResponse {
 		$response = $this->internalClient->executeCommand($ctx, 'Network.getResponseBodyForInterception', $request);
 		return GetResponseBodyForInterceptionResponse::fromJson($response);
+	}
+
+
+	public function getSecurityIsolationStatus(
+		ContextInterface $ctx,
+		GetSecurityIsolationStatusRequest $request
+	): GetSecurityIsolationStatusResponse {
+		$response = $this->internalClient->executeCommand($ctx, 'Network.getSecurityIsolationStatus', $request);
+		return GetSecurityIsolationStatusResponse::fromJson($response);
+	}
+
+
+	public function loadNetworkResource(
+		ContextInterface $ctx,
+		LoadNetworkResourceRequest $request
+	): LoadNetworkResourceResponse {
+		$response = $this->internalClient->executeCommand($ctx, 'Network.loadNetworkResource', $request);
+		return LoadNetworkResourceResponse::fromJson($response);
 	}
 
 
@@ -188,10 +219,18 @@ class NetworkDomain implements NetworkDomainInterface
 	}
 
 
-	public function searchInResponseBody(ContextInterface $ctx, SearchInResponseBodyRequest $request): SearchInResponseBodyResponse
-	{
+	public function searchInResponseBody(
+		ContextInterface $ctx,
+		SearchInResponseBodyRequest $request
+	): SearchInResponseBodyResponse {
 		$response = $this->internalClient->executeCommand($ctx, 'Network.searchInResponseBody', $request);
 		return SearchInResponseBodyResponse::fromJson($response);
+	}
+
+
+	public function setAttachDebugStack(ContextInterface $ctx, SetAttachDebugStackRequest $request): void
+	{
+		$this->internalClient->executeCommand($ctx, 'Network.setAttachDebugStack', $request);
 	}
 
 
@@ -250,8 +289,10 @@ class NetworkDomain implements NetworkDomainInterface
 	}
 
 
-	public function takeResponseBodyForInterceptionAsStream(ContextInterface $ctx, TakeResponseBodyForInterceptionAsStreamRequest $request): TakeResponseBodyForInterceptionAsStreamResponse
-	{
+	public function takeResponseBodyForInterceptionAsStream(
+		ContextInterface $ctx,
+		TakeResponseBodyForInterceptionAsStreamRequest $request
+	): TakeResponseBodyForInterceptionAsStreamResponse {
 		$response = $this->internalClient->executeCommand($ctx, 'Network.takeResponseBodyForInterceptionAsStream', $request);
 		return TakeResponseBodyForInterceptionAsStreamResponse::fromJson($response);
 	}
@@ -425,6 +466,20 @@ class NetworkDomain implements NetworkDomainInterface
 	}
 
 
+	public function addTrustTokenOperationDoneListener(callable $listener): SubscriptionInterface
+	{
+		return $this->internalClient->addListener('Network.trustTokenOperationDone', function ($event) use ($listener) {
+			return $listener(TrustTokenOperationDoneEvent::fromJson($event));
+		});
+	}
+
+
+	public function awaitTrustTokenOperationDone(ContextInterface $ctx): TrustTokenOperationDoneEvent
+	{
+		return TrustTokenOperationDoneEvent::fromJson($this->internalClient->awaitEvent($ctx, 'Network.trustTokenOperationDone'));
+	}
+
+
 	public function addWebSocketClosedListener(callable $listener): SubscriptionInterface
 	{
 		return $this->internalClient->addListener('Network.webSocketClosed', function ($event) use ($listener) {
@@ -520,5 +575,47 @@ class NetworkDomain implements NetworkDomainInterface
 	public function awaitWebSocketWillSendHandshakeRequest(ContextInterface $ctx): WebSocketWillSendHandshakeRequestEvent
 	{
 		return WebSocketWillSendHandshakeRequestEvent::fromJson($this->internalClient->awaitEvent($ctx, 'Network.webSocketWillSendHandshakeRequest'));
+	}
+
+
+	public function addWebTransportClosedListener(callable $listener): SubscriptionInterface
+	{
+		return $this->internalClient->addListener('Network.webTransportClosed', function ($event) use ($listener) {
+			return $listener(WebTransportClosedEvent::fromJson($event));
+		});
+	}
+
+
+	public function awaitWebTransportClosed(ContextInterface $ctx): WebTransportClosedEvent
+	{
+		return WebTransportClosedEvent::fromJson($this->internalClient->awaitEvent($ctx, 'Network.webTransportClosed'));
+	}
+
+
+	public function addWebTransportConnectionEstablishedListener(callable $listener): SubscriptionInterface
+	{
+		return $this->internalClient->addListener('Network.webTransportConnectionEstablished', function ($event) use ($listener) {
+			return $listener(WebTransportConnectionEstablishedEvent::fromJson($event));
+		});
+	}
+
+
+	public function awaitWebTransportConnectionEstablished(ContextInterface $ctx): WebTransportConnectionEstablishedEvent
+	{
+		return WebTransportConnectionEstablishedEvent::fromJson($this->internalClient->awaitEvent($ctx, 'Network.webTransportConnectionEstablished'));
+	}
+
+
+	public function addWebTransportCreatedListener(callable $listener): SubscriptionInterface
+	{
+		return $this->internalClient->addListener('Network.webTransportCreated', function ($event) use ($listener) {
+			return $listener(WebTransportCreatedEvent::fromJson($event));
+		});
+	}
+
+
+	public function awaitWebTransportCreated(ContextInterface $ctx): WebTransportCreatedEvent
+	{
+		return WebTransportCreatedEvent::fromJson($this->internalClient->awaitEvent($ctx, 'Network.webTransportCreated'));
 	}
 }

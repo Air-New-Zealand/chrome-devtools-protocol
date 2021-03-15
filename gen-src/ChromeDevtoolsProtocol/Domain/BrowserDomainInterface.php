@@ -3,6 +3,8 @@
 namespace ChromeDevtoolsProtocol\Domain;
 
 use ChromeDevtoolsProtocol\ContextInterface;
+use ChromeDevtoolsProtocol\Model\Browser\CancelDownloadRequest;
+use ChromeDevtoolsProtocol\Model\Browser\ExecuteBrowserCommandRequest;
 use ChromeDevtoolsProtocol\Model\Browser\GetBrowserCommandLineResponse;
 use ChromeDevtoolsProtocol\Model\Browser\GetHistogramRequest;
 use ChromeDevtoolsProtocol\Model\Browser\GetHistogramResponse;
@@ -16,6 +18,7 @@ use ChromeDevtoolsProtocol\Model\Browser\GetWindowForTargetResponse;
 use ChromeDevtoolsProtocol\Model\Browser\GrantPermissionsRequest;
 use ChromeDevtoolsProtocol\Model\Browser\ResetPermissionsRequest;
 use ChromeDevtoolsProtocol\Model\Browser\SetDockTileRequest;
+use ChromeDevtoolsProtocol\Model\Browser\SetDownloadBehaviorRequest;
 use ChromeDevtoolsProtocol\Model\Browser\SetPermissionRequest;
 use ChromeDevtoolsProtocol\Model\Browser\SetWindowBoundsRequest;
 
@@ -28,6 +31,17 @@ use ChromeDevtoolsProtocol\Model\Browser\SetWindowBoundsRequest;
  */
 interface BrowserDomainInterface
 {
+	/**
+	 * Cancel a download if in progress
+	 *
+	 * @param ContextInterface $ctx
+	 * @param CancelDownloadRequest $request
+	 *
+	 * @return void
+	 */
+	public function cancelDownload(ContextInterface $ctx, CancelDownloadRequest $request): void;
+
+
 	/**
 	 * Close browser gracefully.
 	 *
@@ -56,6 +70,17 @@ interface BrowserDomainInterface
 	 * @return void
 	 */
 	public function crashGpuProcess(ContextInterface $ctx): void;
+
+
+	/**
+	 * Invoke custom browser commands used by telemetry.
+	 *
+	 * @param ContextInterface $ctx
+	 * @param ExecuteBrowserCommandRequest $request
+	 *
+	 * @return void
+	 */
+	public function executeBrowserCommand(ContextInterface $ctx, ExecuteBrowserCommandRequest $request): void;
 
 
 	/**
@@ -119,7 +144,10 @@ interface BrowserDomainInterface
 	 *
 	 * @return GetWindowForTargetResponse
 	 */
-	public function getWindowForTarget(ContextInterface $ctx, GetWindowForTargetRequest $request): GetWindowForTargetResponse;
+	public function getWindowForTarget(
+		ContextInterface $ctx,
+		GetWindowForTargetRequest $request
+	): GetWindowForTargetResponse;
 
 
 	/**
@@ -153,6 +181,17 @@ interface BrowserDomainInterface
 	 * @return void
 	 */
 	public function setDockTile(ContextInterface $ctx, SetDockTileRequest $request): void;
+
+
+	/**
+	 * Set the behavior when downloading a file.
+	 *
+	 * @param ContextInterface $ctx
+	 * @param SetDownloadBehaviorRequest $request
+	 *
+	 * @return void
+	 */
+	public function setDownloadBehavior(ContextInterface $ctx, SetDownloadBehaviorRequest $request): void;
 
 
 	/**

@@ -23,6 +23,7 @@ use ChromeDevtoolsProtocol\Model\Debugger\PausedEvent;
 use ChromeDevtoolsProtocol\Model\Debugger\RemoveBreakpointRequest;
 use ChromeDevtoolsProtocol\Model\Debugger\RestartFrameRequest;
 use ChromeDevtoolsProtocol\Model\Debugger\RestartFrameResponse;
+use ChromeDevtoolsProtocol\Model\Debugger\ResumeRequest;
 use ChromeDevtoolsProtocol\Model\Debugger\ResumedEvent;
 use ChromeDevtoolsProtocol\Model\Debugger\ScriptFailedToParseEvent;
 use ChromeDevtoolsProtocol\Model\Debugger\ScriptParsedEvent;
@@ -47,6 +48,7 @@ use ChromeDevtoolsProtocol\Model\Debugger\SetScriptSourceResponse;
 use ChromeDevtoolsProtocol\Model\Debugger\SetSkipAllPausesRequest;
 use ChromeDevtoolsProtocol\Model\Debugger\SetVariableValueRequest;
 use ChromeDevtoolsProtocol\Model\Debugger\StepIntoRequest;
+use ChromeDevtoolsProtocol\Model\Debugger\StepOverRequest;
 use ChromeDevtoolsProtocol\SubscriptionInterface;
 
 class DebuggerDomain implements DebuggerDomainInterface
@@ -81,15 +83,19 @@ class DebuggerDomain implements DebuggerDomainInterface
 	}
 
 
-	public function evaluateOnCallFrame(ContextInterface $ctx, EvaluateOnCallFrameRequest $request): EvaluateOnCallFrameResponse
-	{
+	public function evaluateOnCallFrame(
+		ContextInterface $ctx,
+		EvaluateOnCallFrameRequest $request
+	): EvaluateOnCallFrameResponse {
 		$response = $this->internalClient->executeCommand($ctx, 'Debugger.evaluateOnCallFrame', $request);
 		return EvaluateOnCallFrameResponse::fromJson($response);
 	}
 
 
-	public function getPossibleBreakpoints(ContextInterface $ctx, GetPossibleBreakpointsRequest $request): GetPossibleBreakpointsResponse
-	{
+	public function getPossibleBreakpoints(
+		ContextInterface $ctx,
+		GetPossibleBreakpointsRequest $request
+	): GetPossibleBreakpointsResponse {
 		$response = $this->internalClient->executeCommand($ctx, 'Debugger.getPossibleBreakpoints', $request);
 		return GetPossibleBreakpointsResponse::fromJson($response);
 	}
@@ -142,9 +148,8 @@ class DebuggerDomain implements DebuggerDomainInterface
 	}
 
 
-	public function resume(ContextInterface $ctx): void
+	public function resume(ContextInterface $ctx, ResumeRequest $request): void
 	{
-		$request = new \stdClass();
 		$this->internalClient->executeCommand($ctx, 'Debugger.resume', $request);
 	}
 
@@ -181,15 +186,19 @@ class DebuggerDomain implements DebuggerDomainInterface
 	}
 
 
-	public function setBreakpointByUrl(ContextInterface $ctx, SetBreakpointByUrlRequest $request): SetBreakpointByUrlResponse
-	{
+	public function setBreakpointByUrl(
+		ContextInterface $ctx,
+		SetBreakpointByUrlRequest $request
+	): SetBreakpointByUrlResponse {
 		$response = $this->internalClient->executeCommand($ctx, 'Debugger.setBreakpointByUrl', $request);
 		return SetBreakpointByUrlResponse::fromJson($response);
 	}
 
 
-	public function setBreakpointOnFunctionCall(ContextInterface $ctx, SetBreakpointOnFunctionCallRequest $request): SetBreakpointOnFunctionCallResponse
-	{
+	public function setBreakpointOnFunctionCall(
+		ContextInterface $ctx,
+		SetBreakpointOnFunctionCallRequest $request
+	): SetBreakpointOnFunctionCallResponse {
 		$response = $this->internalClient->executeCommand($ctx, 'Debugger.setBreakpointOnFunctionCall', $request);
 		return SetBreakpointOnFunctionCallResponse::fromJson($response);
 	}
@@ -201,8 +210,10 @@ class DebuggerDomain implements DebuggerDomainInterface
 	}
 
 
-	public function setInstrumentationBreakpoint(ContextInterface $ctx, SetInstrumentationBreakpointRequest $request): SetInstrumentationBreakpointResponse
-	{
+	public function setInstrumentationBreakpoint(
+		ContextInterface $ctx,
+		SetInstrumentationBreakpointRequest $request
+	): SetInstrumentationBreakpointResponse {
 		$response = $this->internalClient->executeCommand($ctx, 'Debugger.setInstrumentationBreakpoint', $request);
 		return SetInstrumentationBreakpointResponse::fromJson($response);
 	}
@@ -252,9 +263,8 @@ class DebuggerDomain implements DebuggerDomainInterface
 	}
 
 
-	public function stepOver(ContextInterface $ctx): void
+	public function stepOver(ContextInterface $ctx, StepOverRequest $request): void
 	{
-		$request = new \stdClass();
 		$this->internalClient->executeCommand($ctx, 'Debugger.stepOver', $request);
 	}
 

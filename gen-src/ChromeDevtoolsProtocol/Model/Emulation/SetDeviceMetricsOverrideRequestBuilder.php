@@ -13,28 +13,18 @@ use ChromeDevtoolsProtocol\Model\Page\Viewport;
 final class SetDeviceMetricsOverrideRequestBuilder
 {
 	private $width;
-
 	private $height;
-
 	private $deviceScaleFactor;
-
 	private $mobile;
-
 	private $scale;
-
 	private $screenWidth;
-
 	private $screenHeight;
-
 	private $positionX;
-
 	private $positionY;
-
 	private $dontSetVisibleSize;
-
 	private $screenOrientation;
-
 	private $viewport;
+	private $displayFeature;
 
 
 	/**
@@ -67,6 +57,7 @@ final class SetDeviceMetricsOverrideRequestBuilder
 		$instance->dontSetVisibleSize = $this->dontSetVisibleSize;
 		$instance->screenOrientation = $this->screenOrientation;
 		$instance->viewport = $this->viewport;
+		$instance->displayFeature = $this->displayFeature;
 		return $instance;
 	}
 
@@ -211,6 +202,18 @@ final class SetDeviceMetricsOverrideRequestBuilder
 	public function setViewport($viewport): self
 	{
 		$this->viewport = $viewport;
+		return $this;
+	}
+
+
+	/**
+	 * @param DisplayFeature|null $displayFeature
+	 *
+	 * @return self
+	 */
+	public function setDisplayFeature($displayFeature): self
+	{
+		$this->displayFeature = $displayFeature;
 		return $this;
 	}
 }

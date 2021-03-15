@@ -41,6 +41,20 @@ final class Initiator implements \JsonSerializable
 	 */
 	public $lineNumber;
 
+	/**
+	 * Initiator column number, set for Parser type or for Script type (when script is importing module) (0-based).
+	 *
+	 * @var int|float|null
+	 */
+	public $columnNumber;
+
+	/**
+	 * Set if another request triggered this request (e.g. preflight).
+	 *
+	 * @var string
+	 */
+	public $requestId;
+
 
 	public static function fromJson($data)
 	{
@@ -56,6 +70,12 @@ final class Initiator implements \JsonSerializable
 		}
 		if (isset($data->lineNumber)) {
 			$instance->lineNumber = $data->lineNumber;
+		}
+		if (isset($data->columnNumber)) {
+			$instance->columnNumber = $data->columnNumber;
+		}
+		if (isset($data->requestId)) {
+			$instance->requestId = (string)$data->requestId;
 		}
 		return $instance;
 	}
@@ -75,6 +95,12 @@ final class Initiator implements \JsonSerializable
 		}
 		if ($this->lineNumber !== null) {
 			$data->lineNumber = $this->lineNumber;
+		}
+		if ($this->columnNumber !== null) {
+			$data->columnNumber = $this->columnNumber;
+		}
+		if ($this->requestId !== null) {
+			$data->requestId = $this->requestId;
 		}
 		return $data;
 	}

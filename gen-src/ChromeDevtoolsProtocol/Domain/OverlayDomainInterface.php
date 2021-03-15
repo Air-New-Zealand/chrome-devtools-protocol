@@ -3,12 +3,17 @@
 namespace ChromeDevtoolsProtocol\Domain;
 
 use ChromeDevtoolsProtocol\ContextInterface;
+use ChromeDevtoolsProtocol\Model\Overlay\GetGridHighlightObjectsForTestRequest;
+use ChromeDevtoolsProtocol\Model\Overlay\GetGridHighlightObjectsForTestResponse;
 use ChromeDevtoolsProtocol\Model\Overlay\GetHighlightObjectForTestRequest;
 use ChromeDevtoolsProtocol\Model\Overlay\GetHighlightObjectForTestResponse;
+use ChromeDevtoolsProtocol\Model\Overlay\GetSourceOrderHighlightObjectForTestRequest;
+use ChromeDevtoolsProtocol\Model\Overlay\GetSourceOrderHighlightObjectForTestResponse;
 use ChromeDevtoolsProtocol\Model\Overlay\HighlightFrameRequest;
 use ChromeDevtoolsProtocol\Model\Overlay\HighlightNodeRequest;
 use ChromeDevtoolsProtocol\Model\Overlay\HighlightQuadRequest;
 use ChromeDevtoolsProtocol\Model\Overlay\HighlightRectRequest;
+use ChromeDevtoolsProtocol\Model\Overlay\HighlightSourceOrderRequest;
 use ChromeDevtoolsProtocol\Model\Overlay\InspectModeCanceledEvent;
 use ChromeDevtoolsProtocol\Model\Overlay\InspectNodeRequestedEvent;
 use ChromeDevtoolsProtocol\Model\Overlay\NodeHighlightRequestedEvent;
@@ -18,11 +23,15 @@ use ChromeDevtoolsProtocol\Model\Overlay\SetPausedInDebuggerMessageRequest;
 use ChromeDevtoolsProtocol\Model\Overlay\SetShowAdHighlightsRequest;
 use ChromeDevtoolsProtocol\Model\Overlay\SetShowDebugBordersRequest;
 use ChromeDevtoolsProtocol\Model\Overlay\SetShowFPSCounterRequest;
+use ChromeDevtoolsProtocol\Model\Overlay\SetShowFlexOverlaysRequest;
+use ChromeDevtoolsProtocol\Model\Overlay\SetShowGridOverlaysRequest;
+use ChromeDevtoolsProtocol\Model\Overlay\SetShowHingeRequest;
 use ChromeDevtoolsProtocol\Model\Overlay\SetShowHitTestBordersRequest;
 use ChromeDevtoolsProtocol\Model\Overlay\SetShowLayoutShiftRegionsRequest;
 use ChromeDevtoolsProtocol\Model\Overlay\SetShowPaintRectsRequest;
 use ChromeDevtoolsProtocol\Model\Overlay\SetShowScrollBottleneckRectsRequest;
 use ChromeDevtoolsProtocol\Model\Overlay\SetShowViewportSizeOnResizeRequest;
+use ChromeDevtoolsProtocol\Model\Overlay\SetShowWebVitalsRequest;
 use ChromeDevtoolsProtocol\SubscriptionInterface;
 
 /**
@@ -57,6 +66,20 @@ interface OverlayDomainInterface
 
 
 	/**
+	 * For Persistent Grid testing.
+	 *
+	 * @param ContextInterface $ctx
+	 * @param GetGridHighlightObjectsForTestRequest $request
+	 *
+	 * @return GetGridHighlightObjectsForTestResponse
+	 */
+	public function getGridHighlightObjectsForTest(
+		ContextInterface $ctx,
+		GetGridHighlightObjectsForTestRequest $request
+	): GetGridHighlightObjectsForTestResponse;
+
+
+	/**
 	 * For testing.
 	 *
 	 * @param ContextInterface $ctx
@@ -64,7 +87,24 @@ interface OverlayDomainInterface
 	 *
 	 * @return GetHighlightObjectForTestResponse
 	 */
-	public function getHighlightObjectForTest(ContextInterface $ctx, GetHighlightObjectForTestRequest $request): GetHighlightObjectForTestResponse;
+	public function getHighlightObjectForTest(
+		ContextInterface $ctx,
+		GetHighlightObjectForTestRequest $request
+	): GetHighlightObjectForTestResponse;
+
+
+	/**
+	 * For Source Order Viewer testing.
+	 *
+	 * @param ContextInterface $ctx
+	 * @param GetSourceOrderHighlightObjectForTestRequest $request
+	 *
+	 * @return GetSourceOrderHighlightObjectForTestResponse
+	 */
+	public function getSourceOrderHighlightObjectForTest(
+		ContextInterface $ctx,
+		GetSourceOrderHighlightObjectForTestRequest $request
+	): GetSourceOrderHighlightObjectForTestResponse;
 
 
 	/**
@@ -122,6 +162,17 @@ interface OverlayDomainInterface
 
 
 	/**
+	 * Highlights the source order of the children of the DOM node with given id or with the given JavaScript object wrapper. Either nodeId or objectId must be specified.
+	 *
+	 * @param ContextInterface $ctx
+	 * @param HighlightSourceOrderRequest $request
+	 *
+	 * @return void
+	 */
+	public function highlightSourceOrder(ContextInterface $ctx, HighlightSourceOrderRequest $request): void;
+
+
+	/**
 	 * Enters the 'inspect' mode. In this mode, elements that user is hovering over are highlighted. Backend then generates 'inspectNodeRequested' event upon element selection.
 	 *
 	 * @param ContextInterface $ctx
@@ -166,6 +217,17 @@ interface OverlayDomainInterface
 
 
 	/**
+	 * Call Overlay.setShowFlexOverlays command.
+	 *
+	 * @param ContextInterface $ctx
+	 * @param SetShowFlexOverlaysRequest $request
+	 *
+	 * @return void
+	 */
+	public function setShowFlexOverlays(ContextInterface $ctx, SetShowFlexOverlaysRequest $request): void;
+
+
+	/**
 	 * Requests that backend shows the FPS counter
 	 *
 	 * @param ContextInterface $ctx
@@ -174,6 +236,28 @@ interface OverlayDomainInterface
 	 * @return void
 	 */
 	public function setShowFPSCounter(ContextInterface $ctx, SetShowFPSCounterRequest $request): void;
+
+
+	/**
+	 * Highlight multiple elements with the CSS Grid overlay.
+	 *
+	 * @param ContextInterface $ctx
+	 * @param SetShowGridOverlaysRequest $request
+	 *
+	 * @return void
+	 */
+	public function setShowGridOverlays(ContextInterface $ctx, SetShowGridOverlaysRequest $request): void;
+
+
+	/**
+	 * Add a dual screen device hinge
+	 *
+	 * @param ContextInterface $ctx
+	 * @param SetShowHingeRequest $request
+	 *
+	 * @return void
+	 */
+	public function setShowHinge(ContextInterface $ctx, SetShowHingeRequest $request): void;
 
 
 	/**
@@ -229,6 +313,17 @@ interface OverlayDomainInterface
 	 * @return void
 	 */
 	public function setShowViewportSizeOnResize(ContextInterface $ctx, SetShowViewportSizeOnResizeRequest $request): void;
+
+
+	/**
+	 * Request that backend shows an overlay with web vital metrics.
+	 *
+	 * @param ContextInterface $ctx
+	 * @param SetShowWebVitalsRequest $request
+	 *
+	 * @return void
+	 */
+	public function setShowWebVitals(ContextInterface $ctx, SetShowWebVitalsRequest $request): void;
 
 
 	/**

@@ -12,24 +12,18 @@ use ChromeDevtoolsProtocol\Exception\BuilderException;
 final class SetCookieRequestBuilder
 {
 	private $name;
-
 	private $value;
-
 	private $url;
-
 	private $domain;
-
 	private $path;
-
 	private $secure;
-
 	private $httpOnly;
-
 	private $sameSite;
-
 	private $expires;
-
 	private $priority;
+	private $sameParty;
+	private $sourceScheme;
+	private $sourcePort;
 
 
 	/**
@@ -54,6 +48,9 @@ final class SetCookieRequestBuilder
 		$instance->sameSite = $this->sameSite;
 		$instance->expires = $this->expires;
 		$instance->priority = $this->priority;
+		$instance->sameParty = $this->sameParty;
+		$instance->sourceScheme = $this->sourceScheme;
+		$instance->sourcePort = $this->sourcePort;
 		return $instance;
 	}
 
@@ -174,6 +171,42 @@ final class SetCookieRequestBuilder
 	public function setPriority($priority): self
 	{
 		$this->priority = $priority;
+		return $this;
+	}
+
+
+	/**
+	 * @param bool|null $sameParty
+	 *
+	 * @return self
+	 */
+	public function setSameParty($sameParty): self
+	{
+		$this->sameParty = $sameParty;
+		return $this;
+	}
+
+
+	/**
+	 * @param string $sourceScheme
+	 *
+	 * @return self
+	 */
+	public function setSourceScheme($sourceScheme): self
+	{
+		$this->sourceScheme = $sourceScheme;
+		return $this;
+	}
+
+
+	/**
+	 * @param int|null $sourcePort
+	 *
+	 * @return self
+	 */
+	public function setSourcePort($sourcePort): self
+	{
+		$this->sourcePort = $sourcePort;
 		return $this;
 	}
 }

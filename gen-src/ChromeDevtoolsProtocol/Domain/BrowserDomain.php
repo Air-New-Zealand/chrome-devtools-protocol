@@ -4,6 +4,8 @@ namespace ChromeDevtoolsProtocol\Domain;
 
 use ChromeDevtoolsProtocol\ContextInterface;
 use ChromeDevtoolsProtocol\InternalClientInterface;
+use ChromeDevtoolsProtocol\Model\Browser\CancelDownloadRequest;
+use ChromeDevtoolsProtocol\Model\Browser\ExecuteBrowserCommandRequest;
 use ChromeDevtoolsProtocol\Model\Browser\GetBrowserCommandLineResponse;
 use ChromeDevtoolsProtocol\Model\Browser\GetHistogramRequest;
 use ChromeDevtoolsProtocol\Model\Browser\GetHistogramResponse;
@@ -17,6 +19,7 @@ use ChromeDevtoolsProtocol\Model\Browser\GetWindowForTargetResponse;
 use ChromeDevtoolsProtocol\Model\Browser\GrantPermissionsRequest;
 use ChromeDevtoolsProtocol\Model\Browser\ResetPermissionsRequest;
 use ChromeDevtoolsProtocol\Model\Browser\SetDockTileRequest;
+use ChromeDevtoolsProtocol\Model\Browser\SetDownloadBehaviorRequest;
 use ChromeDevtoolsProtocol\Model\Browser\SetPermissionRequest;
 use ChromeDevtoolsProtocol\Model\Browser\SetWindowBoundsRequest;
 
@@ -29,6 +32,12 @@ class BrowserDomain implements BrowserDomainInterface
 	public function __construct(InternalClientInterface $internalClient)
 	{
 		$this->internalClient = $internalClient;
+	}
+
+
+	public function cancelDownload(ContextInterface $ctx, CancelDownloadRequest $request): void
+	{
+		$this->internalClient->executeCommand($ctx, 'Browser.cancelDownload', $request);
 	}
 
 
@@ -50,6 +59,12 @@ class BrowserDomain implements BrowserDomainInterface
 	{
 		$request = new \stdClass();
 		$this->internalClient->executeCommand($ctx, 'Browser.crashGpuProcess', $request);
+	}
+
+
+	public function executeBrowserCommand(ContextInterface $ctx, ExecuteBrowserCommandRequest $request): void
+	{
+		$this->internalClient->executeCommand($ctx, 'Browser.executeBrowserCommand', $request);
 	}
 
 
@@ -90,8 +105,10 @@ class BrowserDomain implements BrowserDomainInterface
 	}
 
 
-	public function getWindowForTarget(ContextInterface $ctx, GetWindowForTargetRequest $request): GetWindowForTargetResponse
-	{
+	public function getWindowForTarget(
+		ContextInterface $ctx,
+		GetWindowForTargetRequest $request
+	): GetWindowForTargetResponse {
 		$response = $this->internalClient->executeCommand($ctx, 'Browser.getWindowForTarget', $request);
 		return GetWindowForTargetResponse::fromJson($response);
 	}
@@ -112,6 +129,12 @@ class BrowserDomain implements BrowserDomainInterface
 	public function setDockTile(ContextInterface $ctx, SetDockTileRequest $request): void
 	{
 		$this->internalClient->executeCommand($ctx, 'Browser.setDockTile', $request);
+	}
+
+
+	public function setDownloadBehavior(ContextInterface $ctx, SetDownloadBehaviorRequest $request): void
+	{
+		$this->internalClient->executeCommand($ctx, 'Browser.setDownloadBehavior', $request);
 	}
 
 

@@ -12,32 +12,20 @@ use ChromeDevtoolsProtocol\Exception\BuilderException;
 final class DispatchKeyEventRequestBuilder
 {
 	private $type;
-
 	private $modifiers;
-
 	private $timestamp;
-
 	private $text;
-
 	private $unmodifiedText;
-
 	private $keyIdentifier;
-
 	private $code;
-
 	private $key;
-
 	private $windowsVirtualKeyCode;
-
 	private $nativeVirtualKeyCode;
-
 	private $autoRepeat;
-
 	private $isKeypad;
-
 	private $isSystemKey;
-
 	private $location;
+	private $commands;
 
 
 	/**
@@ -63,6 +51,7 @@ final class DispatchKeyEventRequestBuilder
 		$instance->isKeypad = $this->isKeypad;
 		$instance->isSystemKey = $this->isSystemKey;
 		$instance->location = $this->location;
+		$instance->commands = $this->commands;
 		return $instance;
 	}
 
@@ -231,6 +220,18 @@ final class DispatchKeyEventRequestBuilder
 	public function setLocation($location): self
 	{
 		$this->location = $location;
+		return $this;
+	}
+
+
+	/**
+	 * @param string[]|null $commands
+	 *
+	 * @return self
+	 */
+	public function setCommands($commands): self
+	{
+		$this->commands = $commands;
 		return $this;
 	}
 }

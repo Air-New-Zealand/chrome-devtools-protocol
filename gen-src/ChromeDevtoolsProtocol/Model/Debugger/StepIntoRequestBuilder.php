@@ -10,6 +10,7 @@ namespace ChromeDevtoolsProtocol\Model\Debugger;
 final class StepIntoRequestBuilder
 {
 	private $breakOnAsyncCall;
+	private $skipList;
 
 
 	/**
@@ -19,6 +20,7 @@ final class StepIntoRequestBuilder
 	{
 		$instance = new StepIntoRequest();
 		$instance->breakOnAsyncCall = $this->breakOnAsyncCall;
+		$instance->skipList = $this->skipList;
 		return $instance;
 	}
 
@@ -31,6 +33,18 @@ final class StepIntoRequestBuilder
 	public function setBreakOnAsyncCall($breakOnAsyncCall): self
 	{
 		$this->breakOnAsyncCall = $breakOnAsyncCall;
+		return $this;
+	}
+
+
+	/**
+	 * @param LocationRange[]|null $skipList
+	 *
+	 * @return self
+	 */
+	public function setSkipList($skipList): self
+	{
+		$this->skipList = $skipList;
 		return $this;
 	}
 }

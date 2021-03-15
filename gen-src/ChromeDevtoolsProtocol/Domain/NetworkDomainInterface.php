@@ -23,6 +23,10 @@ use ChromeDevtoolsProtocol\Model\Network\GetResponseBodyForInterceptionRequest;
 use ChromeDevtoolsProtocol\Model\Network\GetResponseBodyForInterceptionResponse;
 use ChromeDevtoolsProtocol\Model\Network\GetResponseBodyRequest;
 use ChromeDevtoolsProtocol\Model\Network\GetResponseBodyResponse;
+use ChromeDevtoolsProtocol\Model\Network\GetSecurityIsolationStatusRequest;
+use ChromeDevtoolsProtocol\Model\Network\GetSecurityIsolationStatusResponse;
+use ChromeDevtoolsProtocol\Model\Network\LoadNetworkResourceRequest;
+use ChromeDevtoolsProtocol\Model\Network\LoadNetworkResourceResponse;
 use ChromeDevtoolsProtocol\Model\Network\LoadingFailedEvent;
 use ChromeDevtoolsProtocol\Model\Network\LoadingFinishedEvent;
 use ChromeDevtoolsProtocol\Model\Network\ReplayXHRRequest;
@@ -35,6 +39,7 @@ use ChromeDevtoolsProtocol\Model\Network\ResponseReceivedEvent;
 use ChromeDevtoolsProtocol\Model\Network\ResponseReceivedExtraInfoEvent;
 use ChromeDevtoolsProtocol\Model\Network\SearchInResponseBodyRequest;
 use ChromeDevtoolsProtocol\Model\Network\SearchInResponseBodyResponse;
+use ChromeDevtoolsProtocol\Model\Network\SetAttachDebugStackRequest;
 use ChromeDevtoolsProtocol\Model\Network\SetBlockedURLsRequest;
 use ChromeDevtoolsProtocol\Model\Network\SetBypassServiceWorkerRequest;
 use ChromeDevtoolsProtocol\Model\Network\SetCacheDisabledRequest;
@@ -48,6 +53,7 @@ use ChromeDevtoolsProtocol\Model\Network\SetUserAgentOverrideRequest;
 use ChromeDevtoolsProtocol\Model\Network\SignedExchangeReceivedEvent;
 use ChromeDevtoolsProtocol\Model\Network\TakeResponseBodyForInterceptionAsStreamRequest;
 use ChromeDevtoolsProtocol\Model\Network\TakeResponseBodyForInterceptionAsStreamResponse;
+use ChromeDevtoolsProtocol\Model\Network\TrustTokenOperationDoneEvent;
 use ChromeDevtoolsProtocol\Model\Network\WebSocketClosedEvent;
 use ChromeDevtoolsProtocol\Model\Network\WebSocketCreatedEvent;
 use ChromeDevtoolsProtocol\Model\Network\WebSocketFrameErrorEvent;
@@ -55,6 +61,9 @@ use ChromeDevtoolsProtocol\Model\Network\WebSocketFrameReceivedEvent;
 use ChromeDevtoolsProtocol\Model\Network\WebSocketFrameSentEvent;
 use ChromeDevtoolsProtocol\Model\Network\WebSocketHandshakeResponseReceivedEvent;
 use ChromeDevtoolsProtocol\Model\Network\WebSocketWillSendHandshakeRequestEvent;
+use ChromeDevtoolsProtocol\Model\Network\WebTransportClosedEvent;
+use ChromeDevtoolsProtocol\Model\Network\WebTransportConnectionEstablishedEvent;
+use ChromeDevtoolsProtocol\Model\Network\WebTransportCreatedEvent;
 use ChromeDevtoolsProtocol\SubscriptionInterface;
 
 /**
@@ -210,7 +219,10 @@ interface NetworkDomainInterface
 	 *
 	 * @return GetRequestPostDataResponse
 	 */
-	public function getRequestPostData(ContextInterface $ctx, GetRequestPostDataRequest $request): GetRequestPostDataResponse;
+	public function getRequestPostData(
+		ContextInterface $ctx,
+		GetRequestPostDataRequest $request
+	): GetRequestPostDataResponse;
 
 
 	/**
@@ -232,7 +244,38 @@ interface NetworkDomainInterface
 	 *
 	 * @return GetResponseBodyForInterceptionResponse
 	 */
-	public function getResponseBodyForInterception(ContextInterface $ctx, GetResponseBodyForInterceptionRequest $request): GetResponseBodyForInterceptionResponse;
+	public function getResponseBodyForInterception(
+		ContextInterface $ctx,
+		GetResponseBodyForInterceptionRequest $request
+	): GetResponseBodyForInterceptionResponse;
+
+
+	/**
+	 * Returns information about the COEP/COOP isolation status.
+	 *
+	 * @param ContextInterface $ctx
+	 * @param GetSecurityIsolationStatusRequest $request
+	 *
+	 * @return GetSecurityIsolationStatusResponse
+	 */
+	public function getSecurityIsolationStatus(
+		ContextInterface $ctx,
+		GetSecurityIsolationStatusRequest $request
+	): GetSecurityIsolationStatusResponse;
+
+
+	/**
+	 * Fetches the resource and returns the content.
+	 *
+	 * @param ContextInterface $ctx
+	 * @param LoadNetworkResourceRequest $request
+	 *
+	 * @return LoadNetworkResourceResponse
+	 */
+	public function loadNetworkResource(
+		ContextInterface $ctx,
+		LoadNetworkResourceRequest $request
+	): LoadNetworkResourceResponse;
 
 
 	/**
@@ -254,7 +297,21 @@ interface NetworkDomainInterface
 	 *
 	 * @return SearchInResponseBodyResponse
 	 */
-	public function searchInResponseBody(ContextInterface $ctx, SearchInResponseBodyRequest $request): SearchInResponseBodyResponse;
+	public function searchInResponseBody(
+		ContextInterface $ctx,
+		SearchInResponseBodyRequest $request
+	): SearchInResponseBodyResponse;
+
+
+	/**
+	 * Specifies whether to attach a page script stack id in requests
+	 *
+	 * @param ContextInterface $ctx
+	 * @param SetAttachDebugStackRequest $request
+	 *
+	 * @return void
+	 */
+	public function setAttachDebugStack(ContextInterface $ctx, SetAttachDebugStackRequest $request): void;
 
 
 	/**
@@ -364,7 +421,10 @@ interface NetworkDomainInterface
 	 *
 	 * @return TakeResponseBodyForInterceptionAsStreamResponse
 	 */
-	public function takeResponseBodyForInterceptionAsStream(ContextInterface $ctx, TakeResponseBodyForInterceptionAsStreamRequest $request): TakeResponseBodyForInterceptionAsStreamResponse;
+	public function takeResponseBodyForInterceptionAsStream(
+		ContextInterface $ctx,
+		TakeResponseBodyForInterceptionAsStreamRequest $request
+	): TakeResponseBodyForInterceptionAsStreamResponse;
 
 
 	/**
@@ -656,6 +716,30 @@ interface NetworkDomainInterface
 
 
 	/**
+	 * Fired exactly once for each Trust Token operation. Depending on the type of the operation and whether the operation succeeded or failed, the event is fired before the corresponding request was sent or after the response was received.
+	 *
+	 * Listener will be called whenever event Network.trustTokenOperationDone is fired.
+	 *
+	 * @param callable $listener
+	 *
+	 * @return SubscriptionInterface
+	 */
+	public function addTrustTokenOperationDoneListener(callable $listener): SubscriptionInterface;
+
+
+	/**
+	 * Fired exactly once for each Trust Token operation. Depending on the type of the operation and whether the operation succeeded or failed, the event is fired before the corresponding request was sent or after the response was received.
+	 *
+	 * Method will block until first Network.trustTokenOperationDone event is fired.
+	 *
+	 * @param ContextInterface $ctx
+	 *
+	 * @return TrustTokenOperationDoneEvent
+	 */
+	public function awaitTrustTokenOperationDone(ContextInterface $ctx): TrustTokenOperationDoneEvent;
+
+
+	/**
 	 * Fired when WebSocket is closed.
 	 *
 	 * Listener will be called whenever event Network.webSocketClosed is fired.
@@ -821,4 +905,76 @@ interface NetworkDomainInterface
 	 * @return WebSocketWillSendHandshakeRequestEvent
 	 */
 	public function awaitWebSocketWillSendHandshakeRequest(ContextInterface $ctx): WebSocketWillSendHandshakeRequestEvent;
+
+
+	/**
+	 * Fired when WebTransport is disposed.
+	 *
+	 * Listener will be called whenever event Network.webTransportClosed is fired.
+	 *
+	 * @param callable $listener
+	 *
+	 * @return SubscriptionInterface
+	 */
+	public function addWebTransportClosedListener(callable $listener): SubscriptionInterface;
+
+
+	/**
+	 * Fired when WebTransport is disposed.
+	 *
+	 * Method will block until first Network.webTransportClosed event is fired.
+	 *
+	 * @param ContextInterface $ctx
+	 *
+	 * @return WebTransportClosedEvent
+	 */
+	public function awaitWebTransportClosed(ContextInterface $ctx): WebTransportClosedEvent;
+
+
+	/**
+	 * Fired when WebTransport handshake is finished.
+	 *
+	 * Listener will be called whenever event Network.webTransportConnectionEstablished is fired.
+	 *
+	 * @param callable $listener
+	 *
+	 * @return SubscriptionInterface
+	 */
+	public function addWebTransportConnectionEstablishedListener(callable $listener): SubscriptionInterface;
+
+
+	/**
+	 * Fired when WebTransport handshake is finished.
+	 *
+	 * Method will block until first Network.webTransportConnectionEstablished event is fired.
+	 *
+	 * @param ContextInterface $ctx
+	 *
+	 * @return WebTransportConnectionEstablishedEvent
+	 */
+	public function awaitWebTransportConnectionEstablished(ContextInterface $ctx): WebTransportConnectionEstablishedEvent;
+
+
+	/**
+	 * Fired upon WebTransport creation.
+	 *
+	 * Listener will be called whenever event Network.webTransportCreated is fired.
+	 *
+	 * @param callable $listener
+	 *
+	 * @return SubscriptionInterface
+	 */
+	public function addWebTransportCreatedListener(callable $listener): SubscriptionInterface;
+
+
+	/**
+	 * Fired upon WebTransport creation.
+	 *
+	 * Method will block until first Network.webTransportCreated event is fired.
+	 *
+	 * @param ContextInterface $ctx
+	 *
+	 * @return WebTransportCreatedEvent
+	 */
+	public function awaitWebTransportCreated(ContextInterface $ctx): WebTransportCreatedEvent;
 }

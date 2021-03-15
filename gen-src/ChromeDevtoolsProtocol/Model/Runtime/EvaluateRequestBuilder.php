@@ -12,30 +12,20 @@ use ChromeDevtoolsProtocol\Exception\BuilderException;
 final class EvaluateRequestBuilder
 {
 	private $expression;
-
 	private $objectGroup;
-
 	private $includeCommandLineAPI;
-
 	private $silent;
-
 	private $contextId;
-
 	private $returnByValue;
-
 	private $generatePreview;
-
 	private $userGesture;
-
 	private $awaitPromise;
-
 	private $throwOnSideEffect;
-
 	private $timeout;
-
 	private $disableBreaks;
-
 	private $replMode;
+	private $allowUnsafeEvalBlockedByCSP;
+	private $uniqueContextId;
 
 
 	/**
@@ -60,6 +50,8 @@ final class EvaluateRequestBuilder
 		$instance->timeout = $this->timeout;
 		$instance->disableBreaks = $this->disableBreaks;
 		$instance->replMode = $this->replMode;
+		$instance->allowUnsafeEvalBlockedByCSP = $this->allowUnsafeEvalBlockedByCSP;
+		$instance->uniqueContextId = $this->uniqueContextId;
 		return $instance;
 	}
 
@@ -216,6 +208,30 @@ final class EvaluateRequestBuilder
 	public function setReplMode($replMode): self
 	{
 		$this->replMode = $replMode;
+		return $this;
+	}
+
+
+	/**
+	 * @param bool|null $allowUnsafeEvalBlockedByCSP
+	 *
+	 * @return self
+	 */
+	public function setAllowUnsafeEvalBlockedByCSP($allowUnsafeEvalBlockedByCSP): self
+	{
+		$this->allowUnsafeEvalBlockedByCSP = $allowUnsafeEvalBlockedByCSP;
+		return $this;
+	}
+
+
+	/**
+	 * @param string|null $uniqueContextId
+	 *
+	 * @return self
+	 */
+	public function setUniqueContextId($uniqueContextId): self
+	{
+		$this->uniqueContextId = $uniqueContextId;
 		return $this;
 	}
 }

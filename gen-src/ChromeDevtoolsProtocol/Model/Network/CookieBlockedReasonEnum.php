@@ -20,4 +20,8 @@ final class CookieBlockedReasonEnum
 	const SAME_SITE_NONE_INSECURE = 'SameSiteNoneInsecure';
 	const USER_PREFERENCES = 'UserPreferences';
 	const UNKNOWN_ERROR = 'UnknownError';
+	const SCHEMEFUL_SAME_SITE_STRICT = 'SchemefulSameSiteStrict';
+	const SCHEMEFUL_SAME_SITE_LAX = 'SchemefulSameSiteLax';
+	const SCHEMEFUL_SAME_SITE_UNSPECIFIED_TREATED_AS_LAX = 'SchemefulSameSiteUnspecifiedTreatedAsLax';
+	const SAME_PARTY_FROM_CROSS_PARTY_CONTEXT = 'SamePartyFromCrossPartyContext';
 }

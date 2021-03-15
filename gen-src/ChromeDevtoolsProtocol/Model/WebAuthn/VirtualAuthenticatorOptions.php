@@ -14,6 +14,13 @@ final class VirtualAuthenticatorOptions implements \JsonSerializable
 	/** @var string */
 	public $protocol;
 
+	/**
+	 * Defaults to ctap2_0. Ignored if |protocol| == u2f.
+	 *
+	 * @var string
+	 */
+	public $ctap2Version;
+
 	/** @var string */
 	public $transport;
 
@@ -30,6 +37,13 @@ final class VirtualAuthenticatorOptions implements \JsonSerializable
 	 * @var bool|null
 	 */
 	public $hasUserVerification;
+
+	/**
+	 * If set to true, the authenticator will support the largeBlob extension. https://w3c.github.io/webauthn#largeBlob Defaults to false.
+	 *
+	 * @var bool|null
+	 */
+	public $hasLargeBlob;
 
 	/**
 	 * If set to true, tests of user presence will succeed immediately. Otherwise, they will not be resolved. Defaults to true.
@@ -52,6 +66,9 @@ final class VirtualAuthenticatorOptions implements \JsonSerializable
 		if (isset($data->protocol)) {
 			$instance->protocol = (string)$data->protocol;
 		}
+		if (isset($data->ctap2Version)) {
+			$instance->ctap2Version = (string)$data->ctap2Version;
+		}
 		if (isset($data->transport)) {
 			$instance->transport = (string)$data->transport;
 		}
@@ -60,6 +77,9 @@ final class VirtualAuthenticatorOptions implements \JsonSerializable
 		}
 		if (isset($data->hasUserVerification)) {
 			$instance->hasUserVerification = (bool)$data->hasUserVerification;
+		}
+		if (isset($data->hasLargeBlob)) {
+			$instance->hasLargeBlob = (bool)$data->hasLargeBlob;
 		}
 		if (isset($data->automaticPresenceSimulation)) {
 			$instance->automaticPresenceSimulation = (bool)$data->automaticPresenceSimulation;
@@ -77,6 +97,9 @@ final class VirtualAuthenticatorOptions implements \JsonSerializable
 		if ($this->protocol !== null) {
 			$data->protocol = $this->protocol;
 		}
+		if ($this->ctap2Version !== null) {
+			$data->ctap2Version = $this->ctap2Version;
+		}
 		if ($this->transport !== null) {
 			$data->transport = $this->transport;
 		}
@@ -85,6 +108,9 @@ final class VirtualAuthenticatorOptions implements \JsonSerializable
 		}
 		if ($this->hasUserVerification !== null) {
 			$data->hasUserVerification = $this->hasUserVerification;
+		}
+		if ($this->hasLargeBlob !== null) {
+			$data->hasLargeBlob = $this->hasLargeBlob;
 		}
 		if ($this->automaticPresenceSimulation !== null) {
 			$data->automaticPresenceSimulation = $this->automaticPresenceSimulation;

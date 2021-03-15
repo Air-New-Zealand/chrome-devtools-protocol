@@ -29,6 +29,7 @@ use ChromeDevtoolsProtocol\Model\CSS\MediaQueryResultChangedEvent;
 use ChromeDevtoolsProtocol\Model\CSS\SetEffectivePropertyValueForNodeRequest;
 use ChromeDevtoolsProtocol\Model\CSS\SetKeyframeKeyRequest;
 use ChromeDevtoolsProtocol\Model\CSS\SetKeyframeKeyResponse;
+use ChromeDevtoolsProtocol\Model\CSS\SetLocalFontsEnabledRequest;
 use ChromeDevtoolsProtocol\Model\CSS\SetMediaTextRequest;
 use ChromeDevtoolsProtocol\Model\CSS\SetMediaTextResponse;
 use ChromeDevtoolsProtocol\Model\CSS\SetRuleSelectorRequest;
@@ -41,7 +42,9 @@ use ChromeDevtoolsProtocol\Model\CSS\StopRuleUsageTrackingResponse;
 use ChromeDevtoolsProtocol\Model\CSS\StyleSheetAddedEvent;
 use ChromeDevtoolsProtocol\Model\CSS\StyleSheetChangedEvent;
 use ChromeDevtoolsProtocol\Model\CSS\StyleSheetRemovedEvent;
+use ChromeDevtoolsProtocol\Model\CSS\TakeComputedStyleUpdatesResponse;
 use ChromeDevtoolsProtocol\Model\CSS\TakeCoverageDeltaResponse;
+use ChromeDevtoolsProtocol\Model\CSS\TrackComputedStyleUpdatesRequest;
 use ChromeDevtoolsProtocol\SubscriptionInterface;
 
 class CSSDomain implements CSSDomainInterface
@@ -97,29 +100,37 @@ class CSSDomain implements CSSDomainInterface
 	}
 
 
-	public function getBackgroundColors(ContextInterface $ctx, GetBackgroundColorsRequest $request): GetBackgroundColorsResponse
-	{
+	public function getBackgroundColors(
+		ContextInterface $ctx,
+		GetBackgroundColorsRequest $request
+	): GetBackgroundColorsResponse {
 		$response = $this->internalClient->executeCommand($ctx, 'CSS.getBackgroundColors', $request);
 		return GetBackgroundColorsResponse::fromJson($response);
 	}
 
 
-	public function getComputedStyleForNode(ContextInterface $ctx, GetComputedStyleForNodeRequest $request): GetComputedStyleForNodeResponse
-	{
+	public function getComputedStyleForNode(
+		ContextInterface $ctx,
+		GetComputedStyleForNodeRequest $request
+	): GetComputedStyleForNodeResponse {
 		$response = $this->internalClient->executeCommand($ctx, 'CSS.getComputedStyleForNode', $request);
 		return GetComputedStyleForNodeResponse::fromJson($response);
 	}
 
 
-	public function getInlineStylesForNode(ContextInterface $ctx, GetInlineStylesForNodeRequest $request): GetInlineStylesForNodeResponse
-	{
+	public function getInlineStylesForNode(
+		ContextInterface $ctx,
+		GetInlineStylesForNodeRequest $request
+	): GetInlineStylesForNodeResponse {
 		$response = $this->internalClient->executeCommand($ctx, 'CSS.getInlineStylesForNode', $request);
 		return GetInlineStylesForNodeResponse::fromJson($response);
 	}
 
 
-	public function getMatchedStylesForNode(ContextInterface $ctx, GetMatchedStylesForNodeRequest $request): GetMatchedStylesForNodeResponse
-	{
+	public function getMatchedStylesForNode(
+		ContextInterface $ctx,
+		GetMatchedStylesForNodeRequest $request
+	): GetMatchedStylesForNodeResponse {
 		$response = $this->internalClient->executeCommand($ctx, 'CSS.getMatchedStylesForNode', $request);
 		return GetMatchedStylesForNodeResponse::fromJson($response);
 	}
@@ -133,8 +144,10 @@ class CSSDomain implements CSSDomainInterface
 	}
 
 
-	public function getPlatformFontsForNode(ContextInterface $ctx, GetPlatformFontsForNodeRequest $request): GetPlatformFontsForNodeResponse
-	{
+	public function getPlatformFontsForNode(
+		ContextInterface $ctx,
+		GetPlatformFontsForNodeRequest $request
+	): GetPlatformFontsForNodeResponse {
 		$response = $this->internalClient->executeCommand($ctx, 'CSS.getPlatformFontsForNode', $request);
 		return GetPlatformFontsForNodeResponse::fromJson($response);
 	}
@@ -147,8 +160,10 @@ class CSSDomain implements CSSDomainInterface
 	}
 
 
-	public function setEffectivePropertyValueForNode(ContextInterface $ctx, SetEffectivePropertyValueForNodeRequest $request): void
-	{
+	public function setEffectivePropertyValueForNode(
+		ContextInterface $ctx,
+		SetEffectivePropertyValueForNodeRequest $request
+	): void {
 		$this->internalClient->executeCommand($ctx, 'CSS.setEffectivePropertyValueForNode', $request);
 	}
 
@@ -157,6 +172,12 @@ class CSSDomain implements CSSDomainInterface
 	{
 		$response = $this->internalClient->executeCommand($ctx, 'CSS.setKeyframeKey', $request);
 		return SetKeyframeKeyResponse::fromJson($response);
+	}
+
+
+	public function setLocalFontsEnabled(ContextInterface $ctx, SetLocalFontsEnabledRequest $request): void
+	{
+		$this->internalClient->executeCommand($ctx, 'CSS.setLocalFontsEnabled', $request);
 	}
 
 
@@ -203,11 +224,25 @@ class CSSDomain implements CSSDomainInterface
 	}
 
 
+	public function takeComputedStyleUpdates(ContextInterface $ctx): TakeComputedStyleUpdatesResponse
+	{
+		$request = new \stdClass();
+		$response = $this->internalClient->executeCommand($ctx, 'CSS.takeComputedStyleUpdates', $request);
+		return TakeComputedStyleUpdatesResponse::fromJson($response);
+	}
+
+
 	public function takeCoverageDelta(ContextInterface $ctx): TakeCoverageDeltaResponse
 	{
 		$request = new \stdClass();
 		$response = $this->internalClient->executeCommand($ctx, 'CSS.takeCoverageDelta', $request);
 		return TakeCoverageDeltaResponse::fromJson($response);
+	}
+
+
+	public function trackComputedStyleUpdates(ContextInterface $ctx, TrackComputedStyleUpdatesRequest $request): void
+	{
+		$this->internalClient->executeCommand($ctx, 'CSS.trackComputedStyleUpdates', $request);
 	}
 
 

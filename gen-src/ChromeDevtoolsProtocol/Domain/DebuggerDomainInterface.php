@@ -22,6 +22,7 @@ use ChromeDevtoolsProtocol\Model\Debugger\PausedEvent;
 use ChromeDevtoolsProtocol\Model\Debugger\RemoveBreakpointRequest;
 use ChromeDevtoolsProtocol\Model\Debugger\RestartFrameRequest;
 use ChromeDevtoolsProtocol\Model\Debugger\RestartFrameResponse;
+use ChromeDevtoolsProtocol\Model\Debugger\ResumeRequest;
 use ChromeDevtoolsProtocol\Model\Debugger\ResumedEvent;
 use ChromeDevtoolsProtocol\Model\Debugger\ScriptFailedToParseEvent;
 use ChromeDevtoolsProtocol\Model\Debugger\ScriptParsedEvent;
@@ -46,6 +47,7 @@ use ChromeDevtoolsProtocol\Model\Debugger\SetScriptSourceResponse;
 use ChromeDevtoolsProtocol\Model\Debugger\SetSkipAllPausesRequest;
 use ChromeDevtoolsProtocol\Model\Debugger\SetVariableValueRequest;
 use ChromeDevtoolsProtocol\Model\Debugger\StepIntoRequest;
+use ChromeDevtoolsProtocol\Model\Debugger\StepOverRequest;
 use ChromeDevtoolsProtocol\SubscriptionInterface;
 
 /**
@@ -97,7 +99,10 @@ interface DebuggerDomainInterface
 	 *
 	 * @return EvaluateOnCallFrameResponse
 	 */
-	public function evaluateOnCallFrame(ContextInterface $ctx, EvaluateOnCallFrameRequest $request): EvaluateOnCallFrameResponse;
+	public function evaluateOnCallFrame(
+		ContextInterface $ctx,
+		EvaluateOnCallFrameRequest $request
+	): EvaluateOnCallFrameResponse;
 
 
 	/**
@@ -108,7 +113,10 @@ interface DebuggerDomainInterface
 	 *
 	 * @return GetPossibleBreakpointsResponse
 	 */
-	public function getPossibleBreakpoints(ContextInterface $ctx, GetPossibleBreakpointsRequest $request): GetPossibleBreakpointsResponse;
+	public function getPossibleBreakpoints(
+		ContextInterface $ctx,
+		GetPossibleBreakpointsRequest $request
+	): GetPossibleBreakpointsResponse;
 
 
 	/**
@@ -191,10 +199,11 @@ interface DebuggerDomainInterface
 	 * Resumes JavaScript execution.
 	 *
 	 * @param ContextInterface $ctx
+	 * @param ResumeRequest $request
 	 *
 	 * @return void
 	 */
-	public function resume(ContextInterface $ctx): void;
+	public function resume(ContextInterface $ctx, ResumeRequest $request): void;
 
 
 	/**
@@ -260,7 +269,10 @@ interface DebuggerDomainInterface
 	 *
 	 * @return SetBreakpointByUrlResponse
 	 */
-	public function setBreakpointByUrl(ContextInterface $ctx, SetBreakpointByUrlRequest $request): SetBreakpointByUrlResponse;
+	public function setBreakpointByUrl(
+		ContextInterface $ctx,
+		SetBreakpointByUrlRequest $request
+	): SetBreakpointByUrlResponse;
 
 
 	/**
@@ -271,7 +283,10 @@ interface DebuggerDomainInterface
 	 *
 	 * @return SetBreakpointOnFunctionCallResponse
 	 */
-	public function setBreakpointOnFunctionCall(ContextInterface $ctx, SetBreakpointOnFunctionCallRequest $request): SetBreakpointOnFunctionCallResponse;
+	public function setBreakpointOnFunctionCall(
+		ContextInterface $ctx,
+		SetBreakpointOnFunctionCallRequest $request
+	): SetBreakpointOnFunctionCallResponse;
 
 
 	/**
@@ -293,7 +308,10 @@ interface DebuggerDomainInterface
 	 *
 	 * @return SetInstrumentationBreakpointResponse
 	 */
-	public function setInstrumentationBreakpoint(ContextInterface $ctx, SetInstrumentationBreakpointRequest $request): SetInstrumentationBreakpointResponse;
+	public function setInstrumentationBreakpoint(
+		ContextInterface $ctx,
+		SetInstrumentationBreakpointRequest $request
+	): SetInstrumentationBreakpointResponse;
 
 
 	/**
@@ -376,10 +394,11 @@ interface DebuggerDomainInterface
 	 * Steps over the statement.
 	 *
 	 * @param ContextInterface $ctx
+	 * @param StepOverRequest $request
 	 *
 	 * @return void
 	 */
-	public function stepOver(ContextInterface $ctx): void;
+	public function stepOver(ContextInterface $ctx, StepOverRequest $request): void;
 
 
 	/**

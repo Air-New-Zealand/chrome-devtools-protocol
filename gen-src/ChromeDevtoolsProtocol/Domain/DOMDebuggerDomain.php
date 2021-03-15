@@ -10,6 +10,7 @@ use ChromeDevtoolsProtocol\Model\DOMDebugger\RemoveDOMBreakpointRequest;
 use ChromeDevtoolsProtocol\Model\DOMDebugger\RemoveEventListenerBreakpointRequest;
 use ChromeDevtoolsProtocol\Model\DOMDebugger\RemoveInstrumentationBreakpointRequest;
 use ChromeDevtoolsProtocol\Model\DOMDebugger\RemoveXHRBreakpointRequest;
+use ChromeDevtoolsProtocol\Model\DOMDebugger\SetBreakOnCSPViolationRequest;
 use ChromeDevtoolsProtocol\Model\DOMDebugger\SetDOMBreakpointRequest;
 use ChromeDevtoolsProtocol\Model\DOMDebugger\SetEventListenerBreakpointRequest;
 use ChromeDevtoolsProtocol\Model\DOMDebugger\SetInstrumentationBreakpointRequest;
@@ -40,14 +41,18 @@ class DOMDebuggerDomain implements DOMDebuggerDomainInterface
 	}
 
 
-	public function removeEventListenerBreakpoint(ContextInterface $ctx, RemoveEventListenerBreakpointRequest $request): void
-	{
+	public function removeEventListenerBreakpoint(
+		ContextInterface $ctx,
+		RemoveEventListenerBreakpointRequest $request
+	): void {
 		$this->internalClient->executeCommand($ctx, 'DOMDebugger.removeEventListenerBreakpoint', $request);
 	}
 
 
-	public function removeInstrumentationBreakpoint(ContextInterface $ctx, RemoveInstrumentationBreakpointRequest $request): void
-	{
+	public function removeInstrumentationBreakpoint(
+		ContextInterface $ctx,
+		RemoveInstrumentationBreakpointRequest $request
+	): void {
 		$this->internalClient->executeCommand($ctx, 'DOMDebugger.removeInstrumentationBreakpoint', $request);
 	}
 
@@ -55,6 +60,12 @@ class DOMDebuggerDomain implements DOMDebuggerDomainInterface
 	public function removeXHRBreakpoint(ContextInterface $ctx, RemoveXHRBreakpointRequest $request): void
 	{
 		$this->internalClient->executeCommand($ctx, 'DOMDebugger.removeXHRBreakpoint', $request);
+	}
+
+
+	public function setBreakOnCSPViolation(ContextInterface $ctx, SetBreakOnCSPViolationRequest $request): void
+	{
+		$this->internalClient->executeCommand($ctx, 'DOMDebugger.setBreakOnCSPViolation', $request);
 	}
 
 

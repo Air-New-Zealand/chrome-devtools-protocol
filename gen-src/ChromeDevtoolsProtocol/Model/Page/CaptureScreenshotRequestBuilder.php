@@ -10,12 +10,10 @@ namespace ChromeDevtoolsProtocol\Model\Page;
 final class CaptureScreenshotRequestBuilder
 {
 	private $format;
-
 	private $quality;
-
 	private $clip;
-
 	private $fromSurface;
+	private $captureBeyondViewport;
 
 
 	/**
@@ -28,6 +26,7 @@ final class CaptureScreenshotRequestBuilder
 		$instance->quality = $this->quality;
 		$instance->clip = $this->clip;
 		$instance->fromSurface = $this->fromSurface;
+		$instance->captureBeyondViewport = $this->captureBeyondViewport;
 		return $instance;
 	}
 
@@ -76,6 +75,18 @@ final class CaptureScreenshotRequestBuilder
 	public function setFromSurface($fromSurface): self
 	{
 		$this->fromSurface = $fromSurface;
+		return $this;
+	}
+
+
+	/**
+	 * @param bool|null $captureBeyondViewport
+	 *
+	 * @return self
+	 */
+	public function setCaptureBeyondViewport($captureBeyondViewport): self
+	{
+		$this->captureBeyondViewport = $captureBeyondViewport;
 		return $this;
 	}
 }

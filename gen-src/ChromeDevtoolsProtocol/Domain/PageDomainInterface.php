@@ -16,7 +16,9 @@ use ChromeDevtoolsProtocol\Model\Page\CompilationCacheProducedEvent;
 use ChromeDevtoolsProtocol\Model\Page\CreateIsolatedWorldRequest;
 use ChromeDevtoolsProtocol\Model\Page\CreateIsolatedWorldResponse;
 use ChromeDevtoolsProtocol\Model\Page\DeleteCookieRequest;
+use ChromeDevtoolsProtocol\Model\Page\DocumentOpenedEvent;
 use ChromeDevtoolsProtocol\Model\Page\DomContentEventFiredEvent;
+use ChromeDevtoolsProtocol\Model\Page\DownloadProgressEvent;
 use ChromeDevtoolsProtocol\Model\Page\DownloadWillBeginEvent;
 use ChromeDevtoolsProtocol\Model\Page\FileChooserOpenedEvent;
 use ChromeDevtoolsProtocol\Model\Page\FrameAttachedEvent;
@@ -36,6 +38,8 @@ use ChromeDevtoolsProtocol\Model\Page\GetInstallabilityErrorsResponse;
 use ChromeDevtoolsProtocol\Model\Page\GetLayoutMetricsResponse;
 use ChromeDevtoolsProtocol\Model\Page\GetManifestIconsResponse;
 use ChromeDevtoolsProtocol\Model\Page\GetNavigationHistoryResponse;
+use ChromeDevtoolsProtocol\Model\Page\GetPermissionsPolicyStateRequest;
+use ChromeDevtoolsProtocol\Model\Page\GetPermissionsPolicyStateResponse;
 use ChromeDevtoolsProtocol\Model\Page\GetResourceContentRequest;
 use ChromeDevtoolsProtocol\Model\Page\GetResourceContentResponse;
 use ChromeDevtoolsProtocol\Model\Page\GetResourceTreeResponse;
@@ -52,6 +56,7 @@ use ChromeDevtoolsProtocol\Model\Page\NavigateToHistoryEntryRequest;
 use ChromeDevtoolsProtocol\Model\Page\NavigatedWithinDocumentEvent;
 use ChromeDevtoolsProtocol\Model\Page\PrintToPDFRequest;
 use ChromeDevtoolsProtocol\Model\Page\PrintToPDFResponse;
+use ChromeDevtoolsProtocol\Model\Page\ProduceCompilationCacheRequest;
 use ChromeDevtoolsProtocol\Model\Page\ReloadRequest;
 use ChromeDevtoolsProtocol\Model\Page\RemoveScriptToEvaluateOnLoadRequest;
 use ChromeDevtoolsProtocol\Model\Page\RemoveScriptToEvaluateOnNewDocumentRequest;
@@ -106,7 +111,10 @@ interface PageDomainInterface
 	 *
 	 * @return AddScriptToEvaluateOnLoadResponse
 	 */
-	public function addScriptToEvaluateOnLoad(ContextInterface $ctx, AddScriptToEvaluateOnLoadRequest $request): AddScriptToEvaluateOnLoadResponse;
+	public function addScriptToEvaluateOnLoad(
+		ContextInterface $ctx,
+		AddScriptToEvaluateOnLoadRequest $request
+	): AddScriptToEvaluateOnLoadResponse;
 
 
 	/**
@@ -117,7 +125,10 @@ interface PageDomainInterface
 	 *
 	 * @return AddScriptToEvaluateOnNewDocumentResponse
 	 */
-	public function addScriptToEvaluateOnNewDocument(ContextInterface $ctx, AddScriptToEvaluateOnNewDocumentRequest $request): AddScriptToEvaluateOnNewDocumentResponse;
+	public function addScriptToEvaluateOnNewDocument(
+		ContextInterface $ctx,
+		AddScriptToEvaluateOnNewDocumentRequest $request
+	): AddScriptToEvaluateOnNewDocumentResponse;
 
 
 	/**
@@ -220,7 +231,10 @@ interface PageDomainInterface
 	 *
 	 * @return CreateIsolatedWorldResponse
 	 */
-	public function createIsolatedWorld(ContextInterface $ctx, CreateIsolatedWorldRequest $request): CreateIsolatedWorldResponse;
+	public function createIsolatedWorld(
+		ContextInterface $ctx,
+		CreateIsolatedWorldRequest $request
+	): CreateIsolatedWorldResponse;
 
 
 	/**
@@ -336,6 +350,20 @@ interface PageDomainInterface
 
 
 	/**
+	 * Get Permissions Policy state on given frame.
+	 *
+	 * @param ContextInterface $ctx
+	 * @param GetPermissionsPolicyStateRequest $request
+	 *
+	 * @return GetPermissionsPolicyStateResponse
+	 */
+	public function getPermissionsPolicyState(
+		ContextInterface $ctx,
+		GetPermissionsPolicyStateRequest $request
+	): GetPermissionsPolicyStateResponse;
+
+
+	/**
 	 * Returns content of the given resource.
 	 *
 	 * @param ContextInterface $ctx
@@ -343,7 +371,10 @@ interface PageDomainInterface
 	 *
 	 * @return GetResourceContentResponse
 	 */
-	public function getResourceContent(ContextInterface $ctx, GetResourceContentRequest $request): GetResourceContentResponse;
+	public function getResourceContent(
+		ContextInterface $ctx,
+		GetResourceContentRequest $request
+	): GetResourceContentResponse;
 
 
 	/**
@@ -401,6 +432,17 @@ interface PageDomainInterface
 
 
 	/**
+	 * Requests backend to produce compilation cache for the specified scripts. Unlike setProduceCompilationCache, this allows client to only produce cache for specific scripts. `scripts` are appeneded to the list of scripts for which the cache for would produced. Disabling compilation cache with `setProduceCompilationCache` would reset all pending cache requests. The list may also be reset during page navigation. When script with a matching URL is encountered, the cache is optionally produced upon backend discretion, based on internal heuristics. See also: `Page.compilationCacheProduced`.
+	 *
+	 * @param ContextInterface $ctx
+	 * @param ProduceCompilationCacheRequest $request
+	 *
+	 * @return void
+	 */
+	public function produceCompilationCache(ContextInterface $ctx, ProduceCompilationCacheRequest $request): void;
+
+
+	/**
 	 * Reloads given page optionally ignoring the cache.
 	 *
 	 * @param ContextInterface $ctx
@@ -430,7 +472,10 @@ interface PageDomainInterface
 	 *
 	 * @return void
 	 */
-	public function removeScriptToEvaluateOnNewDocument(ContextInterface $ctx, RemoveScriptToEvaluateOnNewDocumentRequest $request): void;
+	public function removeScriptToEvaluateOnNewDocument(
+		ContextInterface $ctx,
+		RemoveScriptToEvaluateOnNewDocumentRequest $request
+	): void;
 
 
 	/**
@@ -572,7 +617,10 @@ interface PageDomainInterface
 	 *
 	 * @return void
 	 */
-	public function setInterceptFileChooserDialog(ContextInterface $ctx, SetInterceptFileChooserDialogRequest $request): void;
+	public function setInterceptFileChooserDialog(
+		ContextInterface $ctx,
+		SetInterceptFileChooserDialogRequest $request
+	): void;
 
 
 	/**
@@ -587,7 +635,7 @@ interface PageDomainInterface
 
 
 	/**
-	 * Forces compilation cache to be generated for every subresource script.
+	 * Forces compilation cache to be generated for every subresource script. See also: `Page.produceCompilationCache`.
 	 *
 	 * @param ContextInterface $ctx
 	 * @param SetProduceCompilationCacheRequest $request
@@ -685,6 +733,30 @@ interface PageDomainInterface
 
 
 	/**
+	 * Fired when opening document to write to.
+	 *
+	 * Listener will be called whenever event Page.documentOpened is fired.
+	 *
+	 * @param callable $listener
+	 *
+	 * @return SubscriptionInterface
+	 */
+	public function addDocumentOpenedListener(callable $listener): SubscriptionInterface;
+
+
+	/**
+	 * Fired when opening document to write to.
+	 *
+	 * Method will block until first Page.documentOpened event is fired.
+	 *
+	 * @param ContextInterface $ctx
+	 *
+	 * @return DocumentOpenedEvent
+	 */
+	public function awaitDocumentOpened(ContextInterface $ctx): DocumentOpenedEvent;
+
+
+	/**
 	 * Subscribe to Page.domContentEventFired event.
 	 *
 	 * Listener will be called whenever event Page.domContentEventFired is fired.
@@ -706,6 +778,30 @@ interface PageDomainInterface
 	 * @return DomContentEventFiredEvent
 	 */
 	public function awaitDomContentEventFired(ContextInterface $ctx): DomContentEventFiredEvent;
+
+
+	/**
+	 * Fired when download makes progress. Last call has |done| == true.
+	 *
+	 * Listener will be called whenever event Page.downloadProgress is fired.
+	 *
+	 * @param callable $listener
+	 *
+	 * @return SubscriptionInterface
+	 */
+	public function addDownloadProgressListener(callable $listener): SubscriptionInterface;
+
+
+	/**
+	 * Fired when download makes progress. Last call has |done| == true.
+	 *
+	 * Method will block until first Page.downloadProgress event is fired.
+	 *
+	 * @param ContextInterface $ctx
+	 *
+	 * @return DownloadProgressEvent
+	 */
+	public function awaitDownloadProgress(ContextInterface $ctx): DownloadProgressEvent;
 
 
 	/**

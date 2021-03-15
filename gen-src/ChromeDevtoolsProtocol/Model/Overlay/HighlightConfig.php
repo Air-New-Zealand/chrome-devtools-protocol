@@ -35,6 +35,13 @@ final class HighlightConfig implements \JsonSerializable
 	public $showRulers;
 
 	/**
+	 * Whether the a11y info should be shown (default: true).
+	 *
+	 * @var bool|null
+	 */
+	public $showAccessibilityInfo;
+
+	/**
 	 * Whether the extension lines from node to the rulers should be shown (default: false).
 	 *
 	 * @var bool|null
@@ -97,6 +104,41 @@ final class HighlightConfig implements \JsonSerializable
 	 */
 	public $cssGridColor;
 
+	/**
+	 * The color format used to format color styles (default: hex).
+	 *
+	 * @var string
+	 */
+	public $colorFormat;
+
+	/**
+	 * The grid layout highlight configuration (default: all transparent).
+	 *
+	 * @var GridHighlightConfig|null
+	 */
+	public $gridHighlightConfig;
+
+	/**
+	 * The flex container highlight configuration (default: all transparent).
+	 *
+	 * @var FlexContainerHighlightConfig|null
+	 */
+	public $flexContainerHighlightConfig;
+
+	/**
+	 * The flex item highlight configuration (default: all transparent).
+	 *
+	 * @var FlexItemHighlightConfig|null
+	 */
+	public $flexItemHighlightConfig;
+
+	/**
+	 * The contrast algorithm to use for the contrast ratio (default: aa).
+	 *
+	 * @var string
+	 */
+	public $contrastAlgorithm;
+
 
 	public static function fromJson($data)
 	{
@@ -109,6 +151,9 @@ final class HighlightConfig implements \JsonSerializable
 		}
 		if (isset($data->showRulers)) {
 			$instance->showRulers = (bool)$data->showRulers;
+		}
+		if (isset($data->showAccessibilityInfo)) {
+			$instance->showAccessibilityInfo = (bool)$data->showAccessibilityInfo;
 		}
 		if (isset($data->showExtensionLines)) {
 			$instance->showExtensionLines = (bool)$data->showExtensionLines;
@@ -137,6 +182,21 @@ final class HighlightConfig implements \JsonSerializable
 		if (isset($data->cssGridColor)) {
 			$instance->cssGridColor = RGBA::fromJson($data->cssGridColor);
 		}
+		if (isset($data->colorFormat)) {
+			$instance->colorFormat = (string)$data->colorFormat;
+		}
+		if (isset($data->gridHighlightConfig)) {
+			$instance->gridHighlightConfig = GridHighlightConfig::fromJson($data->gridHighlightConfig);
+		}
+		if (isset($data->flexContainerHighlightConfig)) {
+			$instance->flexContainerHighlightConfig = FlexContainerHighlightConfig::fromJson($data->flexContainerHighlightConfig);
+		}
+		if (isset($data->flexItemHighlightConfig)) {
+			$instance->flexItemHighlightConfig = FlexItemHighlightConfig::fromJson($data->flexItemHighlightConfig);
+		}
+		if (isset($data->contrastAlgorithm)) {
+			$instance->contrastAlgorithm = (string)$data->contrastAlgorithm;
+		}
 		return $instance;
 	}
 
@@ -152,6 +212,9 @@ final class HighlightConfig implements \JsonSerializable
 		}
 		if ($this->showRulers !== null) {
 			$data->showRulers = $this->showRulers;
+		}
+		if ($this->showAccessibilityInfo !== null) {
+			$data->showAccessibilityInfo = $this->showAccessibilityInfo;
 		}
 		if ($this->showExtensionLines !== null) {
 			$data->showExtensionLines = $this->showExtensionLines;
@@ -179,6 +242,21 @@ final class HighlightConfig implements \JsonSerializable
 		}
 		if ($this->cssGridColor !== null) {
 			$data->cssGridColor = $this->cssGridColor->jsonSerialize();
+		}
+		if ($this->colorFormat !== null) {
+			$data->colorFormat = $this->colorFormat;
+		}
+		if ($this->gridHighlightConfig !== null) {
+			$data->gridHighlightConfig = $this->gridHighlightConfig->jsonSerialize();
+		}
+		if ($this->flexContainerHighlightConfig !== null) {
+			$data->flexContainerHighlightConfig = $this->flexContainerHighlightConfig->jsonSerialize();
+		}
+		if ($this->flexItemHighlightConfig !== null) {
+			$data->flexItemHighlightConfig = $this->flexItemHighlightConfig->jsonSerialize();
+		}
+		if ($this->contrastAlgorithm !== null) {
+			$data->contrastAlgorithm = $this->contrastAlgorithm;
 		}
 		return $data;
 	}

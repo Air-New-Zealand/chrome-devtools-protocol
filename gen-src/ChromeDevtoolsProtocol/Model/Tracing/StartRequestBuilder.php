@@ -10,18 +10,13 @@ namespace ChromeDevtoolsProtocol\Model\Tracing;
 final class StartRequestBuilder
 {
 	private $categories;
-
 	private $options;
-
 	private $bufferUsageReportingInterval;
-
 	private $transferMode;
-
 	private $streamFormat;
-
 	private $streamCompression;
-
 	private $traceConfig;
+	private $perfettoConfig;
 
 
 	/**
@@ -37,6 +32,7 @@ final class StartRequestBuilder
 		$instance->streamFormat = $this->streamFormat;
 		$instance->streamCompression = $this->streamCompression;
 		$instance->traceConfig = $this->traceConfig;
+		$instance->perfettoConfig = $this->perfettoConfig;
 		return $instance;
 	}
 
@@ -121,6 +117,18 @@ final class StartRequestBuilder
 	public function setTraceConfig($traceConfig): self
 	{
 		$this->traceConfig = $traceConfig;
+		return $this;
+	}
+
+
+	/**
+	 * @param string|null $perfettoConfig
+	 *
+	 * @return self
+	 */
+	public function setPerfettoConfig($perfettoConfig): self
+	{
+		$this->perfettoConfig = $perfettoConfig;
 		return $this;
 	}
 }

@@ -18,12 +18,25 @@ final class StepIntoRequest implements \JsonSerializable
 	 */
 	public $breakOnAsyncCall;
 
+	/**
+	 * The skipList specifies location ranges that should be skipped on step into.
+	 *
+	 * @var LocationRange[]|null
+	 */
+	public $skipList;
+
 
 	public static function fromJson($data)
 	{
 		$instance = new static();
 		if (isset($data->breakOnAsyncCall)) {
 			$instance->breakOnAsyncCall = (bool)$data->breakOnAsyncCall;
+		}
+		if (isset($data->skipList)) {
+			$instance->skipList = [];
+			foreach ($data->skipList as $item) {
+				$instance->skipList[] = LocationRange::fromJson($item);
+			}
 		}
 		return $instance;
 	}
@@ -34,6 +47,12 @@ final class StepIntoRequest implements \JsonSerializable
 		$data = new \stdClass();
 		if ($this->breakOnAsyncCall !== null) {
 			$data->breakOnAsyncCall = $this->breakOnAsyncCall;
+		}
+		if ($this->skipList !== null) {
+			$data->skipList = [];
+			foreach ($this->skipList as $item) {
+				$data->skipList[] = $item->jsonSerialize();
+			}
 		}
 		return $data;
 	}

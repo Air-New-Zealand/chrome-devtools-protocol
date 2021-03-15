@@ -54,6 +54,13 @@ final class Request implements \JsonSerializable
 	public $hasPostData;
 
 	/**
+	 * Request body elements. This will be converted from base64 to binary
+	 *
+	 * @var PostDataEntry[]|null
+	 */
+	public $postDataEntries;
+
+	/**
 	 * The mixed content type of the request.
 	 *
 	 * @var string
@@ -81,6 +88,13 @@ final class Request implements \JsonSerializable
 	 */
 	public $isLinkPreload;
 
+	/**
+	 * Set for requests when the TrustToken API is used. Contains the parameters passed by the developer (e.g. via "fetch") as understood by the backend.
+	 *
+	 * @var TrustTokenParams|null
+	 */
+	public $trustTokenParams;
+
 
 	public static function fromJson($data)
 	{
@@ -103,6 +117,12 @@ final class Request implements \JsonSerializable
 		if (isset($data->hasPostData)) {
 			$instance->hasPostData = (bool)$data->hasPostData;
 		}
+		if (isset($data->postDataEntries)) {
+			$instance->postDataEntries = [];
+			foreach ($data->postDataEntries as $item) {
+				$instance->postDataEntries[] = PostDataEntry::fromJson($item);
+			}
+		}
 		if (isset($data->mixedContentType)) {
 			$instance->mixedContentType = (string)$data->mixedContentType;
 		}
@@ -114,6 +134,9 @@ final class Request implements \JsonSerializable
 		}
 		if (isset($data->isLinkPreload)) {
 			$instance->isLinkPreload = (bool)$data->isLinkPreload;
+		}
+		if (isset($data->trustTokenParams)) {
+			$instance->trustTokenParams = TrustTokenParams::fromJson($data->trustTokenParams);
 		}
 		return $instance;
 	}
@@ -140,6 +163,12 @@ final class Request implements \JsonSerializable
 		if ($this->hasPostData !== null) {
 			$data->hasPostData = $this->hasPostData;
 		}
+		if ($this->postDataEntries !== null) {
+			$data->postDataEntries = [];
+			foreach ($this->postDataEntries as $item) {
+				$data->postDataEntries[] = $item->jsonSerialize();
+			}
+		}
 		if ($this->mixedContentType !== null) {
 			$data->mixedContentType = $this->mixedContentType;
 		}
@@ -151,6 +180,9 @@ final class Request implements \JsonSerializable
 		}
 		if ($this->isLinkPreload !== null) {
 			$data->isLinkPreload = $this->isLinkPreload;
+		}
+		if ($this->trustTokenParams !== null) {
+			$data->trustTokenParams = $this->trustTokenParams->jsonSerialize();
 		}
 		return $data;
 	}

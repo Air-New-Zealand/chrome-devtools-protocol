@@ -4,12 +4,17 @@ namespace ChromeDevtoolsProtocol\Domain;
 
 use ChromeDevtoolsProtocol\ContextInterface;
 use ChromeDevtoolsProtocol\InternalClientInterface;
+use ChromeDevtoolsProtocol\Model\Overlay\GetGridHighlightObjectsForTestRequest;
+use ChromeDevtoolsProtocol\Model\Overlay\GetGridHighlightObjectsForTestResponse;
 use ChromeDevtoolsProtocol\Model\Overlay\GetHighlightObjectForTestRequest;
 use ChromeDevtoolsProtocol\Model\Overlay\GetHighlightObjectForTestResponse;
+use ChromeDevtoolsProtocol\Model\Overlay\GetSourceOrderHighlightObjectForTestRequest;
+use ChromeDevtoolsProtocol\Model\Overlay\GetSourceOrderHighlightObjectForTestResponse;
 use ChromeDevtoolsProtocol\Model\Overlay\HighlightFrameRequest;
 use ChromeDevtoolsProtocol\Model\Overlay\HighlightNodeRequest;
 use ChromeDevtoolsProtocol\Model\Overlay\HighlightQuadRequest;
 use ChromeDevtoolsProtocol\Model\Overlay\HighlightRectRequest;
+use ChromeDevtoolsProtocol\Model\Overlay\HighlightSourceOrderRequest;
 use ChromeDevtoolsProtocol\Model\Overlay\InspectModeCanceledEvent;
 use ChromeDevtoolsProtocol\Model\Overlay\InspectNodeRequestedEvent;
 use ChromeDevtoolsProtocol\Model\Overlay\NodeHighlightRequestedEvent;
@@ -19,11 +24,15 @@ use ChromeDevtoolsProtocol\Model\Overlay\SetPausedInDebuggerMessageRequest;
 use ChromeDevtoolsProtocol\Model\Overlay\SetShowAdHighlightsRequest;
 use ChromeDevtoolsProtocol\Model\Overlay\SetShowDebugBordersRequest;
 use ChromeDevtoolsProtocol\Model\Overlay\SetShowFPSCounterRequest;
+use ChromeDevtoolsProtocol\Model\Overlay\SetShowFlexOverlaysRequest;
+use ChromeDevtoolsProtocol\Model\Overlay\SetShowGridOverlaysRequest;
+use ChromeDevtoolsProtocol\Model\Overlay\SetShowHingeRequest;
 use ChromeDevtoolsProtocol\Model\Overlay\SetShowHitTestBordersRequest;
 use ChromeDevtoolsProtocol\Model\Overlay\SetShowLayoutShiftRegionsRequest;
 use ChromeDevtoolsProtocol\Model\Overlay\SetShowPaintRectsRequest;
 use ChromeDevtoolsProtocol\Model\Overlay\SetShowScrollBottleneckRectsRequest;
 use ChromeDevtoolsProtocol\Model\Overlay\SetShowViewportSizeOnResizeRequest;
+use ChromeDevtoolsProtocol\Model\Overlay\SetShowWebVitalsRequest;
 use ChromeDevtoolsProtocol\SubscriptionInterface;
 
 class OverlayDomain implements OverlayDomainInterface
@@ -52,10 +61,30 @@ class OverlayDomain implements OverlayDomainInterface
 	}
 
 
-	public function getHighlightObjectForTest(ContextInterface $ctx, GetHighlightObjectForTestRequest $request): GetHighlightObjectForTestResponse
-	{
+	public function getGridHighlightObjectsForTest(
+		ContextInterface $ctx,
+		GetGridHighlightObjectsForTestRequest $request
+	): GetGridHighlightObjectsForTestResponse {
+		$response = $this->internalClient->executeCommand($ctx, 'Overlay.getGridHighlightObjectsForTest', $request);
+		return GetGridHighlightObjectsForTestResponse::fromJson($response);
+	}
+
+
+	public function getHighlightObjectForTest(
+		ContextInterface $ctx,
+		GetHighlightObjectForTestRequest $request
+	): GetHighlightObjectForTestResponse {
 		$response = $this->internalClient->executeCommand($ctx, 'Overlay.getHighlightObjectForTest', $request);
 		return GetHighlightObjectForTestResponse::fromJson($response);
+	}
+
+
+	public function getSourceOrderHighlightObjectForTest(
+		ContextInterface $ctx,
+		GetSourceOrderHighlightObjectForTestRequest $request
+	): GetSourceOrderHighlightObjectForTestResponse {
+		$response = $this->internalClient->executeCommand($ctx, 'Overlay.getSourceOrderHighlightObjectForTest', $request);
+		return GetSourceOrderHighlightObjectForTestResponse::fromJson($response);
 	}
 
 
@@ -90,6 +119,12 @@ class OverlayDomain implements OverlayDomainInterface
 	}
 
 
+	public function highlightSourceOrder(ContextInterface $ctx, HighlightSourceOrderRequest $request): void
+	{
+		$this->internalClient->executeCommand($ctx, 'Overlay.highlightSourceOrder', $request);
+	}
+
+
 	public function setInspectMode(ContextInterface $ctx, SetInspectModeRequest $request): void
 	{
 		$this->internalClient->executeCommand($ctx, 'Overlay.setInspectMode', $request);
@@ -114,9 +149,27 @@ class OverlayDomain implements OverlayDomainInterface
 	}
 
 
+	public function setShowFlexOverlays(ContextInterface $ctx, SetShowFlexOverlaysRequest $request): void
+	{
+		$this->internalClient->executeCommand($ctx, 'Overlay.setShowFlexOverlays', $request);
+	}
+
+
 	public function setShowFPSCounter(ContextInterface $ctx, SetShowFPSCounterRequest $request): void
 	{
 		$this->internalClient->executeCommand($ctx, 'Overlay.setShowFPSCounter', $request);
+	}
+
+
+	public function setShowGridOverlays(ContextInterface $ctx, SetShowGridOverlaysRequest $request): void
+	{
+		$this->internalClient->executeCommand($ctx, 'Overlay.setShowGridOverlays', $request);
+	}
+
+
+	public function setShowHinge(ContextInterface $ctx, SetShowHingeRequest $request): void
+	{
+		$this->internalClient->executeCommand($ctx, 'Overlay.setShowHinge', $request);
 	}
 
 
@@ -147,6 +200,12 @@ class OverlayDomain implements OverlayDomainInterface
 	public function setShowViewportSizeOnResize(ContextInterface $ctx, SetShowViewportSizeOnResizeRequest $request): void
 	{
 		$this->internalClient->executeCommand($ctx, 'Overlay.setShowViewportSizeOnResize', $request);
+	}
+
+
+	public function setShowWebVitals(ContextInterface $ctx, SetShowWebVitalsRequest $request): void
+	{
+		$this->internalClient->executeCommand($ctx, 'Overlay.setShowWebVitals', $request);
 	}
 
 

@@ -7,12 +7,16 @@ use ChromeDevtoolsProtocol\Model\Storage\CacheStorageContentUpdatedEvent;
 use ChromeDevtoolsProtocol\Model\Storage\CacheStorageListUpdatedEvent;
 use ChromeDevtoolsProtocol\Model\Storage\ClearCookiesRequest;
 use ChromeDevtoolsProtocol\Model\Storage\ClearDataForOriginRequest;
+use ChromeDevtoolsProtocol\Model\Storage\ClearTrustTokensRequest;
+use ChromeDevtoolsProtocol\Model\Storage\ClearTrustTokensResponse;
 use ChromeDevtoolsProtocol\Model\Storage\GetCookiesRequest;
 use ChromeDevtoolsProtocol\Model\Storage\GetCookiesResponse;
+use ChromeDevtoolsProtocol\Model\Storage\GetTrustTokensResponse;
 use ChromeDevtoolsProtocol\Model\Storage\GetUsageAndQuotaRequest;
 use ChromeDevtoolsProtocol\Model\Storage\GetUsageAndQuotaResponse;
 use ChromeDevtoolsProtocol\Model\Storage\IndexedDBContentUpdatedEvent;
 use ChromeDevtoolsProtocol\Model\Storage\IndexedDBListUpdatedEvent;
+use ChromeDevtoolsProtocol\Model\Storage\OverrideQuotaForOriginRequest;
 use ChromeDevtoolsProtocol\Model\Storage\SetCookiesRequest;
 use ChromeDevtoolsProtocol\Model\Storage\TrackCacheStorageForOriginRequest;
 use ChromeDevtoolsProtocol\Model\Storage\TrackIndexedDBForOriginRequest;
@@ -54,6 +58,17 @@ interface StorageDomainInterface
 
 
 	/**
+	 * Removes all Trust Tokens issued by the provided issuerOrigin. Leaves other stored data, including the issuer's Redemption Records, intact.
+	 *
+	 * @param ContextInterface $ctx
+	 * @param ClearTrustTokensRequest $request
+	 *
+	 * @return ClearTrustTokensResponse
+	 */
+	public function clearTrustTokens(ContextInterface $ctx, ClearTrustTokensRequest $request): ClearTrustTokensResponse;
+
+
+	/**
 	 * Returns all browser cookies.
 	 *
 	 * @param ContextInterface $ctx
@@ -65,6 +80,16 @@ interface StorageDomainInterface
 
 
 	/**
+	 * Returns the number of stored Trust Tokens per issuer for the current browsing context.
+	 *
+	 * @param ContextInterface $ctx
+	 *
+	 * @return GetTrustTokensResponse
+	 */
+	public function getTrustTokens(ContextInterface $ctx): GetTrustTokensResponse;
+
+
+	/**
 	 * Returns usage and quota in bytes.
 	 *
 	 * @param ContextInterface $ctx
@@ -73,6 +98,17 @@ interface StorageDomainInterface
 	 * @return GetUsageAndQuotaResponse
 	 */
 	public function getUsageAndQuota(ContextInterface $ctx, GetUsageAndQuotaRequest $request): GetUsageAndQuotaResponse;
+
+
+	/**
+	 * Override quota for the specified origin
+	 *
+	 * @param ContextInterface $ctx
+	 * @param OverrideQuotaForOriginRequest $request
+	 *
+	 * @return void
+	 */
+	public function overrideQuotaForOrigin(ContextInterface $ctx, OverrideQuotaForOriginRequest $request): void;
 
 
 	/**

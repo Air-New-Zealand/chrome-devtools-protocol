@@ -19,8 +19,6 @@ use ChromeDevtoolsProtocol\SubscriptionInterface;
 /**
  * A domain for letting clients substitute browser's network layer with client code.
  *
- * @experimental
- *
  * @generated This file has been auto-generated, do not edit.
  *
  * @author Jakub Kulhan <jakub.kulhan@gmail.com>
@@ -111,7 +109,10 @@ interface FetchDomainInterface
 	 *
 	 * @return TakeResponseBodyAsStreamResponse
 	 */
-	public function takeResponseBodyAsStream(ContextInterface $ctx, TakeResponseBodyAsStreamRequest $request): TakeResponseBodyAsStreamResponse;
+	public function takeResponseBodyAsStream(
+		ContextInterface $ctx,
+		TakeResponseBodyAsStreamRequest $request
+	): TakeResponseBodyAsStreamResponse;
 
 
 	/**

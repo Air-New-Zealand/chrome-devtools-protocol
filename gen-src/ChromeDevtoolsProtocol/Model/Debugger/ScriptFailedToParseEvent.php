@@ -111,6 +111,27 @@ final class ScriptFailedToParseEvent implements \JsonSerializable
 	 */
 	public $stackTrace;
 
+	/**
+	 * If the scriptLanguage is WebAssembly, the code section offset in the module.
+	 *
+	 * @var int|null
+	 */
+	public $codeOffset;
+
+	/**
+	 * The language of the script.
+	 *
+	 * @var string
+	 */
+	public $scriptLanguage;
+
+	/**
+	 * The name the embedder supplied for this script.
+	 *
+	 * @var string|null
+	 */
+	public $embedderName;
+
 
 	public static function fromJson($data)
 	{
@@ -156,6 +177,15 @@ final class ScriptFailedToParseEvent implements \JsonSerializable
 		}
 		if (isset($data->stackTrace)) {
 			$instance->stackTrace = StackTrace::fromJson($data->stackTrace);
+		}
+		if (isset($data->codeOffset)) {
+			$instance->codeOffset = (int)$data->codeOffset;
+		}
+		if (isset($data->scriptLanguage)) {
+			$instance->scriptLanguage = (string)$data->scriptLanguage;
+		}
+		if (isset($data->embedderName)) {
+			$instance->embedderName = (string)$data->embedderName;
 		}
 		return $instance;
 	}
@@ -205,6 +235,15 @@ final class ScriptFailedToParseEvent implements \JsonSerializable
 		}
 		if ($this->stackTrace !== null) {
 			$data->stackTrace = $this->stackTrace->jsonSerialize();
+		}
+		if ($this->codeOffset !== null) {
+			$data->codeOffset = $this->codeOffset;
+		}
+		if ($this->scriptLanguage !== null) {
+			$data->scriptLanguage = $this->scriptLanguage;
+		}
+		if ($this->embedderName !== null) {
+			$data->embedderName = $this->embedderName;
 		}
 		return $data;
 	}

@@ -37,6 +37,8 @@ use ChromeDevtoolsProtocol\Model\DOM\GetNodeForLocationRequest;
 use ChromeDevtoolsProtocol\Model\DOM\GetNodeForLocationResponse;
 use ChromeDevtoolsProtocol\Model\DOM\GetNodeStackTracesRequest;
 use ChromeDevtoolsProtocol\Model\DOM\GetNodeStackTracesResponse;
+use ChromeDevtoolsProtocol\Model\DOM\GetNodesForSubtreeByStyleRequest;
+use ChromeDevtoolsProtocol\Model\DOM\GetNodesForSubtreeByStyleResponse;
 use ChromeDevtoolsProtocol\Model\DOM\GetOuterHTMLRequest;
 use ChromeDevtoolsProtocol\Model\DOM\GetOuterHTMLResponse;
 use ChromeDevtoolsProtocol\Model\DOM\GetRelayoutBoundaryRequest;
@@ -65,6 +67,7 @@ use ChromeDevtoolsProtocol\Model\DOM\RequestNodeRequest;
 use ChromeDevtoolsProtocol\Model\DOM\RequestNodeResponse;
 use ChromeDevtoolsProtocol\Model\DOM\ResolveNodeRequest;
 use ChromeDevtoolsProtocol\Model\DOM\ResolveNodeResponse;
+use ChromeDevtoolsProtocol\Model\DOM\ScrollIntoViewIfNeededRequest;
 use ChromeDevtoolsProtocol\Model\DOM\SetAttributeValueRequest;
 use ChromeDevtoolsProtocol\Model\DOM\SetAttributesAsTextRequest;
 use ChromeDevtoolsProtocol\Model\DOM\SetChildNodesEvent;
@@ -96,7 +99,10 @@ interface DOMDomainInterface
 	 *
 	 * @return CollectClassNamesFromSubtreeResponse
 	 */
-	public function collectClassNamesFromSubtree(ContextInterface $ctx, CollectClassNamesFromSubtreeRequest $request): CollectClassNamesFromSubtreeResponse;
+	public function collectClassNamesFromSubtree(
+		ContextInterface $ctx,
+		CollectClassNamesFromSubtreeRequest $request
+	): CollectClassNamesFromSubtreeResponse;
 
 
 	/**
@@ -219,14 +225,17 @@ interface DOMDomainInterface
 
 
 	/**
-	 * Returns the root DOM node (and optionally the subtree) to the caller.
+	 * Returns the root DOM node (and optionally the subtree) to the caller. Deprecated, as it is not designed to work well with the rest of the DOM agent. Use DOMSnapshot.captureSnapshot instead.
 	 *
 	 * @param ContextInterface $ctx
 	 * @param GetFlattenedDocumentRequest $request
 	 *
 	 * @return GetFlattenedDocumentResponse
 	 */
-	public function getFlattenedDocument(ContextInterface $ctx, GetFlattenedDocumentRequest $request): GetFlattenedDocumentResponse;
+	public function getFlattenedDocument(
+		ContextInterface $ctx,
+		GetFlattenedDocumentRequest $request
+	): GetFlattenedDocumentResponse;
 
 
 	/**
@@ -248,7 +257,24 @@ interface DOMDomainInterface
 	 *
 	 * @return GetNodeForLocationResponse
 	 */
-	public function getNodeForLocation(ContextInterface $ctx, GetNodeForLocationRequest $request): GetNodeForLocationResponse;
+	public function getNodeForLocation(
+		ContextInterface $ctx,
+		GetNodeForLocationRequest $request
+	): GetNodeForLocationResponse;
+
+
+	/**
+	 * Finds nodes with a given computed style in a subtree.
+	 *
+	 * @param ContextInterface $ctx
+	 * @param GetNodesForSubtreeByStyleRequest $request
+	 *
+	 * @return GetNodesForSubtreeByStyleResponse
+	 */
+	public function getNodesForSubtreeByStyle(
+		ContextInterface $ctx,
+		GetNodesForSubtreeByStyleRequest $request
+	): GetNodesForSubtreeByStyleResponse;
 
 
 	/**
@@ -259,7 +285,10 @@ interface DOMDomainInterface
 	 *
 	 * @return GetNodeStackTracesResponse
 	 */
-	public function getNodeStackTraces(ContextInterface $ctx, GetNodeStackTracesRequest $request): GetNodeStackTracesResponse;
+	public function getNodeStackTraces(
+		ContextInterface $ctx,
+		GetNodeStackTracesRequest $request
+	): GetNodeStackTracesResponse;
 
 
 	/**
@@ -281,7 +310,10 @@ interface DOMDomainInterface
 	 *
 	 * @return GetRelayoutBoundaryResponse
 	 */
-	public function getRelayoutBoundary(ContextInterface $ctx, GetRelayoutBoundaryRequest $request): GetRelayoutBoundaryResponse;
+	public function getRelayoutBoundary(
+		ContextInterface $ctx,
+		GetRelayoutBoundaryRequest $request
+	): GetRelayoutBoundaryResponse;
 
 
 	/**
@@ -365,7 +397,10 @@ interface DOMDomainInterface
 	 *
 	 * @return PushNodeByPathToFrontendResponse
 	 */
-	public function pushNodeByPathToFrontend(ContextInterface $ctx, PushNodeByPathToFrontendRequest $request): PushNodeByPathToFrontendResponse;
+	public function pushNodeByPathToFrontend(
+		ContextInterface $ctx,
+		PushNodeByPathToFrontendRequest $request
+	): PushNodeByPathToFrontendResponse;
 
 
 	/**
@@ -376,7 +411,10 @@ interface DOMDomainInterface
 	 *
 	 * @return PushNodesByBackendIdsToFrontendResponse
 	 */
-	public function pushNodesByBackendIdsToFrontend(ContextInterface $ctx, PushNodesByBackendIdsToFrontendRequest $request): PushNodesByBackendIdsToFrontendResponse;
+	public function pushNodesByBackendIdsToFrontend(
+		ContextInterface $ctx,
+		PushNodesByBackendIdsToFrontendRequest $request
+	): PushNodesByBackendIdsToFrontendResponse;
 
 
 	/**
@@ -464,6 +502,17 @@ interface DOMDomainInterface
 	 * @return ResolveNodeResponse
 	 */
 	public function resolveNode(ContextInterface $ctx, ResolveNodeRequest $request): ResolveNodeResponse;
+
+
+	/**
+	 * Scrolls the specified rect of the given node into view if not already visible. Note: exactly one between nodeId, backendNodeId and objectId should be passed to identify the node.
+	 *
+	 * @param ContextInterface $ctx
+	 * @param ScrollIntoViewIfNeededRequest $request
+	 *
+	 * @return void
+	 */
+	public function scrollIntoViewIfNeeded(ContextInterface $ctx, ScrollIntoViewIfNeededRequest $request): void;
 
 
 	/**

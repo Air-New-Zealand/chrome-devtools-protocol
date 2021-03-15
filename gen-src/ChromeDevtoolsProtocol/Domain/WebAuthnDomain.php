@@ -14,6 +14,7 @@ use ChromeDevtoolsProtocol\Model\WebAuthn\GetCredentialsRequest;
 use ChromeDevtoolsProtocol\Model\WebAuthn\GetCredentialsResponse;
 use ChromeDevtoolsProtocol\Model\WebAuthn\RemoveCredentialRequest;
 use ChromeDevtoolsProtocol\Model\WebAuthn\RemoveVirtualAuthenticatorRequest;
+use ChromeDevtoolsProtocol\Model\WebAuthn\SetAutomaticPresenceSimulationRequest;
 use ChromeDevtoolsProtocol\Model\WebAuthn\SetUserVerifiedRequest;
 
 class WebAuthnDomain implements WebAuthnDomainInterface
@@ -34,8 +35,10 @@ class WebAuthnDomain implements WebAuthnDomainInterface
 	}
 
 
-	public function addVirtualAuthenticator(ContextInterface $ctx, AddVirtualAuthenticatorRequest $request): AddVirtualAuthenticatorResponse
-	{
+	public function addVirtualAuthenticator(
+		ContextInterface $ctx,
+		AddVirtualAuthenticatorRequest $request
+	): AddVirtualAuthenticatorResponse {
 		$response = $this->internalClient->executeCommand($ctx, 'WebAuthn.addVirtualAuthenticator', $request);
 		return AddVirtualAuthenticatorResponse::fromJson($response);
 	}
@@ -84,6 +87,14 @@ class WebAuthnDomain implements WebAuthnDomainInterface
 	public function removeVirtualAuthenticator(ContextInterface $ctx, RemoveVirtualAuthenticatorRequest $request): void
 	{
 		$this->internalClient->executeCommand($ctx, 'WebAuthn.removeVirtualAuthenticator', $request);
+	}
+
+
+	public function setAutomaticPresenceSimulation(
+		ContextInterface $ctx,
+		SetAutomaticPresenceSimulationRequest $request
+	): void {
+		$this->internalClient->executeCommand($ctx, 'WebAuthn.setAutomaticPresenceSimulation', $request);
 	}
 
 

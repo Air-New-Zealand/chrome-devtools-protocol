@@ -28,6 +28,7 @@ use ChromeDevtoolsProtocol\Model\CSS\MediaQueryResultChangedEvent;
 use ChromeDevtoolsProtocol\Model\CSS\SetEffectivePropertyValueForNodeRequest;
 use ChromeDevtoolsProtocol\Model\CSS\SetKeyframeKeyRequest;
 use ChromeDevtoolsProtocol\Model\CSS\SetKeyframeKeyResponse;
+use ChromeDevtoolsProtocol\Model\CSS\SetLocalFontsEnabledRequest;
 use ChromeDevtoolsProtocol\Model\CSS\SetMediaTextRequest;
 use ChromeDevtoolsProtocol\Model\CSS\SetMediaTextResponse;
 use ChromeDevtoolsProtocol\Model\CSS\SetRuleSelectorRequest;
@@ -40,7 +41,9 @@ use ChromeDevtoolsProtocol\Model\CSS\StopRuleUsageTrackingResponse;
 use ChromeDevtoolsProtocol\Model\CSS\StyleSheetAddedEvent;
 use ChromeDevtoolsProtocol\Model\CSS\StyleSheetChangedEvent;
 use ChromeDevtoolsProtocol\Model\CSS\StyleSheetRemovedEvent;
+use ChromeDevtoolsProtocol\Model\CSS\TakeComputedStyleUpdatesResponse;
 use ChromeDevtoolsProtocol\Model\CSS\TakeCoverageDeltaResponse;
+use ChromeDevtoolsProtocol\Model\CSS\TrackComputedStyleUpdatesRequest;
 use ChromeDevtoolsProtocol\SubscriptionInterface;
 
 /**
@@ -126,7 +129,10 @@ interface CSSDomainInterface
 	 *
 	 * @return GetBackgroundColorsResponse
 	 */
-	public function getBackgroundColors(ContextInterface $ctx, GetBackgroundColorsRequest $request): GetBackgroundColorsResponse;
+	public function getBackgroundColors(
+		ContextInterface $ctx,
+		GetBackgroundColorsRequest $request
+	): GetBackgroundColorsResponse;
 
 
 	/**
@@ -137,7 +143,10 @@ interface CSSDomainInterface
 	 *
 	 * @return GetComputedStyleForNodeResponse
 	 */
-	public function getComputedStyleForNode(ContextInterface $ctx, GetComputedStyleForNodeRequest $request): GetComputedStyleForNodeResponse;
+	public function getComputedStyleForNode(
+		ContextInterface $ctx,
+		GetComputedStyleForNodeRequest $request
+	): GetComputedStyleForNodeResponse;
 
 
 	/**
@@ -148,7 +157,10 @@ interface CSSDomainInterface
 	 *
 	 * @return GetInlineStylesForNodeResponse
 	 */
-	public function getInlineStylesForNode(ContextInterface $ctx, GetInlineStylesForNodeRequest $request): GetInlineStylesForNodeResponse;
+	public function getInlineStylesForNode(
+		ContextInterface $ctx,
+		GetInlineStylesForNodeRequest $request
+	): GetInlineStylesForNodeResponse;
 
 
 	/**
@@ -159,7 +171,10 @@ interface CSSDomainInterface
 	 *
 	 * @return GetMatchedStylesForNodeResponse
 	 */
-	public function getMatchedStylesForNode(ContextInterface $ctx, GetMatchedStylesForNodeRequest $request): GetMatchedStylesForNodeResponse;
+	public function getMatchedStylesForNode(
+		ContextInterface $ctx,
+		GetMatchedStylesForNodeRequest $request
+	): GetMatchedStylesForNodeResponse;
 
 
 	/**
@@ -180,7 +195,10 @@ interface CSSDomainInterface
 	 *
 	 * @return GetPlatformFontsForNodeResponse
 	 */
-	public function getPlatformFontsForNode(ContextInterface $ctx, GetPlatformFontsForNodeRequest $request): GetPlatformFontsForNodeResponse;
+	public function getPlatformFontsForNode(
+		ContextInterface $ctx,
+		GetPlatformFontsForNodeRequest $request
+	): GetPlatformFontsForNodeResponse;
 
 
 	/**
@@ -202,7 +220,10 @@ interface CSSDomainInterface
 	 *
 	 * @return void
 	 */
-	public function setEffectivePropertyValueForNode(ContextInterface $ctx, SetEffectivePropertyValueForNodeRequest $request): void;
+	public function setEffectivePropertyValueForNode(
+		ContextInterface $ctx,
+		SetEffectivePropertyValueForNodeRequest $request
+	): void;
 
 
 	/**
@@ -214,6 +235,17 @@ interface CSSDomainInterface
 	 * @return SetKeyframeKeyResponse
 	 */
 	public function setKeyframeKey(ContextInterface $ctx, SetKeyframeKeyRequest $request): SetKeyframeKeyResponse;
+
+
+	/**
+	 * Enables/disables rendering of local CSS fonts (enabled by default).
+	 *
+	 * @param ContextInterface $ctx
+	 * @param SetLocalFontsEnabledRequest $request
+	 *
+	 * @return void
+	 */
+	public function setLocalFontsEnabled(ContextInterface $ctx, SetLocalFontsEnabledRequest $request): void;
 
 
 	/**
@@ -281,6 +313,16 @@ interface CSSDomainInterface
 
 
 	/**
+	 * Polls the next batch of computed style updates.
+	 *
+	 * @param ContextInterface $ctx
+	 *
+	 * @return TakeComputedStyleUpdatesResponse
+	 */
+	public function takeComputedStyleUpdates(ContextInterface $ctx): TakeComputedStyleUpdatesResponse;
+
+
+	/**
 	 * Obtain list of rules that became used since last call to this method (or since start of coverage instrumentation)
 	 *
 	 * @param ContextInterface $ctx
@@ -288,6 +330,17 @@ interface CSSDomainInterface
 	 * @return TakeCoverageDeltaResponse
 	 */
 	public function takeCoverageDelta(ContextInterface $ctx): TakeCoverageDeltaResponse;
+
+
+	/**
+	 * Starts tracking the given computed styles for updates. The specified array of properties replaces the one previously specified. Pass empty array to disable tracking. Use takeComputedStyleUpdates to retrieve the list of nodes that had properties modified. The changes to computed style properties are only tracked for nodes pushed to the front-end by the DOM agent. If no changes to the tracked properties occur after the node has been pushed to the front-end, no updates will be issued for the node.
+	 *
+	 * @param ContextInterface $ctx
+	 * @param TrackComputedStyleUpdatesRequest $request
+	 *
+	 * @return void
+	 */
+	public function trackComputedStyleUpdates(ContextInterface $ctx, TrackComputedStyleUpdatesRequest $request): void;
 
 
 	/**

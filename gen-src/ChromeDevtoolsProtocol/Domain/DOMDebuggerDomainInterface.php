@@ -9,6 +9,7 @@ use ChromeDevtoolsProtocol\Model\DOMDebugger\RemoveDOMBreakpointRequest;
 use ChromeDevtoolsProtocol\Model\DOMDebugger\RemoveEventListenerBreakpointRequest;
 use ChromeDevtoolsProtocol\Model\DOMDebugger\RemoveInstrumentationBreakpointRequest;
 use ChromeDevtoolsProtocol\Model\DOMDebugger\RemoveXHRBreakpointRequest;
+use ChromeDevtoolsProtocol\Model\DOMDebugger\SetBreakOnCSPViolationRequest;
 use ChromeDevtoolsProtocol\Model\DOMDebugger\SetDOMBreakpointRequest;
 use ChromeDevtoolsProtocol\Model\DOMDebugger\SetEventListenerBreakpointRequest;
 use ChromeDevtoolsProtocol\Model\DOMDebugger\SetInstrumentationBreakpointRequest;
@@ -53,7 +54,10 @@ interface DOMDebuggerDomainInterface
 	 *
 	 * @return void
 	 */
-	public function removeEventListenerBreakpoint(ContextInterface $ctx, RemoveEventListenerBreakpointRequest $request): void;
+	public function removeEventListenerBreakpoint(
+		ContextInterface $ctx,
+		RemoveEventListenerBreakpointRequest $request
+	): void;
 
 
 	/**
@@ -64,7 +68,10 @@ interface DOMDebuggerDomainInterface
 	 *
 	 * @return void
 	 */
-	public function removeInstrumentationBreakpoint(ContextInterface $ctx, RemoveInstrumentationBreakpointRequest $request): void;
+	public function removeInstrumentationBreakpoint(
+		ContextInterface $ctx,
+		RemoveInstrumentationBreakpointRequest $request
+	): void;
 
 
 	/**
@@ -76,6 +83,17 @@ interface DOMDebuggerDomainInterface
 	 * @return void
 	 */
 	public function removeXHRBreakpoint(ContextInterface $ctx, RemoveXHRBreakpointRequest $request): void;
+
+
+	/**
+	 * Sets breakpoint on particular CSP violations.
+	 *
+	 * @param ContextInterface $ctx
+	 * @param SetBreakOnCSPViolationRequest $request
+	 *
+	 * @return void
+	 */
+	public function setBreakOnCSPViolation(ContextInterface $ctx, SetBreakOnCSPViolationRequest $request): void;
 
 
 	/**

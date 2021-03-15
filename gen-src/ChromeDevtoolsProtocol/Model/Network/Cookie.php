@@ -88,6 +88,27 @@ final class Cookie implements \JsonSerializable
 	 */
 	public $priority;
 
+	/**
+	 * True if cookie is SameParty.
+	 *
+	 * @var bool
+	 */
+	public $sameParty;
+
+	/**
+	 * Cookie source scheme type.
+	 *
+	 * @var string
+	 */
+	public $sourceScheme;
+
+	/**
+	 * Cookie source port. Valid values are {-1, [1, 65535]}, -1 indicates an unspecified port. An unspecified port value allows protocol clients to emulate legacy cookie scope for the port. This is a temporary ability and it will be removed in the future.
+	 *
+	 * @var int
+	 */
+	public $sourcePort;
+
 
 	public static function fromJson($data)
 	{
@@ -124,6 +145,15 @@ final class Cookie implements \JsonSerializable
 		}
 		if (isset($data->priority)) {
 			$instance->priority = (string)$data->priority;
+		}
+		if (isset($data->sameParty)) {
+			$instance->sameParty = (bool)$data->sameParty;
+		}
+		if (isset($data->sourceScheme)) {
+			$instance->sourceScheme = (string)$data->sourceScheme;
+		}
+		if (isset($data->sourcePort)) {
+			$instance->sourcePort = (int)$data->sourcePort;
 		}
 		return $instance;
 	}
@@ -164,6 +194,15 @@ final class Cookie implements \JsonSerializable
 		}
 		if ($this->priority !== null) {
 			$data->priority = $this->priority;
+		}
+		if ($this->sameParty !== null) {
+			$data->sameParty = $this->sameParty;
+		}
+		if ($this->sourceScheme !== null) {
+			$data->sourceScheme = $this->sourceScheme;
+		}
+		if ($this->sourcePort !== null) {
+			$data->sourcePort = $this->sourcePort;
 		}
 		return $data;
 	}

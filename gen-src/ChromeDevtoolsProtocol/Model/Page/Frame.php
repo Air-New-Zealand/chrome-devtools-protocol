@@ -54,6 +54,13 @@ final class Frame implements \JsonSerializable
 	public $urlFragment;
 
 	/**
+	 * Frame document's registered domain, taking the public suffixes list into account. Extracted from the Frame's url. Example URLs: http://www.google.com/file.html -> "google.com" http://a.b.co.uk/file.html -> "b.co.uk"
+	 *
+	 * @var string
+	 */
+	public $domainAndRegistry;
+
+	/**
 	 * Frame document's security origin.
 	 *
 	 * @var string
@@ -73,6 +80,34 @@ final class Frame implements \JsonSerializable
 	 * @var string|null
 	 */
 	public $unreachableUrl;
+
+	/**
+	 * Indicates whether this frame was tagged as an ad.
+	 *
+	 * @var string
+	 */
+	public $adFrameType;
+
+	/**
+	 * Indicates whether the main document is a secure context and explains why that is the case.
+	 *
+	 * @var string
+	 */
+	public $secureContextType;
+
+	/**
+	 * Indicates whether this is a cross origin isolated context.
+	 *
+	 * @var string
+	 */
+	public $crossOriginIsolatedContextType;
+
+	/**
+	 * Indicated which gated APIs / features are available.
+	 *
+	 * @var string[]
+	 */
+	public $gatedAPIFeatures;
 
 
 	public static function fromJson($data)
@@ -96,6 +131,9 @@ final class Frame implements \JsonSerializable
 		if (isset($data->urlFragment)) {
 			$instance->urlFragment = (string)$data->urlFragment;
 		}
+		if (isset($data->domainAndRegistry)) {
+			$instance->domainAndRegistry = (string)$data->domainAndRegistry;
+		}
 		if (isset($data->securityOrigin)) {
 			$instance->securityOrigin = (string)$data->securityOrigin;
 		}
@@ -104,6 +142,24 @@ final class Frame implements \JsonSerializable
 		}
 		if (isset($data->unreachableUrl)) {
 			$instance->unreachableUrl = (string)$data->unreachableUrl;
+		}
+		if (isset($data->adFrameType)) {
+			$instance->adFrameType = (string)$data->adFrameType;
+		}
+		if (isset($data->secureContextType)) {
+			$instance->secureContextType = (string)$data->secureContextType;
+		}
+		if (isset($data->crossOriginIsolatedContextType)) {
+			$instance->crossOriginIsolatedContextType = (string)$data->crossOriginIsolatedContextType;
+		}
+		if (isset($data->gatedAPIFeatures)) {
+			$instance->gatedAPIFeatures = [];
+		if (isset($data->gatedAPIFeatures)) {
+			$instance->gatedAPIFeatures = [];
+			foreach ($data->gatedAPIFeatures as $item) {
+				$instance->gatedAPIFeatures[] = (string)$item;
+			}
+		}
 		}
 		return $instance;
 	}
@@ -130,6 +186,9 @@ final class Frame implements \JsonSerializable
 		if ($this->urlFragment !== null) {
 			$data->urlFragment = $this->urlFragment;
 		}
+		if ($this->domainAndRegistry !== null) {
+			$data->domainAndRegistry = $this->domainAndRegistry;
+		}
 		if ($this->securityOrigin !== null) {
 			$data->securityOrigin = $this->securityOrigin;
 		}
@@ -138,6 +197,24 @@ final class Frame implements \JsonSerializable
 		}
 		if ($this->unreachableUrl !== null) {
 			$data->unreachableUrl = $this->unreachableUrl;
+		}
+		if ($this->adFrameType !== null) {
+			$data->adFrameType = $this->adFrameType;
+		}
+		if ($this->secureContextType !== null) {
+			$data->secureContextType = $this->secureContextType;
+		}
+		if ($this->crossOriginIsolatedContextType !== null) {
+			$data->crossOriginIsolatedContextType = $this->crossOriginIsolatedContextType;
+		}
+		if ($this->gatedAPIFeatures !== null) {
+			$data->gatedAPIFeatures = [];
+		if ($this->gatedAPIFeatures !== null) {
+			$data->gatedAPIFeatures = [];
+			foreach ($this->gatedAPIFeatures as $item) {
+				$data->gatedAPIFeatures[] = $item;
+			}
+		}
 		}
 		return $data;
 	}
